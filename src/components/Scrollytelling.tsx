@@ -7,33 +7,71 @@ import KBankPhoneMockup from './KBankPhoneMockup';
 
 export default function Scrollytelling() {
   const [activeStep, setActiveStep] = useState<number>(0);
+  const activeStepRef = useRef<number>(0);
+  const lastScrollY = useRef<number>(0);
   const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
-    const observerCallback: IntersectionObserverCallback = (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const index = Number(entry.target.getAttribute('data-step-index'));
-          if (!isNaN(index)) {
-            setActiveStep(index);
+    activeStepRef.current = activeStep;
+  }, [activeStep]);
+
+  useEffect(() => {
+    let ticking = false;
+
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY;
+          const isScrollingUp = currentScrollY < lastScrollY.current;
+          lastScrollY.current = currentScrollY;
+
+          const currentStep = activeStepRef.current;
+          const step4El = stepRefs.current[3];
+          const step5El = stepRefs.current[4];
+
+          // Direction-aware hysteresis:
+          // เวลาเลื่อนขึ้นไม่ต้องกลับไป Step 4 เร็ว แต่เวลาเลื่อนลงให้ทำงานตามปกติ
+          if (currentStep === 4 && isScrollingUp && step5El && step4El) {
+            const step5Rect = step5El.getBoundingClientRect();
+            // เมื่อเลื่อนขึ้น จะยังคงอยู่ Step 5 ต่อไป จนกว่าการ์ด Step 5 จะถูกเลื่อนลงไปเกินครึ่งจอด้านล่าง
+            if (step5Rect.top < window.innerHeight * 0.55) {
+              ticking = false;
+              return;
+            }
           }
-        }
-      });
+
+          // Natural focal eye-level calculation for all steps
+          const focalY = window.innerHeight * 0.45;
+          let bestIndex = 0;
+          let minDistance = Infinity;
+
+          stepRefs.current.forEach((el, index) => {
+            if (!el) return;
+            const rect = el.getBoundingClientRect();
+            const cardCenter = rect.top + rect.height * 0.45;
+            const distance = Math.abs(cardCenter - focalY);
+
+            if (distance < minDistance) {
+              minDistance = distance;
+              bestIndex = index;
+            }
+          });
+
+          setActiveStep((prev) => (prev !== bestIndex ? bestIndex : prev));
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
-    const observerOptions: IntersectionObserverInit = {
-      root: null,
-      rootMargin: '-25% 0px -35% 0px',
-      threshold: 0.2,
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleScroll, { passive: true });
+    handleScroll();
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
     };
-
-    const observer = new IntersectionObserver(observerCallback, observerOptions);
-
-    stepRefs.current.forEach((el) => {
-      if (el) observer.observe(el);
-    });
-
-    return () => observer.disconnect();
   }, []);
 
   const handleSelectStep = (index: number) => {
