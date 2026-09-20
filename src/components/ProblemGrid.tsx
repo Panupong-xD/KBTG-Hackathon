@@ -85,12 +85,12 @@ export default function ProblemGrid() {
 
               {/* Comparison Box with Enhanced Contrast and Icons */}
               <div className="space-y-2.5 pt-4 border-t border-slate-100 text-xs">
-                <div className="flex items-start gap-2.5 text-slate-600 bg-rose-50/50 p-3 rounded-xl border border-rose-100/80">
+                <div className="flex items-start gap-2.5 text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-200">
                   <div className="w-5 h-5 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center shrink-0 mt-0.5">
                     <X className="w-3.5 h-3.5" />
                   </div>
                   <div>
-                    <span className="font-bold text-rose-700 block mb-0.5">แอปธนาคารแบบเดิม</span>
+                    <span className="font-bold text-slate-700 block mb-0.5">แอปธนาคารแบบเดิม</span>
                     <span>{item.traditionalApp}</span>
                   </div>
                 </div>

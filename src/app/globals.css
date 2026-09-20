@@ -1046,12 +1046,6 @@
       border-color: color-mix(in oklab, var(--color-emerald-500) 50%, transparent);
     }
   }
-  .border-rose-100\/80 {
-    border-color: color-mix(in srgb, oklch(94.1% 0.03 12.58) 80%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--color-rose-100) 80%, transparent);
-    }
-  }
   .border-rose-200\/80 {
     border-color: color-mix(in srgb, oklch(89.2% 0.058 10.001) 80%, transparent);
     @supports (color: color-mix(in lab, red, red)) {
@@ -1297,12 +1291,6 @@
   }
   .bg-rose-50 {
     background-color: var(--color-rose-50);
-  }
-  .bg-rose-50\/50 {
-    background-color: color-mix(in srgb, oklch(96.9% 0.015 12.422) 50%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(in oklab, var(--color-rose-50) 50%, transparent);
-    }
   }
   .bg-rose-50\/70 {
     background-color: color-mix(in srgb, oklch(96.9% 0.015 12.422) 70%, transparent);
