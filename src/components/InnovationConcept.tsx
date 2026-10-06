@@ -21,7 +21,7 @@ export default function InnovationConcept() {
           </h2>
 
           <p className="mt-4 text-emerald-50 text-sm sm:text-base max-w-xl mx-auto leading-relaxed font-normal">
-            โดยที่คุณเป็นผู้ควบคุมและตัดสินใจเอง 100% ปราศจากการบังคับตัดเงินส่วนตัว ลื่นไหล ปลอดภัยตามมาตรฐานธนาคารกสิกรไทย
+            โดยที่คุณเป็นผู้ควบคุมและตัดสินใจเอง 100% ปราศจากการบังคับตัดเงินส่วนตัว ลื่นไหล ปลอดภัยตามมาตรฐานสถาบันการเงิน
           </p>
 
           {/* Action Buttons (Restored without Early Prototype) */}

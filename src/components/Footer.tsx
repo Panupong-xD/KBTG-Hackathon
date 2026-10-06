@@ -14,30 +14,38 @@ export default function Footer() {
         
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
           
-          {/* Col 1: Brand with KbankWebIcon.png */}
+          {/* Col 1: Brand with Custom K-Runway Concept Mark (No official KBank logo) */}
           <div className="md:col-span-2 space-y-3">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 overflow-hidden rounded-xl bg-slate-50 flex items-center justify-center p-1 border border-slate-200 shrink-0">
-                <img
-                  src="/KbankWebIcon.png"
-                  alt="KBank Web Icon"
-                  className="h-full w-full object-contain"
-                />
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#00A950] to-[#007A3A] flex items-center justify-center text-white shadow-sm shrink-0">
+                <svg
+                  className="w-5 h-5 text-white"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M4 19L19 4" />
+                  <path d="M11 4H19V12" />
+                  <path d="M4 12V19H11" opacity="0.6" />
+                </svg>
               </div>
               <div className="flex flex-col justify-center">
                 <span className="font-extrabold text-slate-900 text-base leading-none">
                   K-Runway <span className="text-[#00A950]">&</span> Auto-Save
                 </span>
                 <span className="text-[10px] font-bold text-[#00A950] tracking-wider uppercase leading-none mt-1">
-                  K PLUS Innovation Concept
+                  Innovation Concept Prototype
                 </span>
               </div>
             </div>
             <p className="text-slate-600 text-xs leading-relaxed max-w-md">
               โครงการนำเสนอแนวคิดนวัตกรรม Data Science & Predictive Analytics: การผสานระหว่าง Financial Runway Intelligence และ Intelligent Auto-Save Engine ช่วยให้ First Jobbers สามารถตัดสินใจทางการเงินได้อย่างมั่นใจ
             </p>
-            <div className="text-[11px] text-[#008744] font-semibold">
-              Data Science Solution for First Jobbers • KBTG Innovation
+            <div className="text-[11px] text-slate-500 font-medium">
+              *โครงการนำเสนอแนวคิดนวัตกรรมต้นแบบสำหรับการแข่งขัน KBTG ไม่ใช่เว็บไซต์หรือบริการทางการของธนาคาร
             </div>
           </div>
 
@@ -94,7 +102,7 @@ export default function Footer() {
         {/* Bottom */}
         <div className="pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
           <div>
-            © 2026 K-Runway & Auto-Save Showcase. Designed for KBTG Data Science Track Innovation.
+            © 2026 K-Runway & Auto-Save Prototype. Designed for KBTG Data Science Track Innovation Concept (Non-official).
           </div>
 
           <button

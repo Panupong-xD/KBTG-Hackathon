@@ -2,15 +2,16 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'K-Runway & Predictive Auto-Saving | K PLUS Innovation Concept',
-  description: 'นวัตกรรมพยากรณ์กระแสเงินสดล่วงหน้าและระบบออมเงินกึ่งอัตโนมัติสำหรับ K PLUS',
+  title: 'K-Runway & Predictive Auto-Saving | Innovation Concept Prototype',
+  description: 'นวัตกรรมพยากรณ์กระแสเงินสดล่วงหน้าและระบบออมเงินกึ่งอัตโนมัติสำหรับคนเริ่มทำงาน (Prototype Concept)',
   icons: {
     icon: [
-      { url: '/KbankFavicon.png', type: 'image/png' },
+      { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: '/icon.png', type: 'image/png' },
       { url: '/favicon.ico', sizes: 'any' },
     ],
-    shortcut: '/KbankFavicon.png',
-    apple: '/KbankFavicon.png',
+    shortcut: '/favicon.ico',
+    apple: '/apple-icon.png',
   },
 };
 
@@ -22,9 +23,10 @@ export default function RootLayout({
   return (
     <html lang="th" className="scroll-smooth">
       <head>
-        <link rel="icon" href="/KbankFavicon.png" type="image/png" />
+        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+        <link rel="icon" href="/icon.png" type="image/png" />
         <link rel="shortcut icon" href="/favicon.ico" />
-        <link rel="apple-touch-icon" href="/KbankFavicon.png" />
+        <link rel="apple-touch-icon" href="/apple-icon.png" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link

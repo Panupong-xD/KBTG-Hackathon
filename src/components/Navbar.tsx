@@ -26,14 +26,24 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           
-          {/* Brand Logo with KbankWebIcon.png (Clean, no background container, no border) */}
+          {/* Brand Logo with Custom K-Runway Concept Mark (No official KBank logo) */}
           <div className="flex items-center gap-3 shrink-0">
             <a href="#" className="flex items-center gap-3 group">
-              <img
-                src="/KbankWebIcon.png"
-                alt="KBank Web Icon"
-                className="h-10 w-10 object-contain group-hover:scale-105 transition-transform shrink-0"
-              />
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#00A950] to-[#007A3A] flex items-center justify-center text-white shadow-sm shrink-0 group-hover:scale-105 transition-transform">
+                <svg
+                  className="w-5 h-5 text-white"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M4 19L19 4" />
+                  <path d="M11 4H19V12" />
+                  <path d="M4 12V19H11" opacity="0.6" />
+                </svg>
+              </div>
               <div className="flex flex-col justify-center">
                 <div className="font-extrabold text-slate-900 text-base sm:text-lg tracking-tight leading-none flex items-center gap-1.5">
                   <span>K-Runway</span>
@@ -41,7 +51,7 @@ export default function Navbar() {
                   <span>Auto-Save</span>
                 </div>
                 <span className="text-[10px] font-bold text-[#00A950] tracking-wider uppercase leading-none mt-1">
-                  K PLUS Innovation
+                  Innovation Concept Prototype
                 </span>
               </div>
             </a>
