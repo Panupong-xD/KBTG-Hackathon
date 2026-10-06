@@ -1,0 +1,11 @@
+.walkthroughGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 32px;
+  align-items: start;
+}
+.phoneColumn { min-width: 0; order: -1; }
+@media (min-width: 1024px) {
+  .walkthroughGrid { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 48px; }
+  .phoneColumn { order: initial; position: sticky; top: 96px; }
+}

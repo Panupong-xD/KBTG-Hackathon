@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Check, ArrowRight } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { ScrollyStep } from '../data/scrollySteps';
 
 interface StepCardProps {
@@ -14,6 +14,15 @@ export default function StepCard({ step, isActive, onActivate }: StepCardProps) 
   return (
     <div
       onClick={onActivate}
+      role="button"
+      tabIndex={0}
+      aria-pressed={isActive}
+      onKeyDown={event => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          onActivate();
+        }
+      }}
       className={`group relative rounded-2xl p-6 sm:p-8 transition-all duration-300 cursor-pointer border ${
         isActive
           ? 'bg-white border-[#00A950] shadow-md ring-1 ring-[#00A950]/20'
@@ -49,13 +58,16 @@ export default function StepCard({ step, isActive, onActivate }: StepCardProps) 
       </p>
 
       {/* Key Highlights */}
-      <div className="space-y-1.5 mb-5">
-        {step.details.map((detail, idx) => (
-          <div key={idx} className="flex items-start gap-2 text-xs text-slate-700">
-            <Check className="w-4 h-4 text-[#00A950] shrink-0 mt-0.5" />
-            <span>{detail}</span>
-          </div>
-        ))}
+      <div className="space-y-5 mb-5">
+        {step.detailGroups.map(group => <div key={group.title}>
+          <h4 className="text-sm font-semibold text-slate-900 mb-2">{group.title}</h4>
+          <ul className="space-y-2.5">
+            {group.details.map(detail => <li key={detail} className="flex items-start gap-2 text-sm text-slate-600 leading-relaxed">
+              <Check className="w-4 h-4 text-[#00A950] shrink-0 mt-0.5" />
+              <span>{detail}</span>
+            </li>)}
+          </ul>
+        </div>)}
       </div>
 
       {/* Metrics Row */}
@@ -64,9 +76,11 @@ export default function StepCard({ step, isActive, onActivate }: StepCardProps) 
           <div key={idx} className="bg-slate-50 rounded-xl p-2.5 border border-slate-100">
             <div className="text-[11px] text-slate-500">{m.label}</div>
             <div className="text-sm font-bold text-slate-900 mt-0.5">{m.value}</div>
+            {m.sublabel && <div className="text-[11px] text-slate-500 mt-0.5">{m.sublabel}</div>}
           </div>
         ))}
       </div>
+      {step.benchmarkNote && <p className="text-[11px] text-slate-500 leading-relaxed mt-3">{step.benchmarkNote}</p>}
     </div>
   );
 }

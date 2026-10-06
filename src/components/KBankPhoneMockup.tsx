@@ -1,609 +1,278 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import type { Variants } from 'framer-motion';
-import {
-  Wifi,
-  Signal,
-  Bell,
-  Sparkles,
-  Power,
-  ArrowRightLeft,
-  Download,
-  ScanLine,
-  Banknote,
-  Home,
-  ShoppingBag,
-  QrCode,
-  User,
-  CreditCard,
-  Coins,
-  TrendingUp,
-  ShieldCheck,
-  ChevronRight,
-  CheckCircle2,
-  RotateCcw
-} from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
+import { motion, useAnimationControls, useDragControls, useReducedMotion } from 'framer-motion';
+import { Wifi, Bell, Power, ArrowRightLeft, Download, ScanLine, Banknote, Home, ShoppingBasket, User, ChevronRight, CheckCircle2, Info, ArrowUpRight, ArrowDownRight, PiggyBank, Wallet, ShoppingCart, CalendarDays, ChartColumnIncreasing, Sparkles, X, Navigation, ChartPie } from 'lucide-react';
+import styles from './KBankPhoneMockup.module.css';
 
 interface KBankPhoneMockupProps {
   activeStep: number;
   onSelectStep?: (index: number) => void;
 }
 
-const cardSwipeVariants: Variants = {
-  enter: (direction: number) => ({
-    x: direction > 0 ? 32 : direction < 0 ? -32 : 0,
-    opacity: 0,
-    scale: 0.98,
-  }),
-  center: {
-    x: 0,
-    opacity: 1,
-    scale: 1,
-    transition: {
-      x: { type: 'spring', stiffness: 360, damping: 32 },
-      opacity: { duration: 0.22, ease: 'easeOut' },
-      scale: { duration: 0.22, ease: 'easeOut' },
-    },
-  },
-  exit: (direction: number) => ({
-    x: direction > 0 ? -32 : direction < 0 ? 32 : 0,
-    opacity: 0,
-    scale: 0.98,
-    transition: {
-      x: { type: 'spring', stiffness: 360, damping: 32 },
-      opacity: { duration: 0.18, ease: 'easeIn' },
-      scale: { duration: 0.18, ease: 'easeIn' },
-    },
-  }),
-};
+function ServiceIcon({ kind }: { kind: number }) {
+  return <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+    {kind === 0 && <><rect x="9" y="15" width="33" height="24" rx="4" fill="#457e70"/><rect x="5" y="11" width="33" height="24" rx="4" fill="#7bcbb1"/><circle cx="12" cy="18" r="3" fill="white"/><circle cx="17" cy="18" r="3" fill="white"/><path d="M10 27h17" stroke="white" strokeWidth="2" strokeLinecap="round"/></>}
+    {kind === 1 && <><circle cx="17" cy="12" r="7" fill="#e6838d"/><text x="17" y="16" textAnchor="middle" fill="white" fontSize="11">฿</text><path d="M7 28c-4-4-6 0-3 3l9 8h20V26H20c-5 0-5 5 0 5h4L12 29z" fill="#edabb1"/><rect x="33" y="25" width="5" height="18" rx="2" fill="#bf737e"/></>}
+    {kind === 2 && <><rect x="6" y="28" width="9" height="16" rx="4" fill="#8ed32b"/><rect x="18" y="16" width="9" height="28" rx="4" fill="#87c931"/><rect x="30" y="10" width="9" height="34" rx="4" fill="#77b329"/><circle cx="14" cy="16" r="8" fill="#78a83b"/><path d="M11 20l7-7m-6 0h6v6" stroke="white" strokeWidth="2" strokeLinecap="round"/></>}
+    {kind === 3 && <><path d="M25 7l15 7v13c0 8-15 16-15 16S10 35 10 27V14z" fill="#1979c6"/><path d="M25 7l15 7v13c0 8-15 16-15 16z" fill="#1768aa"/><circle cx="15" cy="32" r="9" fill="#73cce1"/><path d="M11 32l3 3 6-7" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></>}
+  </svg>;
+}
+
+const services = ['บัตรเครดิต', 'สินเชื่อ', 'ลงทุน', 'ประกัน'];
+const quickActions = [
+  { label: 'โอนเงิน', Icon: ArrowRightLeft },
+  { label: 'เติมเงิน', Icon: Download },
+  { label: 'จ่ายบิล', Icon: ScanLine },
+  { label: 'ถอนเงิน/ฝากเงิน', Icon: Banknote },
+];
 
 export default function KBankPhoneMockup({ activeStep, onSelectStep }: KBankPhoneMockupProps) {
-  const [slideConfirmed, setSlideConfirmed] = useState(false);
-  const [undone, setUndone] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [spentToday, setSpentToday] = useState(338);
+  const infoTrigger = useRef<HTMLButtonElement>(null);
+  const saveTrigger = useRef<HTMLButtonElement>(null);
+  const reducedMotion = useReducedMotion();
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const [cardWidth, setCardWidth] = useState(0);
+  const slideAnimation = useAnimationControls();
+  const dragControls = useDragControls();
+  const slideGap = 12;
+  const slideTransition = reducedMotion
+    ? { duration: 0 }
+    : { type: 'spring' as const, stiffness: 380, damping: 36 };
 
-  // Direction tracking for smooth horizontal swipe transition between steps
-  const [direction, setDirection] = useState(0);
-  const [prevStep, setPrevStep] = useState(activeStep);
+  useEffect(() => {
+    const element = carouselRef.current;
+    if (!element) return;
+    const measure = () => setCardWidth(element.clientWidth);
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
 
-  if (activeStep !== prevStep) {
-    setDirection(activeStep > prevStep ? 1 : -1);
-    setPrevStep(activeStep);
-  }
+  useEffect(() => {
+    slideAnimation.start({
+      x: -activeStep * (cardWidth + slideGap),
+      transition: reducedMotion ? { duration: 0 } : { type: 'spring', stiffness: 380, damping: 36 },
+    });
+  }, [activeStep, cardWidth, reducedMotion, slideAnimation]);
+
+  const dailyBudget = 380;
+  const budgetDifference = dailyBudget - spentToday;
+  const withinBudget = budgetDifference >= 0;
+
+  const closeDialog = () => {
+    const trigger = showInfo ? infoTrigger : saveTrigger;
+    setShowInfo(false);
+    setShowSuccess(false);
+    requestAnimationFrame(() => trigger.current?.focus({ preventScroll: true }));
+  };
+
+  const confirmSaving = () => {
+    if (saved) return;
+    setSaved(true);
+    setShowSuccess(true);
+  };
 
   return (
-    <div className="relative mx-auto flex flex-col items-center select-none">
-      
-      {/* Smartphone Hardware Frame (Matte Black Titanium iPhone with Side Buttons) */}
-      <div className="relative w-[320px] sm:w-[355px] h-[700px] bg-[#0A0D10] rounded-[52px] p-[10px] shadow-2xl shadow-slate-900/40 border-[4px] border-[#1C2127] ring-1 ring-white/10">
-        
-        {/* Left Side Volume Buttons on Hardware Frame */}
-        <div className="absolute -left-[6px] top-[110px] w-[3px] h-[28px] bg-[#1C2127] rounded-l-sm" />
-        <div className="absolute -left-[6px] top-[148px] w-[3px] h-[48px] bg-[#1C2127] rounded-l-sm" />
-        <div className="absolute -left-[6px] top-[204px] w-[3px] h-[48px] bg-[#1C2127] rounded-l-sm" />
-        
-        {/* Right Side Power Button on Hardware Frame */}
-        <div className="absolute -right-[6px] top-[140px] w-[3px] h-[65px] bg-[#1C2127] rounded-r-sm" />
-
-        {/* Screen Display Container */}
-        <div className="relative w-full h-full bg-[#0E383C] text-white rounded-[42px] overflow-hidden flex flex-col font-sans">
-          
-          {/* iPhone Floating Dynamic Island */}
-          <div className="absolute top-2.5 left-1/2 -translate-x-1/2 h-[22px] w-[92px] bg-black rounded-full flex items-center justify-between px-3 z-50 shadow-sm pointer-events-none">
-            {/* Camera sensor */}
-            <div className="w-2.5 h-2.5 rounded-full bg-[#0d0d0d] ring-1 ring-white/10 flex items-center justify-center">
-              <div className="w-1 h-1 rounded-full bg-[#1a2b3c]/60" />
-            </div>
-            {/* Ambient sensor */}
-            <div className="w-2 h-2 rounded-full bg-[#151515] ring-1 ring-white/5" />
-          </div>
-
-          {/* iOS Status Bar (Pinned at top with beige lifestyle background) */}
-          <div className="h-10 px-5 flex items-center justify-between text-xs text-slate-800 z-40 bg-[#F4EEDF] pt-1 shrink-0 select-none">
-            {/* Clock with Location arrow */}
-            <div className="flex items-center gap-1 pl-1">
-              <span className="font-semibold text-xs tracking-tight">00:01</span>
-              <svg className="w-2.5 h-2.5 text-slate-800 fill-current -rotate-45" viewBox="0 0 24 24">
-                <path d="M12 2L2 22l10-4 10 4L12 2z" />
-              </svg>
-            </div>
-            
-            {/* Status Icons: Cellular, Wifi, Battery with percentage 82 */}
-            <div className="flex items-center gap-1.5 text-slate-800 pr-1">
-              <Signal className="w-3.5 h-3.5 stroke-[2.2]" />
-              <Wifi className="w-3.5 h-3.5 stroke-[2.2]" />
-              <div className="flex items-center gap-0.5">
-                <div className="relative w-5 h-2.5 rounded-[3px] border-[1.2px] border-slate-800 flex items-center p-0.5">
-                  <div className="h-full bg-slate-800 rounded-[1px] w-[82%]" />
-                  <div className="absolute -right-[3px] top-0.5 w-[1.5px] h-1.5 bg-slate-800 rounded-r-xs" />
-                </div>
-                <span className="text-[9px] font-bold text-slate-800 tracking-tight">82</span>
+    <div className={styles.phone} aria-label="หน้าจอแอปธนาคารจำลอง">
+      <div className={styles.volumeOne} /><div className={styles.volumeTwo} /><div className={styles.powerButton} />
+      <div className={styles.screen}>
+        <div className={styles.island} />
+            <div className={styles.statusBar}>
+              <span className={styles.clock}>00:01 <Navigation fill="currentColor" /></span>
+              <div className={styles.statusIcons}>
+                <span className={styles.signal}><i/><i/><i/><i/></span>
+                <Wifi /><span className={styles.battery}>82</span>
               </div>
             </div>
-          </div>
+        <div className={styles.scrollArea} inert={showInfo || showSuccess}>
+          <header className={styles.hero}>
+            <div className={styles.statusSpacer} />
+            <div className={styles.appHeader}>
+              <span className={styles.financePill}><span className={styles.financeGrid}><i/><i/><i/><i/></span>การเงินของฉัน</span>
+              <div className={styles.headerIcons}><Bell/><Power/></div>
+            </div>
+            <div className={styles.heroCopy}>
+              <strong>ปรับใหม่<br/>รู้ใจเรื่องจัดการเงิน</strong>
+              <p>ยกระดับประสบการณ์ใช้งาน<br/>จัดเมนูใหม่ เห็นชัด หาง่าย ใช้คล่อง</p>
+            </div>
+            <Image src="/images/banking-lifestyle.png" alt="กลุ่มเพื่อนกับแอปจัดการเงิน" width={1536} height={1024} sizes="130px" className={styles.lifestyle} />
+            <span className={styles.starOne}>✦</span><span className={styles.starTwo}>✦</span><span className={styles.starThree}>✦</span>
+            <div className={styles.bannerDots}><i/><i/></div>
+          </header>
 
-          {/* App Scrollable Content Area */}
-          <div className="flex-1 overflow-y-auto pb-20 select-none scrollbar-none">
-            
-            {/* Top Beige Lifestyle Section (Brand-new K PLUS 2025 Theme) */}
-            <div className="bg-gradient-to-b from-[#F4EEDF] via-[#EFE7D5] to-[#E5DAC1] px-4 pt-1.5 pb-4 text-slate-900 border-b border-[#0E383C]/20">
-              
-              {/* Header Navigation Bar */}
-              <div className="relative flex items-center justify-between mb-3">
-                {/* Left: 'การเงินของฉัน' Capsule Button with 4-Color Grid */}
-                <button
-                  type="button"
-                  className="flex items-center gap-1.5 px-2.5 py-1 bg-white/90 hover:bg-white rounded-full shadow-xs border border-white/70 transition-colors"
+          <main className={styles.main}>
+            <section aria-label="เรื่องสำคัญวันนี้">
+              <div className={styles.sectionHeading}>
+                <h3>เรื่องสำคัญวันนี้</h3>
+              </div>
+              <div
+                ref={carouselRef}
+                className={styles.carouselViewport}
+                role="region"
+                aria-roledescription="carousel"
+                aria-label="การ์ดภาพรวมการเงินและออมเงิน"
+                tabIndex={0}
+                onKeyDown={event => {
+                  if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+                    event.preventDefault();
+                    onSelectStep?.(event.key === 'ArrowRight' ? 1 : 0);
+                  }
+                }}
+              >
+                <motion.div
+                  className={styles.carouselTrack}
+                  animate={slideAnimation}
+                  initial={false}
+                  drag="x"
+                  dragControls={dragControls}
+                  dragListener={false}
+                  dragConstraints={{ left: -(cardWidth + slideGap), right: 0 }}
+                  dragElastic={0.06}
+                  dragMomentum={false}
+                  onPointerDown={event => {
+                    if (event.button === 0 && !(event.target as HTMLElement).closest('button')) {
+                      dragControls.start(event);
+                    }
+                  }}
+                  onDragEnd={(_, info) => {
+                    const delta = info.offset.x < -cardWidth * .16 || info.velocity.x < -500 ? 1
+                      : info.offset.x > cardWidth * .16 || info.velocity.x > 500 ? -1 : 0;
+                    const nextStep = Math.max(0, Math.min(1, activeStep + delta));
+                    onSelectStep?.(nextStep);
+                    slideAnimation.start({ x: -nextStep * (cardWidth + slideGap), transition: slideTransition });
+                  }}
                 >
-                  <div className="grid grid-cols-2 gap-0.5 w-3 h-3">
-                    <span className="w-1.5 h-1.5 rounded-[1px] bg-emerald-500" />
-                    <span className="w-1.5 h-1.5 rounded-[1px] bg-amber-400" />
-                    <span className="w-1.5 h-1.5 rounded-[1px] bg-rose-400" />
-                    <span className="w-1.5 h-1.5 rounded-[1px] bg-sky-400" />
-                  </div>
-                  <span className="text-[11px] font-medium text-slate-800 tracking-tight">
-                    การเงินของฉัน
-                  </span>
-                </button>
-
-                {/* Center: K-Runway Concept Mark (No official KBank logo) */}
-                <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 flex items-center gap-1 pointer-events-none">
-                  <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-[#00A950] to-[#007A3A] flex items-center justify-center shadow-xs">
-                    <svg
-                      className="w-3.5 h-3.5 text-white"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M4 19L19 4" />
-                      <path d="M11 4H19V12" />
-                      <path d="M4 12V19H11" opacity="0.6" />
-                    </svg>
-                  </div>
-                  <span className="text-xs font-black tracking-tight text-slate-800">
-                    K-Runway
-                  </span>
-                </div>
-
-                {/* Right: Bell, Sparkles, Power Icons */}
-                <div className="flex items-center gap-2.5 text-slate-700 pr-0.5">
-                  <Bell className="w-4 h-4 stroke-[1.8] hover:text-slate-900 cursor-pointer" />
-                  <Sparkles className="w-4 h-4 stroke-[1.8] hover:text-amber-600 cursor-pointer text-amber-600/80" />
-                  <Power className="w-4 h-4 stroke-[1.8] hover:text-rose-600 cursor-pointer" />
-                </div>
-              </div>
-
-              {/* Hero Lifestyle Promotional Banner */}
-              <div className="relative flex items-center justify-between pt-1">
-                {/* Banner Text on Left */}
-                <div className="space-y-0.5 max-w-[190px]">
-                  <div className="text-[11px] font-semibold text-slate-700 tracking-tight">
-                    K-Runway ปรับใหม่
-                  </div>
-                  <div className="text-[13px] font-bold text-slate-900 leading-snug">
-                    รู้ใจเรื่องจัดการเงิน
-                  </div>
-                  <div className="text-[10px] text-slate-600 leading-tight pt-0.5">
-                    ยกระดับประสบการณ์ใช้งาน
-                  </div>
-                  <div className="text-[10px] text-slate-600 leading-tight">
-                    จัดเมนูใหม่ เห็นชัด หาง่าย ใช้คล่อง
-                  </div>
-                </div>
-
-                {/* Right Side: First Jobbers Stylized Lifestyle Composition */}
-                <div className="relative w-24 h-16 shrink-0 flex items-center justify-center">
-                  {/* Subtle golden ambient glow */}
-                  <div className="absolute inset-0 bg-gradient-to-tr from-amber-300/35 via-emerald-300/25 to-teal-400/25 rounded-2xl blur-sm" />
-                  
-                  {/* Stylized Avatars */}
-                  <div className="relative flex items-center">
-                    <div className="w-7 h-7 rounded-full bg-[#E57373] border-2 border-white shadow-xs flex items-center justify-center text-white">
-                      <User className="w-3.5 h-3.5 text-white" />
-                    </div>
-                    <div className="w-8 h-8 rounded-full bg-[#00A950] border-2 border-white shadow-sm -ml-2 z-10 flex items-center justify-center text-white">
-                      <Sparkles className="w-4 h-4 text-white" />
-                    </div>
-                    <div className="w-7 h-7 rounded-full bg-[#1976D2] border-2 border-white shadow-xs -ml-2 flex items-center justify-center text-white">
-                      <div className="w-2.5 h-3.5 rounded-[1px] bg-white/30 border border-white flex items-center justify-center">
-                        <div className="w-1 h-1 rounded-full bg-emerald-300" />
+                  <div className={styles.featureCard} role="group" aria-roledescription="slide" aria-label="ภาพรวมการเงิน 1 จาก 2" inert={activeStep !== 0}>
+                    <div className={styles.balanceHeader}>
+                      <div className={styles.balanceIdentity}>
+                        <span className={styles.featureIcon}><Wallet /></span>
+                        <div className={styles.balanceSummary}>
+                        <div className={styles.balanceHeading}>
+                          <span>ยอดเงินคงเหลือ</span>
+                          <button ref={infoTrigger} type="button" className={styles.infoButton} aria-label="ดูรายละเอียดค่าใช้จ่ายและงบวันนี้" aria-haspopup="dialog" onClick={() => setShowInfo(true)}><Info /></button>
+                        </div>
+                        <strong className={styles.balanceAmount}>฿15,000.00</strong>
+                        </div>
+                      </div>
+                      <div className={styles.budgetComparison}>
+                        <span className={withinBudget ? styles.positiveChange : styles.negativeChange} aria-label={`${withinBudget ? 'ประหยัด' : 'ใช้เกินงบ'} ${Math.abs(budgetDifference)} บาทจากงบวันนี้`}>
+                          {withinBudget ? <ArrowUpRight /> : <ArrowDownRight />}
+                          {budgetDifference > 0 ? '+' : ''}{budgetDifference}
+                        </span>
+                        <span>{withinBudget ? 'ต่ำกว่างบวันนี้' : 'เกินงบวันนี้'}</span>
                       </div>
                     </div>
-                  </div>
-
-                  {/* Golden Sparkle Accents */}
-                  <div className="absolute -top-1 -right-0.5 text-amber-500">
-                    <Sparkles className="w-3 h-3 fill-amber-400 text-amber-400" />
-                  </div>
-                  <div className="absolute bottom-0 -left-1 text-amber-400">
-                    <Sparkles className="w-2 h-2 fill-amber-300 text-amber-300" />
-                  </div>
-                </div>
-              </div>
-
-              {/* Carousel Pagination Dots */}
-              <div className="flex items-center gap-1 mt-2.5 pl-0.5">
-                <span className="w-3 h-1 rounded-full bg-slate-800" />
-                <span className="w-1 h-1 rounded-full bg-slate-400/70" />
-              </div>
-
-            </div>
-
-            {/* Main Deep Teal Section (Dark Theme #0E383C) */}
-            <div className="p-4 space-y-4 text-slate-100">
-              
-              {/* Section 1: 'เรื่องสำคัญวันนี้' / Interactive Innovation Card */}
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-xs font-bold text-white tracking-wide">
-                      เรื่องสำคัญวันนี้
-                    </span>
-                  </div>
-
-                  {/* 5-step animated card indicators */}
-                  <div className="flex items-center gap-1">
-                    {[0, 1, 2, 3, 4].map((stepIdx) => (
-                      <button
-                        type="button"
-                        key={stepIdx}
-                        onClick={() => onSelectStep && onSelectStep(stepIdx)}
-                        className={`h-1.5 rounded-full transition-all duration-300 ${
-                          stepIdx === activeStep
-                            ? 'w-4 bg-[#00A950]'
-                            : 'w-1.5 bg-teal-800 hover:bg-teal-600'
-                        }`}
-                        title={`Step ${stepIdx + 1}`}
-                      />
-                    ))}
-                  </div>
-                </div>
-
-                {/* Dynamic Feature Card (Smooth Swiping Transition) */}
-                <div className="relative bg-white text-slate-900 rounded-2xl shadow-lg min-h-[154px] overflow-hidden flex flex-col justify-center border border-slate-100/90 transition-all duration-300">
-                  <AnimatePresence mode="wait" custom={direction} initial={false}>
-                    <motion.div
-                      key={activeStep}
-                      custom={direction}
-                      variants={cardSwipeVariants}
-                      initial="enter"
-                      animate="center"
-                      exit="exit"
-                      className="p-3.5 w-full h-full flex flex-col justify-center"
-                    >
-                      {/* State 1: Data Ingestion & Classification */}
-                      {activeStep === 0 && (
-                        <div className="my-auto">
-                          <div className="flex items-start justify-between mb-2 pb-1.5 border-b border-slate-100">
-                            <div>
-                              <div className="text-[11px] font-medium text-slate-500">
-                                ยอดเงินคงเหลือ
-                              </div>
-                              <div className="text-lg font-extrabold text-slate-900">฿15,000.00</div>
-                            </div>
-                            <div className="text-right">
-                              <span className="text-[10px] font-semibold text-[#00A950] block">
-                                AI Tagged
-                              </span>
-                              <span className="text-[9px] text-slate-400">Fixed รวม ฿7,160</span>
-                            </div>
-                          </div>
-
-                          <div className="space-y-1.5 text-xs">
-                            <div className="flex items-center justify-between">
-                              <span className="text-slate-700 font-medium text-[11px]">ค่าเช่าหอพัก & ห้องพัก</span>
-                              <span className="text-[11px] text-blue-700 font-semibold">
-                                Fixed -฿5,500
-                              </span>
-                            </div>
-                            <div className="flex items-center justify-between">
-                              <span className="text-slate-700 font-medium text-[11px]">ค่าน้ำไฟ + เน็ต & บิลประจำ</span>
-                              <span className="text-[11px] text-blue-700 font-semibold">
-                                Fixed -฿1,660
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-
-                      {/* State 2: Probabilistic Cash-Flow Runway */}
-                      {activeStep === 1 && (
-                        <div className="my-auto py-1">
-                          <div className="flex items-center justify-between mb-2">
-                            <span className="text-xs font-bold text-slate-900">Financial Runway</span>
-                            <span className="text-xs font-extrabold text-[#00A950]">
-                              85% Safe Zone
-                            </span>
-                          </div>
-
-                          <div className="w-full bg-slate-100 rounded-full h-2.5 mb-3.5 overflow-hidden">
-                            <div className="bg-[#00A950] h-2.5 rounded-full transition-all duration-500" style={{ width: '85%' }} />
-                          </div>
-
-                          <div className="grid grid-cols-2 gap-3 pt-2 border-t border-slate-100 text-xs">
-                            <div>
-                              <div className="text-[11px] text-slate-500 font-medium">ยอดใช้ได้วันนี้</div>
-                              <div className="font-extrabold text-slate-900 text-sm mt-0.5">฿380 / วัน</div>
-                            </div>
-                            <div className="border-l border-slate-100 pl-3">
-                              <div className="text-[11px] text-slate-500 font-medium">เงินเดือนออกใน</div>
-                              <div className="font-extrabold text-[#00A950] text-sm mt-0.5">18 วัน <span className="text-[10px] text-slate-400 font-normal">(28 ก.ย.)</span></div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-
-                      {/* State 3: Safe-to-Sweep Detection & Recommendation */}
-                      {activeStep === 2 && (
-                        <div className="my-auto">
-                          <div className="flex items-baseline justify-between mb-2 pb-1.5 border-b border-slate-100">
-                            <span className="text-[11px] font-medium text-slate-500">ตรวจพบเงินเหลือจริงวันนี้</span>
-                            <span className="text-lg font-extrabold text-[#00A950]">฿150.00</span>
-                          </div>
-                          
-                          <div className="py-0.5 text-xs">
-                            <div className="font-semibold text-slate-800 text-[11px] flex items-center gap-1.5">
-                              <span className="w-1.5 h-1.5 rounded-full bg-[#00A950]" />
-                              แนะแนว Least-Disruptive Action
-                            </div>
-                            <p className="text-slate-600 text-[11px] mt-0.5 leading-relaxed">
-                              ลด Delivery ลง ฿80/วัน ดัน Safe Zone สู่ 92% โดยไม่กระทบชีวิต
-                            </p>
-                          </div>
-
-                          <div className="pt-2 mt-1 border-t border-slate-100 text-[11px] text-slate-500 flex items-center justify-between">
-                            <span>เป้าหมาย: เงินสำรองฉุกเฉิน</span>
-                            <span className="text-[#00A950] font-bold">เร็วขึ้น 3 วัน</span>
-                          </div>
-                        </div>
-                      )}
-
-                      {/* State 4: User Approval with Bounded Consent */}
-                      {activeStep === 3 && (
-                        <div className="my-auto">
-                          <div className="flex items-baseline justify-between mb-2 pb-1.5 border-b border-slate-100">
-                            <div>
-                              <div className="text-[11px] font-medium text-slate-500">ยืนยันนำเงินเหลือไปออม</div>
-                              <div className="text-base font-extrabold text-slate-900">฿150.00</div>
-                            </div>
-                            <span className="text-[10px] font-bold text-emerald-700">
-                              Runway &gt; 80%
-                            </span>
-                          </div>
-
-                          <button
-                            type="button"
-                            onClick={() => setSlideConfirmed(!slideConfirmed)}
-                            className={`w-full py-2.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 my-1 ${
-                              slideConfirmed
-                                ? 'bg-[#00A950] text-white shadow-sm'
-                                : 'bg-slate-900 hover:bg-slate-800 text-white shadow-sm'
-                            }`}
-                          >
-                            {slideConfirmed ? (
-                              <>
-                                <CheckCircle2 className="w-3.5 h-3.5" /> ยืนยันการออมเรียบร้อย
-                              </>
-                            ) : (
-                              <>
-                                <span>แตะเพื่อยืนยันออม ฿150</span>
-                                <ChevronRight className="w-3.5 h-3.5" />
-                              </>
-                            )}
-                          </button>
-
-                          <div className="text-[10px] text-slate-400 text-center font-medium mt-1">
-                            ระบบไม่หักเงินเอง • ผู้ใช้เป็นคนกดยืนยัน 100%
-                          </div>
-                        </div>
-                      )}
-
-                      {/* State 5: Liquidity Shield & Multi-tier Routing */}
-                      {activeStep === 4 && (
-                        <div className="my-auto">
-                          <div className="flex items-center gap-2 pb-2 mb-2 border-b border-slate-100">
-                            <div className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
-                              <CheckCircle2 className="w-3.5 h-3.5 text-[#00A950]" />
-                            </div>
-                            <div>
-                              <div className="text-xs font-bold text-slate-900">โอนเข้าบัญชีเงินออมสำเร็จ!</div>
-                              <div className="text-[10px] text-[#00A950] font-medium">รับดอกเบี้ย 1.25% ต่อปี* (เปิดบัญชีให้อัตโนมัติ)</div>
-                            </div>
-                          </div>
-
-                          <div className="py-0.5 text-[11px] text-slate-600 space-y-0.5 mb-2">
-                            <div className="font-semibold text-slate-800">Liquidity Shield คุ้มกัน ฿1,000 เสมอ</div>
-                            <div className="text-slate-500">หากมีบิลด่วนฉุกเฉิน สามารถดึงเงินคืนได้ทันที</div>
-                          </div>
-
-                          <button
-                            type="button"
-                            onClick={() => setUndone(!undone)}
-                            className="w-full py-2 px-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-semibold flex items-center justify-center gap-1.5 transition-colors"
-                          >
-                            <RotateCcw className="w-3.5 h-3.5" />
-                            <span>{undone ? 'ดึงเงินกลับเรียบร้อย' : 'ยกเลิก / Undo (ภายใน 24 ชม.)'}</span>
-                          </button>
-                        </div>
-                      )}
-                    </motion.div>
-                  </AnimatePresence>
-                </div>
-              </div>
-
-              {/* Section 2: 4 Service Category Tiles (Directly Matching the New UI) */}
-              <div className="grid grid-cols-4 gap-2 pt-0.5 text-center">
-                {/* บัตรเครดิต */}
-                <div className="flex flex-col items-center cursor-pointer group">
-                  <div className="w-12 h-12 rounded-2xl bg-[#14484A] border border-teal-500/20 flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
-                    <CreditCard className="w-5 h-5 text-teal-200" />
-                  </div>
-                  <span className="text-[10px] text-white font-medium mt-1.5">บัตรเครดิต</span>
-                </div>
-
-                {/* สินเชื่อ */}
-                <div className="flex flex-col items-center cursor-pointer group">
-                  <div className="w-12 h-12 rounded-2xl bg-[#442224] border border-rose-500/20 flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
-                    <Coins className="w-5 h-5 text-rose-200" />
-                  </div>
-                  <span className="text-[10px] text-white font-medium mt-1.5">สินเชื่อ</span>
-                </div>
-
-                {/* ลงทุน */}
-                <div className="flex flex-col items-center cursor-pointer group">
-                  <div className="w-12 h-12 rounded-2xl bg-[#1A4522] border border-emerald-500/20 flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
-                    <TrendingUp className="w-5 h-5 text-emerald-200" />
-                  </div>
-                  <span className="text-[10px] text-white font-medium mt-1.5">ลงทุน</span>
-                </div>
-
-                {/* ประกัน */}
-                <div className="flex flex-col items-center cursor-pointer group">
-                  <div className="w-12 h-12 rounded-2xl bg-[#113A5C] border border-blue-500/20 flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
-                    <ShieldCheck className="w-5 h-5 text-sky-200" />
-                  </div>
-                  <span className="text-[10px] text-white font-medium mt-1.5">ประกัน</span>
-                </div>
-              </div>
-
-              {/* Section 3: ธุรกรรมด่วน (Quick Transactions) */}
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-bold text-white tracking-wide">
-                    ธุรกรรมด่วน
-                  </span>
-                  <span className="text-[11px] text-teal-200/80 hover:text-white flex items-center gap-0.5 cursor-pointer">
-                    ดูทั้งหมด <ChevronRight className="w-3 h-3" />
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-4 gap-2 text-center">
-                  {/* โอนเงิน */}
-                  <div className="flex flex-col items-center cursor-pointer group">
-                    <div className="w-12 h-12 rounded-full border border-teal-600/40 bg-[#143E42] flex items-center justify-center text-teal-100 group-hover:border-[#00A950] group-hover:text-white transition-colors">
-                      <ArrowRightLeft className="w-5 h-5" />
+                    <div className={styles.budgetGrid}>
+                      <div><span className={styles.metricIcon}><ShoppingCart /></span><div><span>วันนี้ใช้ได้</span><strong>฿380 <small>/ วัน</small></strong></div></div>
+                      <div><span className={styles.metricIcon}><CalendarDays /></span><div><span>เงินเดือนออกใน</span><strong>18 <small>วัน</small></strong></div></div>
                     </div>
-                    <span className="text-[10px] text-slate-200 font-medium mt-1.5">โอนเงิน</span>
-                  </div>
-
-                  {/* เติมเงิน */}
-                  <div className="flex flex-col items-center cursor-pointer group">
-                    <div className="w-12 h-12 rounded-full border border-teal-600/40 bg-[#143E42] flex items-center justify-center text-teal-100 group-hover:border-[#00A950] group-hover:text-white transition-colors">
-                      <Download className="w-5 h-5" />
+                    <div className={styles.runway}>
+                      <div className={styles.runwayHeading}><strong><ChartColumnIncreasing />Financial Runway</strong><span><i />85% Safe Zone</span></div>
+                      <div className={styles.runwayTrack} role="meter" aria-label="Financial Runway Safe Zone" aria-valuemin={0} aria-valuemax={100} aria-valuenow={85}><span /></div>
                     </div>
-                    <span className="text-[10px] text-slate-200 font-medium mt-1.5">เติมเงิน</span>
                   </div>
-
-                  {/* จ่ายบิล */}
-                  <div className="flex flex-col items-center cursor-pointer group">
-                    <div className="w-12 h-12 rounded-full border border-teal-600/40 bg-[#143E42] flex items-center justify-center text-teal-100 group-hover:border-[#00A950] group-hover:text-white transition-colors">
-                      <ScanLine className="w-5 h-5" />
+                  <div className={`${styles.featureCard} ${styles.savingsContent}`} role="group" aria-roledescription="slide" aria-label="ออมเงิน 2 จาก 2" inert={activeStep !== 1}>
+                    <div className={styles.savingsHeader}>
+                      <span className={styles.featureIcon}><PiggyBank /></span>
+                      <div><h4>ออมเงินให้เป้าหมาย</h4><p>กันบิลและเงินสำรองแล้ว</p></div>
                     </div>
-                    <span className="text-[10px] text-slate-200 font-medium mt-1.5">จ่ายบิล</span>
-                  </div>
-
-                  {/* ถอนเงิน/ฝากเงิน */}
-                  <div className="flex flex-col items-center cursor-pointer group">
-                    <div className="w-12 h-12 rounded-full border border-teal-600/40 bg-[#143E42] flex items-center justify-center text-teal-100 group-hover:border-[#00A950] group-hover:text-white transition-colors">
-                      <Banknote className="w-5 h-5" />
+                    <div className={styles.savingsSuggestion}>
+                      <div className={styles.suggestionCopy}><Sparkles /><p><strong>ลด Delivery ฿80/วัน</strong><span>Safe Zone <b>92%</b> · กระทบชีวิตน้อย</span></p></div>
+                      <div className={styles.goalProgress}><span>เงินสำรองฉุกเฉิน</span><strong>เร็วขึ้น 3 วัน</strong></div>
                     </div>
-                    <span className="text-[10px] text-slate-200 font-medium mt-1.5 leading-tight">ถอนเงิน/<br />ฝากเงิน</span>
+                    <button ref={saveTrigger} type="button" className={styles.saveButton} onClick={confirmSaving} aria-disabled={saved}>
+                      {saved ? <><CheckCircle2 /> ออมเรียบร้อย</> : <>ยืนยันออม ฿150 <ChevronRight /></>}
+                    </button>
+                    <span className={styles.consentNote}>คุณยืนยันก่อนโอนทุกครั้ง</span>
                   </div>
-                </div>
+                </motion.div>
               </div>
-
-              {/* Section 4: ทางลัดของฉัน (My Shortcuts) */}
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-bold text-white tracking-wide">
-                    ทางลัดของฉัน
-                  </span>
-                  <span className="text-[11px] text-teal-200/80 hover:text-white flex items-center gap-0.5 cursor-pointer">
-                    ปรับแต่ง <ChevronRight className="w-3 h-3" />
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-3 gap-2">
-                  {/* ยังไม่มีรายการโปรด */}
-                  <div className="bg-[#133A3E]/90 border border-teal-700/40 rounded-xl p-2.5 flex items-center justify-center min-h-[58px]">
-                    <span className="text-[10px] text-slate-300 text-center leading-snug">
-                      ยังไม่มีรายการโปรด
-                    </span>
-                  </div>
-
-                  {/* จัดการ/ตั้งค่าบัญชี */}
-                  <div className="bg-[#133A3E]/90 border border-teal-700/40 rounded-xl p-2.5 flex items-center justify-center min-h-[58px]">
-                    <span className="text-[10px] text-slate-300 text-center leading-snug">
-                      จัดการ/ตั้งค่าบัญชี
-                    </span>
-                  </div>
-
-                  {/* สินทรัพย์ทั้งหมด with Pie Chart */}
-                  <div className="bg-[#133A3E]/90 border border-teal-700/40 rounded-xl p-2.5 flex items-center gap-2 min-h-[58px]">
-                    <div className="w-5 h-5 shrink-0 relative">
-                      <svg viewBox="0 0 32 32" className="w-full h-full -rotate-90">
-                        <circle cx="16" cy="16" r="12" fill="none" stroke="#84CC16" strokeWidth="8" strokeDasharray="50 100" />
-                        <circle cx="16" cy="16" r="12" fill="none" stroke="#EAB308" strokeWidth="8" strokeDasharray="25 100" strokeDashoffset="-50" />
-                      </svg>
-                    </div>
-                    <span className="text-[10px] text-white font-medium leading-tight">
-                      สินทรัพย์ทั้งหมด
-                    </span>
-                  </div>
-                </div>
+              <div className={styles.pagination} aria-label="เลือกขั้นตอนเดโม">
+                {['ภาพรวมการเงิน', 'ออมเงิน'].map((label, index) => <button key={label} type="button" aria-label={label} aria-pressed={activeStep === index} onClick={() => onSelectStep?.(index)}><span /></button>)}
               </div>
+            </section>
 
+            <div className={styles.services}>
+              {services.map((label, index) => <div className={styles.service} key={label}><span className={`${styles.serviceTile} ${styles[`service${index}`]}`}><ServiceIcon kind={index}/></span><span>{label}</span></div>)}
             </div>
 
-          </div>
-
-          {/* Bottom Floating Navigation Bar (Authentic 2025 K PLUS Style - Dark Petrol Teal Dock) */}
-          <div className="absolute bottom-0 left-0 right-0 h-16 bg-[#0B2527]/95 backdrop-blur-md border-t border-teal-800/40 flex items-center justify-between px-3 z-40 text-slate-300">
-            {/* หน้าแรก */}
-            <div className="flex flex-col items-center cursor-pointer text-[#00A950]">
-              <Home className="w-5 h-5 fill-[#00A950]" />
-              <span className="text-[9px] font-bold mt-0.5">หน้าแรก</span>
-            </div>
-
-            {/* K+ market */}
-            <div className="flex flex-col items-center cursor-pointer hover:text-white transition-colors">
-              <ShoppingBag className="w-5 h-5" />
-              <span className="text-[9px] font-medium mt-0.5">K+ market</span>
-            </div>
-
-            {/* Elevated Banking Button (Round Center ฿) */}
-            <div className="flex flex-col items-center -mt-6 cursor-pointer group">
-              <div className="w-13 h-13 rounded-full bg-[#3B4D54] group-hover:bg-[#00A950] p-1 shadow-xl transition-colors flex items-center justify-center border-2 border-white/20">
-                <div className="w-11 h-11 rounded-full border border-white/40 flex items-center justify-center text-white font-extrabold text-base">
-                  ฿
-                </div>
+            <section className={styles.quickSection}>
+              <div className={styles.sectionHeading}><h3>ธุรกรรมด่วน</h3><span className={styles.sectionLink}>ดูทั้งหมด <ChevronRight/></span></div>
+              <div className={styles.quickGrid}>
+                {quickActions.map(({label, Icon}) => <div className={styles.quickAction} key={label}><span className={styles.quickIcon}><Icon strokeWidth={1.65}/></span><span>{label === 'ถอนเงิน/ฝากเงิน' ? <>ถอนเงิน/<br/>ฝากเงิน</> : label}</span></div>)}
               </div>
-              <span className="text-[9px] font-medium text-slate-200 mt-0.5">ธุรกรรม</span>
-            </div>
+            </section>
 
-            {/* สแกน/สร้างQR */}
-            <div className="flex flex-col items-center cursor-pointer hover:text-white transition-colors">
-              <QrCode className="w-5 h-5" />
-              <span className="text-[9px] font-medium mt-0.5">สแกน/สร้างQR</span>
-            </div>
-
-            {/* โปรไฟล์ */}
-            <div className="flex flex-col items-center cursor-pointer hover:text-white transition-colors">
-              <User className="w-5 h-5" />
-              <span className="text-[9px] font-medium mt-0.5">โปรไฟล์</span>
-            </div>
-          </div>
-
-          {/* Home Indicator Bar */}
-          <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-28 h-1 bg-white/40 rounded-full z-50 pointer-events-none" />
-
+            <section className={styles.shortcuts}>
+              <div className={styles.sectionHeading}><h3>ทางลัดของฉัน</h3><span className={styles.sectionLink}>ปรับแต่ง <ChevronRight/></span></div>
+              <div className={styles.shortcutGrid}>
+                <div>ยังไม่มีรายการโปรด</div><div>จัดการ/ตั้งค่า<br/>บัญชี</div><div><ChartPie fill="#8bce28" stroke="#173e36"/><span>สินทรัพย์<br/>ทั้งหมด</span></div>
+              </div>
+            </section>
+          </main>
         </div>
-      </div>
 
+        <nav className={styles.dock} inert={showInfo || showSuccess} aria-label="เมนูหลักในหน้าจอจำลอง">
+          <button className={activeStep === 0 ? styles.activeNav : ''} onClick={() => onSelectStep?.(0)}><Home fill="currentColor"/><span>หน้าแรก</span></button>
+          <div className={styles.navItem}><ShoppingBasket/><span>market</span></div>
+          <button className={`${styles.transactionNav} ${activeStep === 1 ? styles.activeNav : ''}`} onClick={() => onSelectStep?.(1)}><span className={styles.transactionIcon}>฿</span><span>ธุรกรรม</span></button>
+          <div className={styles.navItem}><ScanLine/><span>สแกน/สร้างQR</span></div>
+          <div className={`${styles.navItem} ${styles.profileNav}`}><span className={styles.profileIcon}><User fill="white"/></span><span>โปรไฟล์</span></div>
+        </nav>
+        {(showInfo || showSuccess) && <div className={styles.modalBackdrop} onClick={closeDialog}>
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="phone-dialog-title"
+            aria-describedby="phone-dialog-description"
+            className={styles.modal}
+            onClick={event => event.stopPropagation()}
+            onKeyDown={event => {
+              if (event.key === 'Escape') closeDialog();
+              if (event.key === 'Tab') {
+                const buttons = Array.from(event.currentTarget.querySelectorAll<HTMLButtonElement>('button'));
+                const first = buttons[0];
+                const last = buttons[buttons.length - 1];
+                if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+                else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+              }
+            }}
+          >
+            <button type="button" autoFocus className={styles.closeDialog} aria-label="ปิดหน้าต่าง" onClick={closeDialog}><X /></button>
+            {showInfo ? <>
+              <h4 id="phone-dialog-title">ค่าใช้จ่ายและงบวันนี้</h4>
+              <p id="phone-dialog-description">กันค่าใช้จ่ายจำเป็นไว้ก่อนคำนวณงบรายวัน</p>
+              <dl className={styles.costDetails}>
+                <div><dt>ค่าเช่าหอพัก</dt><dd>฿5,500</dd></div>
+                <div><dt>ค่าน้ำไฟและอินเทอร์เน็ต</dt><dd>฿1,660</dd></div>
+                <div className={styles.costTotal}><dt>รวมค่าใช้จ่ายจำเป็น</dt><dd>฿7,160</dd></div>
+                <div><dt>เงินสำรองก้นบัญชี</dt><dd>฿1,000</dd></div>
+                <div><dt>งบใช้ได้ถึงเงินเดือนออก</dt><dd>฿6,840</dd></div>
+                <div><dt>งบใช้จ่ายวันนี้</dt><dd>฿380</dd></div>
+                <div><dt>ใช้ไปแล้ววันนี้</dt><dd>฿{spentToday}</dd></div>
+              </dl>
+              <p className={styles.comparisonNote}>ลูกศรแสดงส่วนต่างจากงบวันนี้ หน่วยเป็นบาท</p>
+              <div className={styles.exampleChoices} aria-label="เลือกข้อมูลใช้จ่ายตัวอย่าง">
+                <button type="button" aria-pressed={spentToday === 338} onClick={() => setSpentToday(338)}>ใช้ต่ำกว่างบ</button>
+                <button type="button" aria-pressed={spentToday === 432} onClick={() => setSpentToday(432)}>ใช้เกินงบ</button>
+              </div>
+            </> : <>
+              <span className={styles.successIcon}><CheckCircle2 /></span>
+              <h4 id="phone-dialog-title">ออมเงินสำเร็จ</h4>
+              <p id="phone-dialog-description">โอนเข้าบัญชีเงินออมแล้ว<br/>เป้าหมายของคุณใกล้ขึ้นอีกนิด</p>
+              <button type="button" className={styles.saveButton} onClick={closeDialog}>เรียบร้อย</button>
+            </>}
+          </div>
+        </div>}
+
+      </div>
     </div>
   );
 }

@@ -62,7 +62,7 @@ export default function Footer() {
               </li>
               <li>
                 <a href="#how-it-works" className="hover:text-[#00A950] transition-colors">
-                  02. ขั้นตอนการทำงาน 5 ขั้นตอน
+                  02. ดูเงินและออมใน 2 ขั้นตอน
                 </a>
               </li>
               <li>
