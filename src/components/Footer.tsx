@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import { ArrowUp } from 'lucide-react';
 import BrandMark from './BrandMark';
 

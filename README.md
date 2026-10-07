@@ -155,18 +155,12 @@ npm run start
 │   │   ├── Navbar.tsx          # Navigation header
 │   │   ├── Hero.tsx            # Primary value proposition and headline
 │   │   ├── ProblemGrid.tsx     # First Jobber structural challenge overview
-│   │   ├── Scrollytelling.tsx  # 5-phase interactive phone simulation
+│   │   ├── Scrollytelling.tsx  # 2-step interactive phone simulation
 │   │   ├── KBankPhoneMockup.tsx# High-fidelity mobile interface viewport
 │   │   ├── FeatureDeepDive.tsx # Dual AI pillar technical infographics
 │   │   ├── TrustSecurityBanner.tsx # Compliance, privacy, and encryption specifications
 │   │   ├── InnovationConcept.tsx # Institutional innovation summary
-│   │   ├── Footer.tsx          # Platform metadata and acknowledgments
-│   │   └── phone-screens/      # Individual interactive screen implementations
-│   │       ├── Screen1Data.tsx
-│   │       ├── Screen2Runway.tsx
-│   │       ├── Screen3SafeSweep.tsx
-│   │       ├── Screen4Consent.tsx
-│   │       └── Screen5Shield.tsx
+│   │   └── Footer.tsx          # Platform metadata and acknowledgments
 │   └── data/
 │       └── scrollySteps.ts     # Data Science pipeline definitions and baseline metrics
 ├── package.json

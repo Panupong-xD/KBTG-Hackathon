@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
-import { ChevronDown, ChevronUp, Cpu, ArrowRight, ShieldCheck, RotateCcw, TrendingUp, Lock } from 'lucide-react';
+import { useState } from 'react';
+import { ChevronDown, ChevronUp, Cpu } from 'lucide-react';
 
 export default function FeatureDeepDive() {
   const [showTechDetails, setShowTechDetails] = useState<boolean>(false);

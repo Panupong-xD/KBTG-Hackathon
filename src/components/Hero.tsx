@@ -1,7 +1,6 @@
 'use client';
 
-import React from 'react';
-import { ArrowDown, ArrowRight, ShieldCheck, Lock, Gauge, Sparkles } from 'lucide-react';
+import { ArrowDown, ArrowRight, ShieldCheck, Lock, Gauge } from 'lucide-react';
 
 export default function Hero() {
   return (

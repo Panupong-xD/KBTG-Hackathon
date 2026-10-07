@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { SCROLLY_STEPS } from '../data/scrollySteps';
 import StepCard from './StepCard';
 import KBankPhoneMockup from './KBankPhoneMockup';

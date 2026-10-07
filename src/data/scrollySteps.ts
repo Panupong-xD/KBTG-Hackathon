@@ -1,10 +1,8 @@
 export interface ScrollyStep {
   id: number;
   stepNumber: string;
-  techBadge: string;
   category: string;
   title: string;
-  highlightPhrase: string;
   description: string;
   detailGroups: { title: string; details: string[] }[];
   benchmarkNote?: string;
@@ -15,10 +13,8 @@ export const SCROLLY_STEPS: ScrollyStep[] = [
   {
     id: 1,
     stepNumber: '01',
-    techBadge: 'Financial Runway',
     category: 'ภาพรวมการเงิน',
     title: 'จากประวัติการใช้จ่าย สู่ยอดใช้ได้ต่อวัน',
-    highlightPhrase: 'ยอดคงเหลือ งบวันนี้ และเส้นทางการเงินในหน้าเดียว',
     description: 'เปลี่ยนข้อมูลการใช้จ่ายเป็นงบวันนี้และ Financial Runway โดยกันบิลกับเงินสำรองก่อน ช่วยให้รู้ว่าใช้ได้เท่าไรและเงินจะพอถึงวันเงินเดือนออกไหม',
     detailGroups: [
       { title: 'เข้าใจรายรับและภาระของคุณ', details: [
@@ -40,10 +36,8 @@ export const SCROLLY_STEPS: ScrollyStep[] = [
   {
     id: 2,
     stepNumber: '02',
-    techBadge: 'Savings Co-pilot',
     category: 'ออมเงิน',
     title: 'ตรวจเงินเหลือจริง แล้วออมเมื่อคุณยืนยัน',
-    highlightPhrase: 'คุณเลือกออมเองทุกครั้ง',
     description: 'ตรวจเงินเหลือจริงสิ้นวัน เสนอจุดปรับรายจ่ายที่กระทบชีวิตน้อย และเปลี่ยนเงินเหลือเป็นเงินออม โดยผู้ใช้ยืนยันทุกครั้ง',
     detailGroups: [
       { title: 'ตรวจเงินเหลือก่อนเสนอออม', details: [

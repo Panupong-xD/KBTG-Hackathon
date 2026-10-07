@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useReducer, useRef, useState } from 'react';
+import { useEffect, useReducer, useRef, useState } from 'react';
 import Image from 'next/image';
 import { motion, useAnimationControls, useDragControls, useReducedMotion } from 'framer-motion';
 import { Wifi, Bell, Power, ArrowRightLeft, Download, ScanLine, Banknote, Home, ShoppingBasket, User, ChevronRight, CheckCircle2, Info, ArrowUpRight, ArrowDownRight, PiggyBank, Sparkles, X, Navigation, ChartPie, Star, MapPin, SquarePen, Paintbrush } from 'lucide-react';

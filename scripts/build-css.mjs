@@ -98,12 +98,6 @@ export async function generateTailwindCSS() {
 
   // Custom KBank Light Theme styles
   const customCss = `
-:root {
-  --kbank-primary: #00A950;
-  --kbank-dark: #008744;
-  --kbank-soft: #F0FDF4;
-}
-
 body {
   font-family: 'Prompt', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
@@ -116,21 +110,6 @@ body {
 
 .kbank-btn:hover {
   background-color: #008744;
-}
-
-.kbank-btn-outline {
-  border: 1.5px solid #00A950;
-  color: #00A950;
-  background-color: transparent;
-  transition: all 0.2s ease-in-out;
-}
-
-.kbank-btn-outline:hover {
-  background-color: #F0FDF4;
-}
-
-.kbank-green-text {
-  color: #00A950;
 }
 
 /* Custom modern light scrollbar */

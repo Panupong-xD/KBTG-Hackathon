@@ -1,7 +1,6 @@
 'use client';
 
-import React from 'react';
-import { ArrowRight, ArrowUp, ShieldCheck } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 export default function InnovationConcept() {
   return (
