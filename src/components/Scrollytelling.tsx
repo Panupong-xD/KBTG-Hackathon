@@ -10,14 +10,14 @@ export default function Scrollytelling() {
   const [activeStep, setActiveStep] = useState(0);
   const sectionRef = useRef<HTMLElement>(null);
   const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const manualSelectionUntil = useRef(0);
+  const manualSelection = useRef(false);
 
   useEffect(() => {
     let frame = 0;
     const updateStep = () => {
       frame = 0;
       // On mobile, keep the selected screen while the user explores the phone.
-      if (window.innerWidth < 1024 || performance.now() < manualSelectionUntil.current) return;
+      if (window.innerWidth < 1024 || manualSelection.current) return;
       const section = sectionRef.current?.getBoundingClientRect();
       if (!section || section.top > window.innerHeight * .5 || section.bottom < window.innerHeight * .25) return;
       const focalY = window.innerHeight * .45;
@@ -32,17 +32,33 @@ export default function Scrollytelling() {
       setActiveStep(previous => previous === nearest ? previous : nearest);
     };
     const scheduleUpdate = () => { if (!frame) frame = requestAnimationFrame(updateStep); };
+    // Keep a manually chosen phone screen while it is being used. Focus scrolling
+    // and viewport changes should not send the carousel back to the other card.
+    const resumePageSelection = (event: Event) => {
+      if (!(event.target instanceof Element && event.target.closest('[data-phone-mockup]'))) manualSelection.current = false;
+    };
+    const resumeWithKeyboard = (event: KeyboardEvent) => {
+      if (['PageUp', 'PageDown', 'Home', 'End', 'ArrowUp', 'ArrowDown', ' '].includes(event.key)) resumePageSelection(event);
+    };
     window.addEventListener('scroll', scheduleUpdate, { passive: true });
     window.addEventListener('resize', scheduleUpdate);
+    window.addEventListener('wheel', resumePageSelection, { passive: true });
+    window.addEventListener('touchmove', resumePageSelection, { passive: true });
+    window.addEventListener('pointerdown', resumePageSelection);
+    window.addEventListener('keydown', resumeWithKeyboard);
     return () => {
       window.removeEventListener('scroll', scheduleUpdate);
       window.removeEventListener('resize', scheduleUpdate);
+      window.removeEventListener('wheel', resumePageSelection);
+      window.removeEventListener('touchmove', resumePageSelection);
+      window.removeEventListener('pointerdown', resumePageSelection);
+      window.removeEventListener('keydown', resumeWithKeyboard);
       cancelAnimationFrame(frame);
     };
   }, []);
 
   const selectPhoneStep = (index: number) => {
-    manualSelectionUntil.current = performance.now() + 1000;
+    manualSelection.current = true;
     setActiveStep(index);
   };
 

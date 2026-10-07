@@ -1,10 +1,12 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useReducer, useRef, useState } from 'react';
 import Image from 'next/image';
 import { motion, useAnimationControls, useDragControls, useReducedMotion } from 'framer-motion';
-import { Wifi, Bell, Power, ArrowRightLeft, Download, ScanLine, Banknote, Home, ShoppingBasket, User, ChevronRight, CheckCircle2, Info, ArrowUpRight, ArrowDownRight, PiggyBank, Wallet, ShoppingCart, CalendarDays, ChartColumnIncreasing, Sparkles, X, Navigation, ChartPie } from 'lucide-react';
+import { Wifi, Bell, Power, ArrowRightLeft, Download, ScanLine, Banknote, Home, ShoppingBasket, User, ChevronRight, CheckCircle2, Info, ArrowUpRight, ArrowDownRight, PiggyBank, Sparkles, X, Navigation, ChartPie, Star, MapPin, SquarePen, Paintbrush } from 'lucide-react';
 import styles from './KBankPhoneMockup.module.css';
+import PocketSelector from './PocketSelector';
+import { pockets, savingAmount, formatPocketBalance, initialSavingState, pocketSavingReducer, pocketBalance, type SavingPocketId } from '@/lib/pocket-saving';
 
 interface KBankPhoneMockupProps {
   activeStep: number;
@@ -28,10 +30,15 @@ const quickActions = [
   { label: 'ถอนเงิน/ฝากเงิน', Icon: Banknote },
 ];
 
+const slideSpring = { type: 'spring' as const, stiffness: 230, damping: 30, mass: 1.05, restDelta: 0.2, restSpeed: 0.2 };
+
 export default function KBankPhoneMockup({ activeStep, onSelectStep }: KBankPhoneMockupProps) {
   const [showInfo, setShowInfo] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [saved, setSaved] = useState(false);
+  const [homeScrolled, setHomeScrolled] = useState(false);
+  const [savingState, dispatchSaving] = useReducer(pocketSavingReducer, initialSavingState);
+  const showPockets = savingState.status === 'choosing';
+  const saved = savingState.status === 'saved';
   const [spentToday, setSpentToday] = useState(338);
   const infoTrigger = useRef<HTMLButtonElement>(null);
   const saveTrigger = useRef<HTMLButtonElement>(null);
@@ -40,15 +47,17 @@ export default function KBankPhoneMockup({ activeStep, onSelectStep }: KBankPhon
   const [cardWidth, setCardWidth] = useState(0);
   const slideAnimation = useAnimationControls();
   const dragControls = useDragControls();
+  const dragging = useRef(false);
+  const releaseVelocity = useRef(0);
   const slideGap = 12;
   const slideTransition = reducedMotion
     ? { duration: 0 }
-    : { type: 'spring' as const, stiffness: 380, damping: 36 };
+    : slideSpring;
 
   useEffect(() => {
     const element = carouselRef.current;
     if (!element) return;
-    const measure = () => setCardWidth(element.clientWidth);
+    const measure = () => setCardWidth(element.getBoundingClientRect().width);
     measure();
     const observer = new ResizeObserver(measure);
     observer.observe(element);
@@ -56,42 +65,62 @@ export default function KBankPhoneMockup({ activeStep, onSelectStep }: KBankPhon
   }, []);
 
   useEffect(() => {
+    if (dragging.current) return;
     slideAnimation.start({
       x: -activeStep * (cardWidth + slideGap),
-      transition: reducedMotion ? { duration: 0 } : { type: 'spring', stiffness: 380, damping: 36 },
+      transition: reducedMotion ? { duration: 0 } : { ...slideSpring, velocity: releaseVelocity.current },
     });
+    releaseVelocity.current = 0;
   }, [activeStep, cardWidth, reducedMotion, slideAnimation]);
 
   const dailyBudget = 380;
   const budgetDifference = dailyBudget - spentToday;
   const withinBudget = budgetDifference >= 0;
+  const destinationPocket = pockets.find(pocket => pocket.id === savingState.pocketId);
 
   const closeDialog = () => {
     const trigger = showInfo ? infoTrigger : saveTrigger;
     setShowInfo(false);
     setShowSuccess(false);
+    onSelectStep?.(showInfo ? 0 : 1);
     requestAnimationFrame(() => trigger.current?.focus({ preventScroll: true }));
   };
 
-  const confirmSaving = () => {
+  const openPockets = () => {
     if (saved) return;
-    setSaved(true);
+    dispatchSaving({ type: 'open' });
+  };
+
+  const cancelPocketSelection = () => {
+    dispatchSaving({ type: 'cancel' });
+    onSelectStep?.(1);
+    requestAnimationFrame(() => saveTrigger.current?.focus({ preventScroll: true }));
+  };
+
+  const confirmSaving = (pocket: SavingPocketId) => {
+    if (saved || !showPockets) return;
+    dispatchSaving({ type: 'confirm', pocketId: pocket });
     setShowSuccess(true);
   };
 
   return (
-    <div className={styles.phone} aria-label="หน้าจอแอปธนาคารจำลอง">
+    <div className={styles.phone} data-phone-mockup aria-label="หน้าจอแอปธนาคารจำลอง">
       <div className={styles.volumeOne} /><div className={styles.volumeTwo} /><div className={styles.powerButton} />
       <div className={styles.screen}>
         <div className={styles.island} />
-            <div className={styles.statusBar}>
+            <div className={`${styles.statusBar} ${showPockets || homeScrolled ? styles.pocketStatus : ''}`}>
               <span className={styles.clock}>00:01 <Navigation fill="currentColor" /></span>
               <div className={styles.statusIcons}>
                 <span className={styles.signal}><i/><i/><i/><i/></span>
                 <Wifi /><span className={styles.battery}>82</span>
               </div>
             </div>
-        <div className={styles.scrollArea} inert={showInfo || showSuccess}>
+        {homeScrolled && <div className={styles.scrolledHeader} inert={showInfo || showSuccess || showPockets}>
+          <span className={styles.financePill}><span className={styles.financeGrid}><i/><i/><i/><i/></span>การเงินของฉัน</span>
+          <div className={styles.headerIcons}><Bell/><Power/></div>
+        </div>}
+        <div className={styles.scrollArea} inert={showInfo || showSuccess || showPockets}
+          onScroll={event => setHomeScrolled(event.currentTarget.scrollTop > event.currentTarget.clientWidth * .24)}>
           <header className={styles.hero}>
             <div className={styles.statusSpacer} />
             <div className={styles.appHeader}>
@@ -134,32 +163,40 @@ export default function KBankPhoneMockup({ activeStep, onSelectStep }: KBankPhon
                   dragControls={dragControls}
                   dragListener={false}
                   dragConstraints={{ left: -(cardWidth + slideGap), right: 0 }}
-                  dragElastic={0.06}
+                  dragElastic={0.08}
                   dragMomentum={false}
+                  onDragStart={() => {
+                    dragging.current = true;
+                    slideAnimation.stop();
+                    onSelectStep?.(activeStep);
+                  }}
                   onPointerDown={event => {
                     if (event.button === 0 && !(event.target as HTMLElement).closest('button')) {
                       dragControls.start(event);
                     }
                   }}
                   onDragEnd={(_, info) => {
+                    dragging.current = false;
                     const delta = info.offset.x < -cardWidth * .16 || info.velocity.x < -500 ? 1
                       : info.offset.x > cardWidth * .16 || info.velocity.x > 500 ? -1 : 0;
                     const nextStep = Math.max(0, Math.min(1, activeStep + delta));
-                    onSelectStep?.(nextStep);
-                    slideAnimation.start({ x: -nextStep * (cardWidth + slideGap), transition: slideTransition });
+                    releaseVelocity.current = Math.max(-1100, Math.min(1100, info.velocity.x));
+                    // A changed step animates once in the effect above, from the release position.
+                    if (nextStep !== activeStep && onSelectStep) onSelectStep(nextStep);
+                    else {
+                      slideAnimation.start({ x: -activeStep * (cardWidth + slideGap), transition: { ...slideTransition, velocity: releaseVelocity.current } });
+                      releaseVelocity.current = 0;
+                    }
                   }}
                 >
                   <div className={styles.featureCard} role="group" aria-roledescription="slide" aria-label="ภาพรวมการเงิน 1 จาก 2" inert={activeStep !== 0}>
                     <div className={styles.balanceHeader}>
-                      <div className={styles.balanceIdentity}>
-                        <span className={styles.featureIcon}><Wallet /></span>
-                        <div className={styles.balanceSummary}>
+                      <div className={styles.balanceSummary}>
                         <div className={styles.balanceHeading}>
                           <span>ยอดเงินคงเหลือ</span>
                           <button ref={infoTrigger} type="button" className={styles.infoButton} aria-label="ดูรายละเอียดค่าใช้จ่ายและงบวันนี้" aria-haspopup="dialog" onClick={() => setShowInfo(true)}><Info /></button>
                         </div>
                         <strong className={styles.balanceAmount}>฿15,000.00</strong>
-                        </div>
                       </div>
                       <div className={styles.budgetComparison}>
                         <span className={withinBudget ? styles.positiveChange : styles.negativeChange} aria-label={`${withinBudget ? 'ประหยัด' : 'ใช้เกินงบ'} ${Math.abs(budgetDifference)} บาทจากงบวันนี้`}>
@@ -170,11 +207,11 @@ export default function KBankPhoneMockup({ activeStep, onSelectStep }: KBankPhon
                       </div>
                     </div>
                     <div className={styles.budgetGrid}>
-                      <div><span className={styles.metricIcon}><ShoppingCart /></span><div><span>วันนี้ใช้ได้</span><strong>฿380 <small>/ วัน</small></strong></div></div>
-                      <div><span className={styles.metricIcon}><CalendarDays /></span><div><span>เงินเดือนออกใน</span><strong>18 <small>วัน</small></strong></div></div>
+                      <div><span>วันนี้ใช้ได้</span><strong>฿380 <small>/ วัน</small></strong></div>
+                      <div><span>เงินเดือนออกใน</span><strong>18 <small>วัน</small></strong></div>
                     </div>
                     <div className={styles.runway}>
-                      <div className={styles.runwayHeading}><strong><ChartColumnIncreasing />Financial Runway</strong><span><i />85% Safe Zone</span></div>
+                      <div className={styles.runwayHeading}><strong>Financial Runway</strong><span><i />85% Safe Zone</span></div>
                       <div className={styles.runwayTrack} role="meter" aria-label="Financial Runway Safe Zone" aria-valuemin={0} aria-valuemax={100} aria-valuenow={85}><span /></div>
                     </div>
                   </div>
@@ -187,7 +224,7 @@ export default function KBankPhoneMockup({ activeStep, onSelectStep }: KBankPhon
                       <div className={styles.suggestionCopy}><Sparkles /><p><strong>ลด Delivery ฿80/วัน</strong><span>Safe Zone <b>92%</b> · กระทบชีวิตน้อย</span></p></div>
                       <div className={styles.goalProgress}><span>เงินสำรองฉุกเฉิน</span><strong>เร็วขึ้น 3 วัน</strong></div>
                     </div>
-                    <button ref={saveTrigger} type="button" className={styles.saveButton} onClick={confirmSaving} aria-disabled={saved}>
+                    <button ref={saveTrigger} type="button" className={styles.saveButton} onClick={openPockets} aria-haspopup="dialog" aria-disabled={saved}>
                       {saved ? <><CheckCircle2 /> ออมเรียบร้อย</> : <>ยืนยันออม ฿150 <ChevronRight /></>}
                     </button>
                     <span className={styles.consentNote}>คุณยืนยันก่อนโอนทุกครั้ง</span>
@@ -212,20 +249,47 @@ export default function KBankPhoneMockup({ activeStep, onSelectStep }: KBankPhon
 
             <section className={styles.shortcuts}>
               <div className={styles.sectionHeading}><h3>ทางลัดของฉัน</h3><span className={styles.sectionLink}>ปรับแต่ง <ChevronRight/></span></div>
-              <div className={styles.shortcutGrid}>
-                <div>ยังไม่มีรายการโปรด</div><div>จัดการ/ตั้งค่า<br/>บัญชี</div><div><ChartPie fill="#8bce28" stroke="#173e36"/><span>สินทรัพย์<br/>ทั้งหมด</span></div>
+              <div className={styles.shortcutGrid} tabIndex={0} role="region" aria-label="การ์ดทางลัดของฉัน เลื่อนซ้ายขวาเพื่อดูทั้งหมด">
+                <article className={styles.shortcutCard}><p>ยังไม่มีรายการโปรด</p><span className={styles.shortcutAction}>เพิ่มรายการโปรด</span></article>
+                <article className={styles.shortcutCard}><p>ยังไม่ได้ตั้งค่า<br/>เช็กยอดทันที</p><span className={styles.shortcutAction}>เลือกบัญชี/บัตร</span></article>
+                <article className={styles.shortcutCard}><div className={styles.assetHeading}><ChartPie fill="#8bce28" stroke="#173e36"/><p>สินทรัพย์<br/>ทั้งหมด</p></div><span className={styles.shortcutAction}>ดูพอร์ตโฟลิโอ</span></article>
               </div>
             </section>
+
+            <section className={styles.recommendations} aria-labelledby="recommended-services-title">
+              <div className={styles.sectionHeading}><h3 id="recommended-services-title">บริการแนะนำ</h3></div>
+              <p className={styles.recommendationIntro}>รู้ใจ ทุกโมเมนต์ของคุณ</p>
+              <div className={styles.recommendationGrid} tabIndex={0} role="region" aria-label="การ์ดบริการแนะนำ เลื่อนซ้ายขวาเพื่อดูทั้งหมด">
+                <article className={`${styles.recommendationCard} ${styles.benefitsCard}`}>
+                  <h4>สิทธิประโยชน์</h4><p>ดูคะแนนสะสม สิทธิพิเศษ โปรโมชัน และภารกิจประจำเดือน</p>
+                  <span className={styles.benefitArt} aria-hidden="true"><Star /></span>
+                </article>
+                <article className={`${styles.recommendationCard} ${styles.travelCard}`}>
+                  <h4>Go Inter</h4><p>รวมบริการท่องเที่ยว ให้ทุกทริปราบรื่น</p>
+                  <span className={styles.travelArt} aria-hidden="true"><MapPin /></span>
+                </article>
+                <article className={`${styles.recommendationCard} ${styles.moneyCard}`}>
+                  <span className={styles.recommendedBadge}>แนะนำ</span>
+                  <h4>จัดการเงิน</h4><p>ดูรายรับรายจ่าย ตั้งงบประมาณ และบริหารเงินได้ง่ายขึ้น</p>
+                  <span className={styles.moneyArt} aria-hidden="true" />
+                </article>
+              </div>
+            </section>
+
+            <div className={styles.homeCustomization} aria-label="การปรับแต่งหน้าหลัก">
+              <span><SquarePen />ปรับแต่งทางลัด</span><span><Paintbrush />เปลี่ยนธีม</span>
+            </div>
           </main>
         </div>
 
-        <nav className={styles.dock} inert={showInfo || showSuccess} aria-label="เมนูหลักในหน้าจอจำลอง">
+        <nav className={styles.dock} inert={showInfo || showSuccess || showPockets} aria-label="เมนูหลักในหน้าจอจำลอง">
           <button className={activeStep === 0 ? styles.activeNav : ''} onClick={() => onSelectStep?.(0)}><Home fill="currentColor"/><span>หน้าแรก</span></button>
           <div className={styles.navItem}><ShoppingBasket/><span>market</span></div>
           <button className={`${styles.transactionNav} ${activeStep === 1 ? styles.activeNav : ''}`} onClick={() => onSelectStep?.(1)}><span className={styles.transactionIcon}>฿</span><span>ธุรกรรม</span></button>
           <div className={styles.navItem}><ScanLine/><span>สแกน/สร้างQR</span></div>
           <div className={`${styles.navItem} ${styles.profileNav}`}><span className={styles.profileIcon}><User fill="white"/></span><span>โปรไฟล์</span></div>
         </nav>
+        {showPockets && <PocketSelector onCancel={cancelPocketSelection} onConfirm={confirmSaving} />}
         {(showInfo || showSuccess) && <div className={styles.modalBackdrop} onClick={closeDialog}>
           <div
             role="dialog"
@@ -266,7 +330,7 @@ export default function KBankPhoneMockup({ activeStep, onSelectStep }: KBankPhon
             </> : <>
               <span className={styles.successIcon}><CheckCircle2 /></span>
               <h4 id="phone-dialog-title">ออมเงินสำเร็จ</h4>
-              <p id="phone-dialog-description">โอนเข้าบัญชีเงินออมแล้ว<br/>เป้าหมายของคุณใกล้ขึ้นอีกนิด</p>
+              <p id="phone-dialog-description">ย้าย ฿{savingAmount} เข้า {destinationPocket?.name} แล้ว<br/>ยอดใน Pocket ฿{formatPocketBalance(destinationPocket ? pocketBalance(destinationPocket.id, savingState) : 0)}</p>
               <button type="button" className={styles.saveButton} onClick={closeDialog}>เรียบร้อย</button>
             </>}
           </div>

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Menu, X, ArrowUpRight } from 'lucide-react';
+import BrandMark from './BrandMark';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -29,21 +30,7 @@ export default function Navbar() {
           {/* Brand Logo with Custom K-Runway Concept Mark (No official KBank logo) */}
           <div className="flex items-center gap-3 shrink-0">
             <a href="#" className="flex items-center gap-3 group">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#00A950] to-[#007A3A] flex items-center justify-center text-white shadow-sm shrink-0 group-hover:scale-105 transition-transform">
-                <svg
-                  className="w-5 h-5 text-white"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M4 19L19 4" />
-                  <path d="M11 4H19V12" />
-                  <path d="M4 12V19H11" opacity="0.6" />
-                </svg>
-              </div>
+              <BrandMark className="group-hover:scale-105 transition-transform" />
               <div className="flex flex-col justify-center">
                 <div className="font-extrabold text-slate-900 text-base sm:text-lg tracking-tight leading-none flex items-center gap-1.5">
                   <span>K-Runway</span>
