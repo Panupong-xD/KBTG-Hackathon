@@ -1,7 +1,9 @@
 # เอกสารสถาปัตยกรรมทางเทคนิคและโครงสร้างข้อมูล (Technical & Data Architecture)
-## โครงการ K-Runway & Predictive Auto-Saving (K PLUS Innovation)
+## โครงการ K-Runway & K-ePocket Co-pilot (K PLUS Innovation)
 > **สำหรับ:** การแข่งขัน KBTG Hackathon  
 > **หัวข้อ:** นวัตกรรมระบบบริหารจัดการสภาพคล่องและการออมเชิงรุกสำหรับ First Jobbers บน K PLUS
+
+> **สถานะฉบับก่อนหน้า:** เก็บไว้เพื่ออ้างอิงแนวทางสถาปัตยกรรม ตัวอย่างเงินเดือน งบ ฿380 และตัวเลขโมเดลในเนื้อหาด้านล่างเป็นข้อเสนอเดิม ไม่ใช่เดโมหรือข้อกำหนดล่าสุด อ่าน [แนวทางผลิตภัณฑ์ล่าสุด](03_CURRENT_PRODUCT_DIRECTION.md) สำหรับรายได้ไม่แน่นอน การ์ด Pocket เงินสะสม การคืนรายการใน 24 ชั่วโมง และการตัดสินใจสิ้นรอบ
 
 ---
 
@@ -29,14 +31,14 @@
 
 ## 1. ภาพรวมของสถาปัตยกรรมระบบ (System Architecture Overview)
 
-ระบบ **K-Runway & Predictive Auto-Saving** ถูกออกแบบภายใต้หลักการ **Enterprise-Grade Event-Driven & Microservices Architecture** โดยต่อขยายจากโครงสร้างพื้นฐานเดิมของ KBank และ KBTG เพื่อรองรับการประมวลผลข้อมูลธุรกรรมที่มี Throughput สูง (High-Throughput Streaming) และการให้คำแนะนำทางด้านการเงินที่มีความหน่วงต่ำมาก (Low-Latency Inference < 50ms) โดยคำนึงถึงความปลอดภัยระดับสถาบันการเงิน (Financial Institution Security Standards) เป็นสำคัญ
+ระบบ **K-Runway & K-ePocket Co-pilot** ถูกออกแบบภายใต้หลักการ **Enterprise-Grade Event-Driven & Microservices Architecture** โดยต่อขยายจากโครงสร้างพื้นฐานเดิมของ KBank และ KBTG เพื่อรองรับการประมวลผลข้อมูลธุรกรรมที่มี Throughput สูง (High-Throughput Streaming) และการให้คำแนะนำทางด้านการเงินที่มีความหน่วงต่ำมาก (Low-Latency Inference < 50ms) โดยคำนึงถึงความปลอดภัยระดับสถาบันการเงิน (Financial Institution Security Standards) เป็นสำคัญ
 
 ```mermaid
 flowchart TD
     subgraph ClientLayer ["K PLUS Client Layer (iOS / Android)"]
         Widget["K-Runway Glance Widget"]
         SafeSpend["Daily Safe-to-Spend"]
-        ConsentSheet["1-Tap Sweep Consent Sheet"]
+        ConsentSheet["Pocket Allocation Consent Sheet"]
     end
 
     subgraph APIGateway ["KBTG Enterprise API Gateway (Kong / Apigee)"]
@@ -212,7 +214,7 @@ flowchart TD
 2. **Encryption in Transit & at Rest:** 
    - การส่งข้อมูลทุกจุดใช้ TLS 1.3 พร้อม Mutual Authentication (mTLS) ภายใน Kubernetes Service Mesh (Istio)
    - ข้อมูลในฐานข้อมูลทั้งหมดเข้ารหัสด้วย AES-256 (Envelope Encryption โดยมี KBank HSM จัดการ Master Keys)
-3. **Explicit Consent & Non-Coercive Logging:** ทุกการกวาดเงินเข้าบัญชีออมดอกเบี้ยสูง ต้องมีหลักฐาน User Consent Log ที่บันทึก IP, Timestamp, Device ID และ Session Signature ไว้ตรวจสอบย้อนหลังตามระเบียบของธนาคารแห่งประเทศไทย (ธปท.)
+3. **Explicit Consent & Non-Coercive Logging:** ทุกการกวาดเงินเข้าPocket ปลายทาง ต้องมีหลักฐาน User Consent Log ที่บันทึก IP, Timestamp, Device ID และ Session Signature ไว้ตรวจสอบย้อนหลังตามระเบียบของธนาคารแห่งประเทศไทย (ธปท.)
 
 ---
 
@@ -223,7 +225,7 @@ flowchart TD
 - **Interactive Components:**
   - **Runway Glance Card:** แสดงผลตัวเลข "ยอดใช้ได้วันนี้" (฿380/วัน) และเกจวัดความปลอดภัย (Safe Zone %)
   - **Smooth Spending Bar:** อัปเดตแบบ Reactive เมื่อมีการทำรายการใช้จ่าย
-  - **1-Tap Sweep Consent Sheet:** Bottom Sheet สำหรับกดยืนยันออมเงินเหลือสิ้นวันใน 1 คลิก พร้อมระบุบัญชีปลายทางและผลตอบแทนดอกเบี้ยอย่างชัดเจน
+  - **Pocket Selection & Confirmation:** เลือก Pocket ปลายทางใน K-ePocket แล้วแสดงยอดก่อนให้ผู้ใช้กดยืนยันย้ายเงิน
 
 ### 3.2 API Gateway & Security Tier
 - **Enterprise Gateway:** Kong Enterprise / Apigee Edge ติดตั้งอยู่บน KBank DMZ
@@ -277,14 +279,14 @@ flowchart TD
     MonteCarlo --> Leftover
     Leftover -->|"1-Tap User Confirmation"| SweepEngine
     SweepEngine -->|"Mutual TLS / REST (Internal Transfer)"| ESB
-    ESB -->|"Execute Deposit to K-eSavings (1.25%*)"| CASA
+    ESB -->|"User-confirmed Pocket Allocation in K-ePocket"| CASA
 ```
 
 ### 4.1 การเชื่อมต่อกับ Core Banking System (CASA Ledger)
 - **ระบบเดิมของ KBank:** Core Banking จัดเก็บข้อมูลบัญชีเงินฝากกระแสรายวันและออมทรัพย์ (CASA) ซึ่งเป็นระบบปิดที่มีข้อกำหนดด้านความปลอดภัยสูงสุด
 - **แนวทางการเชื่อมต่อ:** 
   - **อ่านข้อมูล (Read Path):** ไม่ใช้การ Query ตาราง Core Database โดยตรง แต่ใช้เทคโนโลยี **Change Data Capture (CDC)** เช่น Debezium ดักจับ Transaction Log แบบ Asynchronous แล้วแปลงเป็น Kafka Event เข้าสู่ Data Bus ทันทีที่เงินเข้าหรือออกจากบัญชี
-  - **เขียนคำสั่งโอนเงิน (Write Path):** ส่งผ่าน **Enterprise Service Bus (ESB) / Financial API Gateway** ของ KBank ซึ่งรองรับคำสั่งประเภท `Account-to-Account Internal Transfer` (CASA หลักไปยัง K-eSavings บัญชีเงินฝากดิจิทัลดอกเบี้ยสูง 1.25% ต่อปี* สำหรับยอดไม่เกิน ฿500,000 พร้อมระบบ Seamless Provisioning เปิดบัญชีให้อัตโนมัติในคลิกแรกหากยังไม่มีบัญชี)
+  - **เขียนคำสั่งจัดสรรเงิน (Write Path):** เสนอให้เชื่อมต่อ Financial API ของธนาคารเพื่อย้ายเงินระหว่าง Pocket ภายใน K-ePocket โดยใช้บัญชีเดียวกัน ระบุ Pocket ต้นทาง/ปลายทาง ยอด และหลักฐานการยืนยัน API นี้เป็นตัวอย่างที่ต้องตกลงกับธนาคาร
 
 ### 4.2 การดึงข้อมูลแบบ Real-time ด้วย Kafka Event-Driven Architecture
 - เมื่อลูกค้าสแกนจ่าย QR หรือรูดบัตรเดบิต Core Banking Event Broker จะ Publish ข้อความลง Topic: `kplus.core.transaction.v1`
@@ -312,11 +314,12 @@ flowchart TD
 - **Payload Request:**
 ```json
 {
-  "idempotencyKey": "swp_20260918_cust88172635_15000",
+  "idempotencyKey": "swp_20260918_cust88172635_4200",
   "customerToken": "cust_tok_88172635",
-  "sourceAccount": "acc_tok_checking_01",
-  "destinationAccount": "acc_tok_kesavings_02",
-  "amount": 150.00,
+  "accountToken": "acc_tok_kepocket_01",
+  "sourcePocket": "main",
+  "destinationPocket": "emergency",
+  "amount": 42.00,
   "currency": "THB",
   "transferType": "MICRO_SAVINGS_SWEEP",
   "validationRules": {
@@ -325,13 +328,13 @@ flowchart TD
   }
 }
 ```
-- **การคุ้มกัน Hard Floor:** ระบบ Core API Gateway จะตรวจสอบว่า `Available Balance - Amount >= ฿1,000` เสมอ หากยอดเงินไม่เพียงพอต่อเพดานคุ้มกัน Transaction จะถูกยกเลิกทันที (Atomic Rollback) เพื่อป้องกันความเสี่ยงเงินในบัญชีไม่พอใช้จ่าย
+- **การตรวจสภาพคล่องก่อนจัดสรร:** ระบบจริงต้องอ่านยอดล่าสุดในธุรกรรมเดียวกันและตรวจว่าเงินในกระเป๋าหลักหลังจัดสรรยังครอบคลุม Hard Floor และงบวันถัดไป โดยงบบิลอยู่ใน Pocket ที่กันไว้แล้ว หากไม่ผ่านให้ยกเลิกคำสั่ง ไม่มีการรับประกันรายจ่ายนอกระบบ
 
 ### 4.4 การเชื่อมต่อกับ Customer Master File (CIF) และ Enterprise Notification
-1. **CIF (Customer Information File):** เชื่อมต่อแบบ Read-Only REST API เพื่อตรวจสอบสถานะ KYC (ต้องเป็นลูกค้าที่ยืนยันตัวตนระดับ IAL2.3 ขึ้นไป) และตรวจสอบรายชื่อบัญชี K-eSavings ของลูกค้า (หากยังไม่มีบัญชี K-eSavings ระบบจะมี Seamless Provisioning เปิดบัญชีเงินฝากดิจิทัลให้อัตโนมัติทันทีที่ผู้ใช้กดยืนยันออมเงินครั้งแรก โดยใช้ข้อมูล KYC เดิมจาก K PLUS)
+1. **CIF และ Pocket Ledger:** ตรวจสิทธิ์เจ้าของบัญชีและรายชื่อ Pocket ภายใน K-ePocket ที่มีอยู่แล้ว หากยังไม่มีบัญชีให้ผู้ใช้สมัครและยืนยันตัวตนผ่านขั้นตอนของธนาคารก่อน ไม่เปิดบัญชีเองระหว่างจัดสรรเงิน
 2. **K PLUS Notification Service (PNS - Push Notification Service):**
-   - **ช่วงเช้า (08:30 น.):** ส่งสรุป Daily Budget เช่น *"สวัสดีเช้านี้ คุณมีงบกินใช้ได้ ฿380 เพื่อรักษาเป้าหมายเงินพอถึงสิ้นเดือน"*
-   - **ช่วงค่ำ (20:30 น.):** หากผู้ใช้ใช้จ่ายต่ำกว่างบ ส่งคำแนะนำ Micro-Surplus Prompt เช่น *"วันนี้คุณใช้เงินต่ำกว่างบ มีเงินเหลือ ฿150 แตะเพื่อย้ายไปรับดอกเบี้ย 1.25% ต่อปี* ใน K-eSavings (เปิดบัญชีให้อัตโนมัติหากยังไม่มี)"*
+   - **ช่วงเช้า (08:30 น.):** ส่งสรุป Daily Budget เช่น *"สวัสดีเช้านี้ คุณมีงบกินใช้ได้ ฿380 เพื่อรักษาเป้าหมายเงินพอถึงวันเงินเดือนออก"*
+   - **ช่วงค่ำ (20:30 น.):** หากเหลือจากงบ ฿42 หลังกันภาระและงบวันถัดไป แนะนำว่า *"วันนี้เหลือ ฿42 เลือก Pocket ใน K-ePocket แล้วตรวจยอดก่อนยืนยันย้ายเงิน"*
 
 ---
 
@@ -339,4 +342,4 @@ flowchart TD
 1. **Zero Core Disruption:** ไม่รบกวน Core Banking ดั้งเดิม ใช้ Event Streaming และ CDC ทำงานแยกส่วนอิสระ
 2. **Sub-second Response:** Real-time Feature Store ช่วยให้ผู้ใช้เห็นสถานะงบปรับปรุงทันทีหลังสแกนจ่าย
 3. **Institutional Security:** ปกป้องข้อมูลลูกค้าด้วย Tokenization ตามเกณฑ์ PDPA และ FAPI 1.0
-4. **100% Deterministic Safety:** โครงสร้างคำสั่งมี Idempotency และ Hard Floor Shield ฝังอยู่ในระดับ Service Controller
+4. **Deterministic Allocation Checks:** โครงสร้างคำสั่งมี Idempotency และ Hard Floor Shield ฝังอยู่ในระดับ Service Controller

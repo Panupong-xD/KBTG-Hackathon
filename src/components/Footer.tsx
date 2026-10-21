@@ -20,25 +20,25 @@ export default function Footer() {
               <BrandMark />
               <div className="flex flex-col justify-center">
                 <span className="font-extrabold text-slate-900 text-base leading-none">
-                  K-Runway <span className="text-[#00A950]">&</span> Auto-Save
+                  K-Runway
                 </span>
                 <span className="text-[10px] font-bold text-[#00A950] tracking-wider uppercase leading-none mt-1">
-                  Innovation Concept Prototype
+                  KBTG Hackathon · Concept Demo
                 </span>
               </div>
             </div>
             <p className="text-slate-600 text-xs leading-relaxed max-w-md">
-              โครงการนำเสนอแนวคิดนวัตกรรม Data Science & Predictive Analytics: การผสานระหว่าง Financial Runway Intelligence และ Intelligent Auto-Save Engine ช่วยให้ First Jobbers สามารถตัดสินใจทางการเงินได้อย่างมั่นใจ
+              AI Co-pilot สำหรับ First Jobber อายุ 22–30 ปี เริ่มจากฟรีแลนซ์ที่รายได้ไม่แน่นอน รู้ก่อนเงินตึง และให้เงินเหลือไปถึงเป้าหมายใน K-ePocket
             </p>
             <div className="text-[11px] text-slate-500 font-medium">
-              *โครงการนำเสนอแนวคิดนวัตกรรมต้นแบบสำหรับการแข่งขัน KBTG ไม่ใช่เว็บไซต์หรือบริการทางการของธนาคาร
+              ต้นแบบสำหรับ KBTG Hackathon ใช้ข้อมูลและเปอร์เซ็นต์จำลอง ไม่มีการโอนเงินจริง และไม่ใช่บริการทางการของธนาคาร กลุ่มหลักยังอยู่ระหว่างยืนยันด้วย survey; การแจ้งเตือนและการเลือกจัดการเงินสิ้นรอบเป็นแนวคิดต่อยอด
             </div>
           </div>
 
           {/* Col 2: Navigation Links */}
           <div>
             <h4 className="font-bold text-slate-900 uppercase text-[11px] tracking-wider mb-3">
-              โครงสร้างเนื้อหา
+              สำรวจ K-Runway
             </h4>
             <ul className="space-y-2 text-xs">
               <li>
@@ -53,17 +53,17 @@ export default function Footer() {
               </li>
               <li>
                 <a href="#features" className="hover:text-[#00A950] transition-colors">
-                  03. 2 เสาหลักนวัตกรรม AI
+                  03. เบื้องหลัง AI & K-ePocket
                 </a>
               </li>
               <li>
                 <a href="#security" className="hover:text-[#00A950] transition-colors">
-                  04. ความปลอดภัย & PDPA
+                  04. AI ช่วยคิด คุณคุมเงิน
                 </a>
               </li>
               <li>
                 <a href="#concept" className="hover:text-[#00A950] transition-colors">
-                  05. K PLUS Innovation Concept
+                  05. ไอเดียที่เราอยากสร้าง
                 </a>
               </li>
             </ul>
@@ -72,7 +72,7 @@ export default function Footer() {
           {/* Col 3: Technology */}
           <div>
             <h4 className="font-bold text-slate-900 uppercase text-[11px] tracking-wider mb-3">
-              สถาปัตยกรรมเทคโนโลยี
+              เบื้องหลังต้นแบบ
             </h4>
             <ul className="space-y-2 text-xs text-slate-600">
               <li>• Data Science & Time-Series ML</li>
@@ -88,7 +88,7 @@ export default function Footer() {
         {/* Bottom */}
         <div className="pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
           <div>
-            © 2026 K-Runway & Auto-Save Prototype. Designed for KBTG Data Science Track Innovation Concept (Non-official).
+            © 2026 K-Runway Prototype. Designed for KBTG Data Science Track Innovation Concept (Non-official).
           </div>
 
           <button

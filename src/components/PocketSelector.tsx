@@ -1,17 +1,21 @@
 import { useLayoutEffect, useRef, useState } from 'react';
 import { ArrowLeft, Bell, Check, ChevronDown, ChevronRight, Home, Power, RefreshCw, ScanLine, ShoppingBasket, User } from 'lucide-react';
-import { pockets, savingAmount, formatPocketBalance, type SavingPocketId } from '@/lib/pocket-saving';
+import { pockets, pocketBalance, initialSavingState, formatPocketBalance, type PocketId, type SavingPocketId } from '@/lib/pocket-saving';
 import PocketIllustration from './PocketIllustration';
 import phoneStyles from './KBankPhoneMockup.module.css';
 import styles from './PocketSelector.module.css';
 
 interface PocketSelectorProps {
+  amount: number;
+  spentToday: number;
   onCancel: () => void;
   onConfirm: (pocket: SavingPocketId) => void;
 }
 
-export default function PocketSelector({ onCancel, onConfirm }: PocketSelectorProps) {
+export default function PocketSelector({ amount, spentToday, onCancel, onConfirm }: PocketSelectorProps) {
   const [selected, setSelected] = useState<SavingPocketId | null>(null);
+  const balanceFor = (id: PocketId) => pocketBalance(id, initialSavingState, spentToday);
+  const totalBalance = pockets.reduce((sum, pocket) => sum + balanceFor(pocket.id), 0);
   const destination = pockets.find(pocket => pocket.id === selected);
   const contentRef = useRef<HTMLDivElement>(null);
   const accountRef = useRef<HTMLDivElement>(null);
@@ -80,19 +84,19 @@ export default function PocketSelector({ onCancel, onConfirm }: PocketSelectorPr
       <div ref={contentRef} className={`${styles.content} ${selected ? styles.hasSelection : ''}`}>
         <div ref={accountRef} className={styles.accountCarousel}>
           <div className={styles.account}>
-            <div className={styles.accountIdentity}><strong>ออมทรัพย์ e-Pocket <ChevronDown /></strong><small>xxx-x-x3253-x</small><span className={styles.accountWallet}><PocketIllustration pocket="bills" /></span></div>
-            <div className={styles.accountBalance}><span>ยอดเงินที่ใช้ได้</span><strong>15,000.00</strong><span className={styles.latest}>ดูรายการล่าสุด <ChevronRight /></span></div>
+            <div className={styles.accountIdentity}><strong>ออมทรัพย์ K-ePocket <ChevronDown /></strong><small>xxx-x-x3253-x</small><span className={styles.accountWallet}><PocketIllustration pocket="bills" /></span></div>
+            <div className={styles.accountBalance}><span>ยอดรวมทุก Pocket</span><strong>{formatPocketBalance(totalBalance)}</strong><span className={styles.latest}>ดูรายการล่าสุด <ChevronRight /></span></div>
           </div>
         </div>
-        <div className={styles.updated}><span><RefreshCw />ข้อมูล ณ เวลา 00:01 น.</span><span className={styles.accountDots}><i /><i /><i /><i /></span></div>
+        <div className={styles.updated}><span><RefreshCw />ข้อมูล ณ เวลา 20:30 น.</span><span className={styles.accountDots}><i /><i /><i /><i /></span></div>
         <div className={styles.pocketTabs}><span>กระเป๋าของฉัน</span><span>ธุรกรรม</span></div>
-        <div className={styles.selectionHeading}><h3 id="pocket-title">เลือกกระเป๋าปลายทาง</h3><span id="pocket-description">แตะ Pocket เพื่อออม</span></div>
+        <div className={styles.selectionHeading}><h3 id="pocket-title">เลือกกระเป๋าปลายทาง</h3><span id="pocket-description">เลือก Pocket แล้วตรวจยอดก่อนยืนยัน</span></div>
 
         {(['spending', 'saving'] as const).map(kind => (
           <section className={styles.group} key={kind} aria-label={kind === 'spending' ? 'กระเป๋าใช้จ่าย' : 'กระเป๋าออม'}>
-            <div className={styles.groupHeading}><h4>{kind === 'spending' ? 'กระเป๋าใช้จ่าย (3)' : 'กระเป๋าออม (2)'}</h4><span>{formatPocketBalance(pockets.filter(pocket => pocket.kind === kind).reduce((sum, pocket) => sum + pocket.balance, 0))}</span></div>
+            <div className={styles.groupHeading}><h4>{kind === 'spending' ? 'กระเป๋าใช้จ่าย (3)' : 'กระเป๋าออม (2)'}</h4><span>{formatPocketBalance(pockets.filter(pocket => pocket.kind === kind).reduce((sum, pocket) => sum + balanceFor(pocket.id), 0))}</span></div>
             <div className={styles.grid}>
-              {pockets.filter(pocket => pocket.kind === kind).map(({ id, name, tone, balance }) => (
+              {pockets.filter(pocket => pocket.kind === kind).map(({ id, name, tone }) => (
                 <button
                   key={id}
                   ref={selected === id ? selectedRef : undefined}
@@ -100,13 +104,13 @@ export default function PocketSelector({ onCancel, onConfirm }: PocketSelectorPr
                   className={styles.pocket}
                   disabled={id === 'main'}
                   aria-pressed={selected === id}
-                  aria-label={`${name} ยอด ${formatPocketBalance(balance)} บาท${id === 'main' ? ' กระเป๋าต้นทาง' : ''}`}
+                  aria-label={`${name} ยอด ${formatPocketBalance(balanceFor(id))} บาท${id === 'main' ? ' กระเป๋าต้นทาง' : ''}`}
                   onClick={() => { if (id !== 'main') setSelected(id); }}
                 >
                   <span className={`${styles.art} ${styles[tone]}`}><PocketIllustration pocket={id} /></span>
                   {id === 'main' && <span className={styles.sourceBadge}>ต้นทาง</span>}
                   {selected === id && <span className={styles.selectedMark}><Check /></span>}
-                  <span className={styles.pocketDetails}><span className={styles.pocketName}>{name}{id === 'savings' && <><br />(กระเป๋าออม)</>}</span><strong>{formatPocketBalance(balance)}</strong></span>
+                  <span className={styles.pocketDetails}><span className={styles.pocketName}>{name}{id === 'savings' && <><br />(กระเป๋าออม)</>}</span><strong>{formatPocketBalance(balanceFor(id))}</strong></span>
                 </button>
               ))}
             </div>
@@ -115,8 +119,8 @@ export default function PocketSelector({ onCancel, onConfirm }: PocketSelectorPr
       </div>
 
       {destination && <div ref={confirmationRef} className={styles.confirmation}>
-        <div aria-live="polite"><span>ออมเข้า</span><strong>{destination.name}</strong></div>
-        <button type="button" onClick={() => { if (selected) onConfirm(selected); }}>ยืนยัน ฿{savingAmount} <ChevronRight aria-hidden="true" /></button>
+        <div aria-live="polite"><span>ย้ายเข้า</span><strong>{destination.name}</strong></div>
+        <button type="button" onClick={() => { if (selected) onConfirm(selected); }}>ยืนยัน ฿{amount} <ChevronRight aria-hidden="true" /></button>
       </div>}
 
       <nav className={phoneStyles.dock} aria-label="เมนูหลักในหน้า Pocket">

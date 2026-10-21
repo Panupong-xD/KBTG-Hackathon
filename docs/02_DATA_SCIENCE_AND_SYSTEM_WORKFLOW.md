@@ -1,7 +1,9 @@
 # เอกสารขั้นตอนการทำงานของระบบทั้งหมด (End-to-End System & Data Science Workflow)
-## โครงการ K-Runway & Predictive Auto-Saving (K PLUS Innovation)
+## โครงการ K-Runway & K-ePocket Co-pilot (K PLUS Innovation)
 > **สำหรับ:** การแข่งขัน KBTG Hackathon  
 > **หัวข้อ:** ขั้นตอนการทำงานครบวงจรในมุมมอง Data Science, Product UX, Core Banking และ Compliance
+
+> **สถานะฉบับก่อนหน้า:** เก็บไว้เพื่ออ้างอิงแนวทางสถาปัตยกรรม ตัวอย่างเงินเดือน งบ ฿380 และตัวเลขโมเดลในเนื้อหาด้านล่างเป็นข้อเสนอเดิม ไม่ใช่เดโมหรือข้อกำหนดล่าสุด อ่าน [แนวทางผลิตภัณฑ์ล่าสุด](03_CURRENT_PRODUCT_DIRECTION.md) สำหรับรายได้ไม่แน่นอน การ์ด Pocket เงินสะสม การคืนรายการใน 24 ชั่วโมง และการตัดสินใจสิ้นรอบ
 
 ---
 
@@ -15,7 +17,7 @@
    - 2.5 Cold Start Bayesian Protocol (การเริ่มต้นทันทีสำหรับบัญชีใหม่)
 3. [ขั้นตอนการทำงานในมุมมองผู้ใช้งานและผลิตภัณฑ์ (Product & UX Customer Journey)](#3-ขั้นตอนการทำงานในมุมมองผู้ใช้งานและผลิตภัณฑ์-product--ux-customer-journey)
    - 3.1 ไทม์ไลน์ 24 ชั่วโมงของ First Jobber (Daily Operational Cycle)
-   - 3.2 ปรัชญา Co-pilot: ทำไม 1-Tap Manual Confirmation ถึงชนะ Auto-Debit อัตโนมัติ
+   - 3.2 ปรัชญา Co-pilot: ทำไม Pocket Selection & Manual Confirmation ถึงชนะ Auto-Debit อัตโนมัติ
 4. [ขั้นตอนการทำงานในมุมมองวิศวกรรมระบบและการเงิน (Core Banking & Engineering Workflow)](#4-ขั้นตอนการทำงานในมุมมองวิศวกรรมระบบและการเงิน-core-banking--engineering-workflow)
    - 4.1 กลไกป้องกันการทำธุรกรรมซ้ำซ้อน (Idempotency & Concurrency Lock)
    - 4.2 ระบบคุ้มกันสภาพคล่อง Hard Floor ฿1,000 (Liquidity Shield Enforcement)
@@ -44,12 +46,12 @@ flowchart TD
         P3["3. INTRADAY SPEND & MONITORING<br/>• สแกน QR / รูดบัตร / โอนเงินตามปกติ<br/>• Real-time Feature Store อัปเดตงบคงเหลือ<br/>• หากใช้เกิน: เกลี่ยชดเชยวันถัดไปนุ่มนวล<br/>• หากใช้ต่ำกว่างบ: เตรียมคำนวณเงินเหลือสิ้นวัน"]
     end
 
-    subgraph Evening ["20:30 - 21:00 น. | Micro-Surplus Prompt (1-Tap Save)"]
-        P4["4. USER-CONTROLLED CO-PILOT<br/>• ตรวจพบเงินเหลือจริง ฿150<br/>• ส่ง Nudge แตะ 1 ครั้งยืนยันออม<br/>• ผู้ใช้อนุมัติด้วยตนเอง 100%"]
+    subgraph Evening ["20:30 - 21:00 น. | Micro-Surplus Prompt (Pocket Allocation)"]
+        P4["4. USER-CONTROLLED CO-PILOT<br/>• ใช้ ฿338 จากงบ ฿380 เหลือ ฿42<br/>• เลือก Pocket และยืนยันยอด<br/>• ไม่มีการย้ายเงินเอง"]
     end
 
     subgraph CoreAction ["Core Banking Execution & Safety Net"]
-        P5["5. CORE BANKING EXECUTION<br/>• ตรวจสอบ Hard Floor ฿1,000<br/>• โอนเข้า K-eSavings ดอกเบี้ย 1.25%* (เปิดบัญชีให้อัตโนมัติ)<br/>• สิทธิ์กดดึงเงินคืน 24h Undo Circuit"]
+        P5["5. PROPOSED CORE BANKING EXECUTION<br/>• ตรวจเงินสำรอง บิล และงบวันถัดไป<br/>• ย้าย ฿42 ภายใน K-ePocket<br/>• บันทึกหลักฐานการยืนยันและป้องกันรายการซ้ำ"]
     end
 
     P1 --> Morning
@@ -67,7 +69,7 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    Raw["Raw Transaction Text & Metadata (Kafka Stream)"] --> NLP["Sub-pipeline 2.1: NLP & Classification<br/>(LightGBM + WangchanBERTa | 48 Categories, 98.4% Acc)"]
+    Raw["Raw Transaction Text & Metadata (Kafka Stream)"] --> NLP["Sub-pipeline 2.1: NLP & Classification<br/>(LightGBM + WangchanBERTa | 48 Categories, 98.4% Target Acc)"]
     
     NLP --> Fixed["Fixed Obligations (F_t)<br/>(ค่าเช่าหอ, บิลน้ำไฟ, ค่าบัตร)"]
     NLP --> Discretionary["Discretionary Spend (D_t)<br/>(กาแฟ, ช้อปปิ้ง, Delivery)"]
@@ -81,7 +83,7 @@ flowchart TD
     SafeSpend --> Monitor["Sub-pipeline 2.3: Real-Time Intraday Monitoring<br/>(Apache Flink + Redis Feature Store)"]
     
     Monitor -->|"Spent > Budget (ใช้เกิน)"| Rebalance["Smooth Budget Re-balancing<br/>เกลี่ยชดเชยวันถัดไปทีละนิด (-฿10/วัน)<br/>ไม่ทำให้ตกใจ ไม่เกิด Ostrich Effect"]
-    Monitor -->|"Spent < Budget (มีเงินเหลือ)"| Leftover["Sub-pipeline 2.4: Leftover Surplus Detection<br/>ตรวจพบเงินเหลือสิ้นวัน ฿150<br/>ยื่นปุ่ม 1-Tap Save เข้า K-eSavings (1.25%*)"]
+    Monitor -->|"Spent < Budget และมีเงินเหลือที่จัดสรรได้"| Leftover["Sub-pipeline 2.4: Surplus Detection<br/>งบ ฿380 ใช้ ฿338 เหลือ ฿42<br/>เลือก Pocket และยืนยันภายใน K-ePocket"]
 ```
 
 ---
@@ -99,7 +101,7 @@ flowchart TD
 
 #### 2. Classification Architecture:
 - ใช้โมเดล **Ensemble LightGBM + Fine-tuned Bi-Encoder Transformer (WangchanBERTa Base)**
-- จำแนกออกเป็น **48 หมวดหมู่ย่อย** (Sub-categories) ด้วย Benchmark Accuracy **98.4%** และ F1-Score **0.981**
+- จำแนกออกเป็น **48 หมวดหมู่ย่อย** (Sub-categories) ด้วย เป้าหมาย Accuracy **98.4%** และ F1-Score **0.981** ที่ยังต้องทดสอบกับชุดข้อมูลแยกจากชุดฝึก
 - **Binary Obligation Split:** โมเดลจะแปลงผลลัพธ์ออกเป็น 2 หมวดใหญ่:
   1. **Fixed Obligations ($F_t$):** ค่าใช้จ่ายจำเป็นคงที่ที่ยืดหยุ่นไม่ได้ (Inflexible) เช่น ค่าเช่าห้อง, ค่าผ่อนชำระ, ประกัน, ค่าน้ำไฟ
   2. **Discretionary Spend ($D_t$):** ค่าใช้จ่ายผันแปรในชีวิตประจำวัน (Flexible) เช่น กาแฟ, อาหาร, ช้อปปิ้งออนไลน์, สังสรรค์
@@ -127,7 +129,7 @@ $$B_t = B_{t-1} - F_t - D_t + I_t$$
 
 $$\text{Safe Zone \%} = \frac{1}{10,000} \sum_{k=1}^{10,000} \mathbb{I}\left(\min_{t \in [1, T]} B_t^{(k)} \ge ฿1,000\right) \times 100\%$$
 
-- **Daily Safe-to-Spend ($Budget_{\text{daily}}$):** งบประมาณรายวันที่ช่วยควบคุมให้โอกาสความสำเร็จ (Safe Zone) อยู่ในระดับเป้าหมาย $\ge 85\%$*:
+- **Daily Safe-to-Spend ($Budget_{\text{daily}}$):** สูตรงบเริ่มต้นแบบเฉลี่ย ไม่ได้ทำให้ Safe Zone เป็น 85% โดยอัตโนมัติ ต้องประเมินจากการจำลองและปรับงบแยกต่างหาก:
 
 $$Budget_{\text{daily}} = \frac{B_{\text{current}} - \sum_{t=1}^{T} F_t - ฿1,000 (\text{Hard Floor})}{T_{\text{remaining days}}}$$
 
@@ -135,7 +137,7 @@ $$Budget_{\text{daily}} = \frac{B_{\text{current}} - \sum_{t=1}^{T} F_t - ฿1,0
 
 ### 2.3 อัลกอริทึม Smooth Budget Re-balancing (การเกลี่ยชดเชยงบแบบนุ่มนวล)
 
-เมื่อผู้ใช้ใช้จ่ายเกินงบประจำวัน (Overspending) แอปการเงินทั่วไปมักแสดงแถบสีแดง แจ้งเตือนว่า "งบแตก" หรือ "เงินจะหมดสิ้นเดือน" ซึ่งงานวิจัย Behavioral Finance ระบุว่าสร้าง **Ostrich Effect (พฤติกรรมนกกระจอกเทศฝังหัวในทราย)** คือผู้ใช้จะตกใจ เครียด และปิดแอปหนี ไม่เปิดดูอีกเลย
+เมื่อผู้ใช้ใช้จ่ายเกินงบประจำวัน (Overspending) แอปการเงินทั่วไปมักแสดงแถบสีแดง แจ้งเตือนว่า "งบแตก" หรือ "เงินจะหมดสิ้นเดือน" อาจทำให้ผู้ใช้บางคนเครียดและหลีกเลี่ยงการตรวจยอด จึงเสนอการแสดงงบที่ปรับแล้วอย่างสงบ โดยต้องทดสอบผลกับผู้ใช้จริง
 
 **วิธีแก้ปัญหาของ K-Runway (Smooth Budget Re-balancing):**
 เมื่อผู้ใช้ใช้จ่ายเกินงบในวันปัจจุบัน เป็นจำนวน $\Delta S$:
@@ -161,12 +163,12 @@ $$Budget_{\text{new}} = Budget_{\text{old}} - \frac{\Delta S}{N_{\text{remaining
 
 $$Surplus_{\text{leftover}} = \max\left(0, Budget_{\text{daily}} - Spent_{\text{today}}\right)$$
 
-หากผู้ใช้มีงบ ฿380 แต่ใช้จ่ายไปจริงเพียง ฿230 ระบบจะตรวจพบเงินเหลือจริง **฿150.00** โดยเงินก้อนนี้เป็นเงินส่วนเกินที่ถูกพิสูจน์แล้วว่าไม่กระทบต่อค่าเช่าหอพักและภาระผูกพันใดๆ ในอนาคต
+หากมีงบ ฿380 ใช้ ฿338 จะเหลือ ฿42 ต้องตรวจบิล เงินสำรอง และงบวันถัดไปเพิ่มเติมก่อนเสนอจัดสรร ไม่ได้พิสูจน์ความปลอดภัยด้วยส่วนต่างรายวันเพียงอย่างเดียว เพดาน ฿150/ครั้งเป็นค่าสูงสุด ไม่ใช่ยอดออมคงที่
 
 #### 2. Least-Disruptive Intervention (LDI Engine):
 หากสถานะ Safe Zone ของผู้ใช้ลดลงต่ำกว่า 80% LDI Engine จะทำการคำนวณหาสิ่งที่ตัดแล้วกระทบชีวิตน้อยที่สุด:
 - ค้นหา Sub-category ที่มีความยืดหยุ่นสูง (High Price Elasticity & High Discretionary) เช่น หมวด Food Delivery หรือ คาเฟ่/ชานม
-- คำนวณคำแนะนำเชิงตัวเลขที่จับต้องได้: *"ลด Food Delivery ลง ฿80/วัน ดัน Safe Zone กลับสู่ 92% โดยไม่ต้องงดกินข้าวนอกบ้าน"*
+- เสนอคำแนะนำที่มีสมมติฐานชัดเจน: *"ลองลด Food Delivery ฿80/วัน หากลดได้ทุกวันต่ออีก 17 วัน จะเหลือเงินเพิ่ม ฿1,360"* ต้องประเมิน Safe Zone ใหม่ ผลลัพธ์ขึ้นกับข้อมูลและสมมติฐาน จึงไม่รับประกันคะแนนหรือวันที่ถึงเป้าหมายที่ยังไม่ทราบ
 
 ---
 
@@ -191,26 +193,26 @@ $$Surplus_{\text{leftover}} = \max\left(0, Budget_{\text{daily}} - Spent_{\text{
 flowchart TD
     T1["08:30 น. | ตื่นนอนเปิด K PLUS<br/>เหลือบมอง Glance Widget หน้าแรก<br/>เห็นยอด 'วันนี้ใช้ได้ ฿380' (Safe Zone 85%) รู้สึกมั่นใจ ไม่เครียด"]
     --> T2["12:30 น. | มื้อเที่ยง<br/>สแกน QR K PLUS จ่ายค่าข้าว ฿65<br/>Feature Store อัปเดตงบคงเหลือเป็น ฿315 แบบเรียลไทม์"]
-    --> T3["19:00 น. | มื้อเย็น & เดินทาง<br/>จ่ายค่าอาหารและเดินทางไปอีก ฿165<br/>รวมค่าใช้จ่ายหมวดผันแปรวันนี้ ฿230 (จากงบ ฿380)"]
-    --> T4["20:30 น. | ระบบส่ง Smart Prompt<br/>ตรวจพบเงินเหลือ ฿150 แจ้งเตือนสิทธิประโยชน์<br/>'แตะเพื่อเก็บเข้า K-eSavings รับดอกเบี้ย 1.25% ต่อปี* (พร้อมเปิดบัญชีอัตโนมัติ)'"]
-    --> T5["20:31 น. | ผู้ใช้แตะยืนยัน 1-Tap Save<br/>กวาดเงินเก็บเข้าออมทรัพย์ดอกเบี้ยสูงสำเร็จ<br/>ได้รับความภูมิใจในการควบคุมการเงินตนเอง (Financial Dopamine)"]
+    --> T3["19:00 น. | มื้อเย็นและเดินทาง<br/>จ่ายเพิ่ม ฿273 รวมวันนี้ ฿338<br/>จากงบต้นวัน ฿380 เหลือ ฿42"]
+    --> T4["20:30 น. | ตรวจเงินเหลือสิ้นวัน<br/>เสนอจัดสรร ฿42 หลังกันงบ 17 วันถัดไป<br/>เลือก Pocket ใน K-ePocket และตรวจยอด"]
+    --> T5["20:31 น. | ผู้ใช้ยืนยันย้าย ฿42<br/>กระเป๋าหลักเหลือ ฿7,460; Pocket ปลายทางเพิ่ม ฿42<br/>ยอดรวมบัญชี ฿14,662 เท่าเดิม"]
 ```
 
-### ปรัชญา Co-pilot: ทำไม 1-Tap Manual Confirmation ถึงชนะ Auto-Debit อัตโนมัติ?
+### ปรัชญา Co-pilot: Pocket Selection & Manual Confirmation เทียบกับการตั้งหักเงินล่วงหน้า
 
-| มิติการเปรียบเทียบ | ระบบหักเงินอัตโนมัติ (Autonomous Auto-Debit) | ระบบ Co-pilot 1-Tap Confirmation (K-Runway) |
+| มิติการเปรียบเทียบ | ระบบหักเงินอัตโนมัติ (Autonomous Auto-Debit) | ระบบ Co-pilot Pocket Confirmation (K-Runway) |
 | :--- | :--- | :--- |
 | **ความรู้สึกของผู้ใช้** | รู้สึกสูญเสียการควบคุม (Loss of Autonomy), กลัวเงินหาย | รู้สึกมีอำนาจตัดสินใจ (Empowerment & Self-Efficacy) |
 | **พฤติกรรมตอบสนอง** | ตกใจเมื่อเห็นเงินถูกหัก แล้วกดถอนเงินกลับออกมาใช้ทันที | รู้สึกภูมิใจที่ประหยัดเงินได้ และตั้งใจกดยืนยันออมด้วยตัวเอง |
-| **ความเสี่ยง Overdraft** | สูง หากมีบิลฉุกเฉินหักซ้อนเวลาเดียวกัน | ศูนย์ (Zero Risk) เพราะผู้ใช้เป็นผู้ตรวจสอบจังหวะชีวิตตัวเอง |
-| **ความสอดคล้องกับ ธปท.** | เสี่ยงต่อข้อร้องเรียนเรื่องการตัดเงินโดยไม่ได้รับอนุญาต | ผ่านเกณฑ์ Bounded Consent 100% โปร่งใส ตรวจสอบได้ |
+| **ความเสี่ยงสภาพคล่อง** | ต้องตรวจภาระและยอดล่าสุดก่อนหักตามเงื่อนไขที่ผู้ใช้อนุญาต | ตรวจบิล เงินสำรอง และงบวันถัดไปก่อนเสนอและยืนยัน ไม่ใช่ความเสี่ยงศูนย์ |
+| **การกำกับดูแล** | ต้องมีความยินยอมและเปิดเผยเงื่อนไขอย่างเหมาะสม | เสนอให้เก็บหลักฐานการยืนยันทุกครั้งและให้ธนาคารตรวจสอบก่อนใช้จริง |
 
 ---
 
 ## 4. ขั้นตอนการทำงานในมุมมองวิศวกรรมระบบและการเงิน (Core Banking & Engineering Workflow)
 
 ### 4.1 กลไกป้องกันการทำธุรกรรมซ้ำซ้อน (Idempotency & Concurrency Lock)
-เมื่อผู้ใช้กดยืนยัน 1-Tap Sweep:
+เมื่อผู้ใช้กดยืนยัน Pocket Allocation:
 1. Client สร้าง `idempotency_key` ที่เกิดจาก `SHA256(customer_token + date + surplus_amount)`
 2. `savings-sweep-engine` ดึง Distributed Lock ผ่าน **Redis Redlock** ด้วยคีย์ดังกล่าว
 3. หากมีคำสั่งส่งซ้ำ (เช่น ผู้ใช้กดเบิ้ล หรือเครือข่ายกระตุก) ระบบจะส่งคืน Response เดิมโดยไม่มีการตัดเงินรอบสองเด็ดขาด
@@ -218,13 +220,15 @@ flowchart TD
 ### 4.2 ระบบคุ้มกันสภาพคล่อง Hard Floor ฿1,000 (Liquidity Shield Enforcement)
 ก่อนส่งคำสั่งโอนเงินไปยัง Core Banking:
 
-$$\text{Available Balance After Sweep} \ge ฿1,000.00$$
+$$\text{Main Pocket After Allocation} \ge ฿1,000.00 + \text{Protected Future Budget}$$
+
+งบบิลถูกกันใน Pocket ค่าใช้จ่ายประจำเดือนและต้องไม่ถูกนำมานับเป็นเงินเหลือ
 
 หากผลการคำนวณพบว่าเงินในบัญชีหลักจะเหลือต่ำกว่า ฿1,000 (เช่น มีรายการหักบัญชีอื่นตัดเข้ามาก่อนหน้าเสี้ยววินาที) **ระบบจะปฏิเสธคำสั่งออมทันทีโดยอัตโนมัติ (Safe Fail)** และแจ้งผู้ใช้ว่าคงเงินไว้เพื่อความปลอดภัย
 
 ### 4.3 ระบบดึงเงินกลับทันทีและ 24h Reverse Sweep Undo Circuit
 - ภายใน 24 ชั่วโมงหลังจากการกดยืนยันออมเงิน หากผู้ใช้เกิดเหตุฉุกเฉินต้องใช้เงิน จะมีปุ่ม **"ดึงเงินกลับ (Undo)"** บนหน้า Dashboard
-- การกดปุ่มนี้จะส่งคำสั่ง Reverse Internal Transfer ย้ายเงินจาก K-eSavings กลับเข้า Checking ทันทีใน 1 วินาที โดยไม่เสียค่าธรรมเนียมและไม่เสียประวัติ ทำให้ผู้ใช้รู้สึกอุ่นใจ 100% ที่จะออมเงิน
+- เสนอให้ผู้ใช้กดยืนยันย้ายจาก Pocket ปลายทางกลับกระเป๋าหลักภายใน K-ePocket ระบบจริงต้องตรวจยอดและสิทธิ์ก่อนดำเนินการ ไม่กำหนดว่าต้องสำเร็จใน 1 วินาที และยังไม่มีการย้ายกลับในเดโม
 
 ---
 
@@ -232,7 +236,7 @@ $$\text{Available Balance After Sweep} \ge ฿1,000.00$$
 
 ### 5.1 เกณฑ์การคุ้มครองผู้บริโภคของธนาคารแห่งประเทศไทย (BOT Market Conduct)
 - **Non-Coercive User Interface:** ออกแบบ UI ปราศจาก Dark Patterns ไม่มีการติ๊กถูกล่วงหน้า ไม่มีการบังคับโอน และไม่มีการคิดค่าธรรมเนียมแอบแฝง
-- **Clear Information Disclosure:** แสดงอัตราดอกเบี้ยบัญชีปลายทาง (K-eSavings 1.25% ต่อปี* สำหรับยอดไม่เกิน ฿500,000) และเงื่อนไขการถอนอย่างชัดเจนในหน้ากดยืนยัน
+- **Clear Information Disclosure:** แสดง K-ePocket, Pocket ต้นทาง/ปลายทาง, ยอดจัดสรร และผลต่องบใช้จ่ายก่อนยืนยัน ไม่เสนอผลตอบแทนหรือเปิดบัญชีใหม่โดยอัตโนมัติ
 - **Overdraft Protection:** มาตรการ Hard Floor (฿1,000) และ Smooth Re-balancing ช่วยป้องกันไม่ให้บัญชีติดลบหรือโดนค่าปรับจากการตัดบัญชีไม่ผ่าน
 
 ### 5.2 มาตรฐานความยินยอมตาม พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล (PDPA Compliance)

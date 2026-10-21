@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowDown, ArrowRight, ShieldCheck, Lock, Gauge } from 'lucide-react';
+import { ArrowDown, ArrowRight, Clock, Bell, Wallet } from 'lucide-react';
 
 export default function Hero() {
   return (
@@ -21,14 +21,14 @@ export default function Hero() {
 
           {/* Headline */}
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.4rem] font-extrabold text-slate-900 tracking-tight max-w-5xl leading-[1.22] sm:leading-[1.18]">
-            <span className="inline-block">รู้ล่วงหน้าว่าเงินจะพอ</span><span className="inline-block">ถึงสิ้นเดือนไหม</span> <br className="hidden sm:inline" />
-            <span className="inline-block">พร้อม AI แนะนำออมเงินที่คุณอนุมัติเองได้</span> <br className="hidden sm:inline" />
-            <span className="text-[#00A950] inline-block">แบบปลอดภัย ไร้กังวล</span>
+            <span className="inline-block">เงินยังไม่เข้า </span><span className="inline-block">แต่ค่าใช้จ่ายไม่เคยรอ</span> <br className="hidden sm:inline" />
+            <span className="inline-block">รู้ว่าวันนี้ใช้ได้เท่าไหร่</span> <br className="hidden sm:inline" />
+            <span className="text-[#00A950] inline-block">ให้เงินพอถึงก้อนถัดไป</span>
           </h1>
 
           {/* Sub-headline tailored to First Jobbers */}
           <p className="mt-6 text-base sm:text-lg text-slate-600 max-w-3xl leading-relaxed font-normal">
-            เปลี่ยนแอป <strong className="text-slate-900 font-bold">K PLUS</strong> ให้ไม่ใช่แค่สมุดบัญชีที่ดูเงินในอดีต แต่ใช้ Machine Learning คำนวณ <strong className="text-slate-900 font-bold">ยอดใช้จ่ายที่ปลอดภัยต่อวัน</strong> ล่วงหน้าถึงวันเงินเดือนออก พร้อมตรวจจับเงินเหลือจริง <span className="text-[#00A950] font-bold underline decoration-[#00A950] decoration-2 underline-offset-4">(Safe-to-Sweep)</span> และยื่นปุ่มแนะนำให้คุณกดยืนยันออมด้วยตัวเอง 100% ไม่หักเงินโดยพลการ ช่วยให้ <span className="text-slate-900 font-bold">First Jobbers</span> คุมเงินได้อย่างมั่นใจ
+            <strong className="text-slate-900 font-bold">K-Runway</strong> ผู้ช่วยการเงิน AI ในแอปธนาคาร ที่แปลงยอดคงเหลือเป็น <strong className="text-slate-900 font-bold">งบรายวันและโอกาสที่เงินจะพอใช้</strong> รู้ทันช่วงเงินตึง พร้อมชวนเก็บเศษเงินเข้า ePocket ช่วยให้ First Jobbers คุมเงินได้อย่างมั่นใจ
           </p>
 
           {/* Action CTA Buttons */}
@@ -37,7 +37,7 @@ export default function Hero() {
               href="#how-it-works"
               className="w-full sm:w-auto kbank-btn px-7 py-3.5 rounded-xl font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-sm hover:brightness-105 transition-all"
             >
-              <span>ดูขั้นตอนการทำงาน</span>
+              <span>ลองใช้เดโม 2 ขั้นตอน</span>
               <ArrowDown className="w-4 h-4" />
             </a>
 
@@ -45,7 +45,7 @@ export default function Hero() {
               href="#problem"
               className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-white hover:bg-emerald-50 text-slate-800 font-bold text-sm sm:text-base border border-emerald-200 flex items-center justify-center gap-2 transition-colors shadow-sm"
             >
-              <span>สำรวจปัญหาของ First Jobbers</span>
+              <span>ทำไมยอดเงินอย่างเดียวไม่พอ</span>
               <ArrowRight className="w-4 h-4 text-[#00A950]" />
             </a>
           </div>
@@ -55,31 +55,31 @@ export default function Hero() {
             
             <div className="bg-white border-2 border-emerald-100 hover:border-[#00A950] rounded-2xl p-4 shadow-sm flex items-center gap-3.5 transition-colors">
               <div className="w-11 h-11 rounded-xl bg-emerald-50 text-[#00A950] border border-emerald-200 flex items-center justify-center shrink-0">
-                <ShieldCheck className="w-6 h-6" />
+                <Clock className="w-6 h-6" />
               </div>
               <div>
-                <div className="text-sm font-bold text-slate-900">Overdraft Protection</div>
-                <div className="text-xs text-slate-500 mt-0.5">ออกแบบมาเพื่อป้องกันเงินติดลบด้วยเงินสำรองก้นบัญชี (Hard Floor)</div>
+                <div className="text-sm font-bold text-slate-900">รู้ก่อนเงินช็อต</div>
+                <div className="text-xs text-slate-500 mt-0.5">งบวันนี้ + โอกาสเงินพอ แม้ค่าจ้างอาจเข้าช้า</div>
               </div>
             </div>
 
             <div className="bg-white border-2 border-emerald-100 hover:border-[#00A950] rounded-2xl p-4 shadow-sm flex items-center gap-3.5 transition-colors">
               <div className="w-11 h-11 rounded-xl bg-blue-50 text-blue-600 border border-blue-200 flex items-center justify-center shrink-0">
-                <Lock className="w-6 h-6" />
+                <Bell className="w-6 h-6" />
               </div>
               <div>
-                <div className="text-sm font-bold text-slate-900">100% User Consent</div>
-                <div className="text-xs text-slate-500 mt-0.5">ไม่หักเงินเองเด็ดขาด คุณกดยืนยันเองทุกครั้ง</div>
+                <div className="text-sm font-bold text-slate-900">เตือนถูกจังหวะ</div>
+                <div className="text-xs text-slate-500 mt-0.5">ออกแบบให้เตือนเมื่อเสี่ยง พร้อมทางเลือกปรับแผน</div>
               </div>
             </div>
 
             <div className="bg-white border-2 border-emerald-100 hover:border-[#00A950] rounded-2xl p-4 shadow-sm flex items-center gap-3.5 transition-colors">
               <div className="w-11 h-11 rounded-xl bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center shrink-0">
-                <Gauge className="w-6 h-6" />
+                <Wallet className="w-6 h-6" />
               </div>
               <div>
-                <div className="text-sm font-bold text-slate-900">Dynamic Runway Intelligence</div>
-                <div className="text-xs text-slate-500 mt-0.5">บอกยอดใช้ได้ต่อวัน เกลี่ยชดเชยนุ่มนวลเมื่อเกิน</div>
+                <div className="text-sm font-bold text-slate-900">เงินเหลือ ไปต่อได้</div>
+                <div className="text-xs text-slate-500 mt-0.5">ออมเข้า ePocket หรือสะสมไว้ คุณเป็นคนเลือก</div>
               </div>
             </div>
 

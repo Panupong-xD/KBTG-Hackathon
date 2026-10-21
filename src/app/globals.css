@@ -1122,15 +1122,6 @@
   .underline {
     text-decoration-line: underline;
   }
-  .decoration-\[\#00A950\] {
-    text-decoration-color: #00A950;
-  }
-  .decoration-2 {
-    text-decoration-thickness: 2px;
-  }
-  .underline-offset-4 {
-    text-underline-offset: 4px;
-  }
   .antialiased {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -1305,8 +1296,8 @@
     .sm\:flex-row {
       flex-direction: row;
     }
-    .sm\:p-7 {
-      padding: calc(var(--spacing) * 7);
+    .sm\:p-6 {
+      padding: calc(var(--spacing) * 6);
     }
     .sm\:p-8 {
       padding: calc(var(--spacing) * 8);

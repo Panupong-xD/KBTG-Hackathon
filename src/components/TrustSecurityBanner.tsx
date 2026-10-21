@@ -4,30 +4,14 @@ import { Lock, FileCheck, ShieldCheck, RefreshCw, Check } from 'lucide-react';
 
 export default function TrustSecurityBanner() {
   const trustPillars = [
-    {
-      icon: Lock,
-      title: 'Bank-Grade Security',
-      subtitle: 'การเข้ารหัสระดับสถาบันการเงิน',
-      description: 'ส่งข้อมูลผ่าน TLS 1.3 และจัดเก็บด้วย AES-256 Encryption พร้อม Hardware Security Module (HSM) Tokenization'
-    },
-    {
-      icon: FileCheck,
-      title: 'PDPA & Bounded Consent',
-      subtitle: 'ความยินยอมที่โปร่งใสและตรวจสอบได้',
-      description: 'สอดคล้องตาม พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล ผู้ใช้กำหนดเพดานเงินและเงื่อนไขเอง และเพิกถอนได้ตลอด 24 ชม.'
-    },
-    {
-      icon: ShieldCheck,
-      title: 'Overdraft Protection',
-      subtitle: 'ป้องกันบัญชีติดลบด้วย Hard Floor',
-      description: 'มีเงินสำรองก้นบัญชีคุ้มกันเงินติดบัญชี ฿1,000 เสมอ และตรวจสอบตารางหนี้สินและบิลล่วงหน้าก่อนยื่นปุ่มแนะนำออมทุกครั้ง'
-    },
-    {
-      icon: RefreshCw,
-      title: 'Anti-Feedback Loop',
-      subtitle: 'สถาปัตยกรรมตัดลูปความเสี่ยง',
-      description: 'แยกบัญชีเงินออมออกจากระบบคำนวณ Runway ป้องกันไม่ให้การออมเงินไปลดตัวเลข Runway จนเกิดการเข้าใจผิด'
-    }
+    { icon: FileCheck, title: 'DATA WITH CONSENT', subtitle: 'ใช้ข้อมูลอะไร เพื่ออะไร',
+      description: 'ออกแบบให้บอกก่อนว่าใช้ข้อมูลอะไร เพื่อช่วยเรื่องไหน และให้ถอนความยินยอมได้ คุณรู้ที่มาของคำแนะนำ' },
+    { icon: Lock, title: 'YOU DECIDE', subtitle: 'คุณกดเอง เงินถึงจะย้าย',
+      description: 'เลือก Pocket ตรวจยอด แล้วยืนยันทุกครั้ง หากยังไม่ออม เงินสะสมก็ยังอยู่บัญชีหลัก ไม่มีหักอัตโนมัติ' },
+    { icon: ShieldCheck, title: 'LIFE BEFORE SAVING', subtitle: 'ค่าใช้ชีวิตต้องมาก่อน',
+      description: 'ตรวจเงินที่มี กันบิล เงินสำรอง และงบวันถัดไปก่อนชวนออม เงินเก็บควรช่วยให้ไปต่อ ไม่ทำให้วันนี้ตึงกว่าเดิม' },
+    { icon: RefreshCw, title: 'CLEAR ABOUT UNCERTAINTY', subtitle: 'เห็นโอกาส เข้าใจความเสี่ยง',
+      description: 'เปอร์เซ็นต์บอกโอกาส ไม่ใช่คำรับประกัน รายรับหรือหนี้ที่ธนาคารมองไม่เห็นต้องเติมให้ครบ เพื่อให้แผนใกล้ชีวิตจริง' },
   ];
 
   return (
@@ -37,13 +21,13 @@ export default function TrustSecurityBanner() {
         {/* Header */}
         <div className="text-center max-w-2xl mx-auto mb-14">
           <span className="inline-block text-xs font-bold text-[#00A950] bg-[#00A950]/10 px-3 py-1 rounded-full mb-3">
-            SECURITY & COMPLIANCE
+            TRUST BY DESIGN
           </span>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
-            มาตรฐานความปลอดภัยระดับธนาคาร
+            AI ช่วยคิด คุณคุมเงิน
           </h2>
           <p className="mt-3 text-slate-600 text-sm sm:text-base leading-relaxed">
-            ออกแบบตามมาตรฐานความมั่นคงปลอดภัยและธรรมาภิบาลข้อมูลทางการเงิน
+            ความยินยอมและสิทธิ์ตัดสินใจ คือหลักการที่เราใช้ตั้งแต่ต้นในการออกแบบ K-Runway
           </p>
         </div>
 
@@ -73,7 +57,7 @@ export default function TrustSecurityBanner() {
 
                 <div className="mt-5 pt-3 border-t border-slate-200 flex items-center gap-1.5 text-xs text-[#00A950] font-semibold">
                   <Check className="w-3.5 h-3.5" />
-                  <span>Verified Standard</span>
+                  <span>หลักการออกแบบ</span>
                 </div>
               </div>
             );

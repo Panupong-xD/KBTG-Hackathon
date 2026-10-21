@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'K-Runway & Predictive Auto-Saving | Innovation Concept Prototype',
-  description: 'นวัตกรรมพยากรณ์กระแสเงินสดล่วงหน้าและระบบออมเงินกึ่งอัตโนมัติสำหรับคนเริ่มทำงาน (Prototype Concept)',
+  title: 'K-Runway | รู้ก่อนเงินตึง · KBTG Hackathon',
+  description: 'เงินยังไม่เข้า แต่ค่าใช้จ่ายไม่เคยรอ พบกับ K-Runway แนวคิด AI Co-pilot สำหรับ First Jobber รู้วันนี้ใช้ได้เท่าไหร่ ให้เงินพอถึงก้อนถัดไป พร้อมออมเข้า K-ePocket ที่คุณเลือกเอง',
 };
 
 export default function RootLayout({

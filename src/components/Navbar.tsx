@@ -34,11 +34,9 @@ export default function Navbar() {
               <div className="flex flex-col justify-center">
                 <div className="font-extrabold text-slate-900 text-base sm:text-lg tracking-tight leading-none flex items-center gap-1.5">
                   <span>K-Runway</span>
-                  <span className="text-[#00A950] font-bold">&</span>
-                  <span>Auto-Save</span>
                 </div>
                 <span className="text-[10px] font-bold text-[#00A950] tracking-wider uppercase leading-none mt-1">
-                  Innovation Concept Prototype
+                  KBTG Hackathon · Concept Demo
                 </span>
               </div>
             </a>
@@ -47,13 +45,13 @@ export default function Navbar() {
           {/* Desktop Navigation Links (Spacious, elegant, non-cramped) */}
           <nav className="hidden lg:flex items-center gap-7 xl:gap-9 text-sm font-medium text-slate-600">
             <a href="#problem" className="hover:text-[#00A950] transition-colors">
-              ปัญหาที่พบ
+              ทำไมต้อง K-Runway
             </a>
             <a href="#how-it-works" className="hover:text-[#00A950] transition-colors">
-              ขั้นตอนการทำงาน
+              เดโม 2 ขั้นตอน
             </a>
             <a href="#features" className="hover:text-[#00A950] transition-colors">
-              สถาปัตยกรรม AI
+              เบื้องหลัง AI
             </a>
             <a href="#security" className="hover:text-[#00A950] transition-colors">
               ความปลอดภัย
@@ -69,7 +67,7 @@ export default function Navbar() {
               href="#how-it-works"
               className="kbank-btn px-4 py-2 text-xs font-bold rounded-xl shadow-sm hover:brightness-105 flex items-center gap-1.5 transition-all"
             >
-              <span>ทดลอง Walkthrough</span>
+              <span>ลองใช้เดโม</span>
               <ArrowUpRight className="w-3.5 h-3.5" />
             </a>
           </div>
@@ -95,21 +93,21 @@ export default function Navbar() {
             onClick={() => setMobileMenuOpen(false)}
             className="block px-3 py-2 text-sm font-semibold text-slate-700 hover:text-[#00A950]"
           >
-            ปัญหาที่พบ (Pain Points)
+            ทำไมต้อง K-Runway
           </a>
           <a
             href="#how-it-works"
             onClick={() => setMobileMenuOpen(false)}
             className="block px-3 py-2 text-sm font-semibold text-slate-700 hover:text-[#00A950]"
           >
-            ขั้นตอนการทำงาน (Walkthrough)
+            เดโม 2 ขั้นตอน
           </a>
           <a
             href="#features"
             onClick={() => setMobileMenuOpen(false)}
             className="block px-3 py-2 text-sm font-semibold text-slate-700 hover:text-[#00A950]"
           >
-            สถาปัตยกรรม AI
+            เบื้องหลัง AI
           </a>
           <a
             href="#security"
@@ -131,7 +129,7 @@ export default function Navbar() {
               onClick={() => setMobileMenuOpen(false)}
               className="w-full text-center py-2.5 rounded-xl kbank-btn text-xs font-bold block"
             >
-              ทดลอง Walkthrough
+              ลองใช้เดโม
             </a>
           </div>
         </div>
