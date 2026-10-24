@@ -28,7 +28,7 @@ export default function Hero() {
 
           {/* Sub-headline tailored to First Jobbers */}
           <p className="mt-6 text-base sm:text-lg text-slate-600 max-w-3xl leading-relaxed font-normal">
-            <strong className="text-slate-900 font-bold">K-Runway</strong> ผู้ช่วยการเงิน AI ในแอปธนาคาร ที่แปลงยอดคงเหลือเป็น <strong className="text-slate-900 font-bold">งบรายวันและโอกาสที่เงินจะพอใช้</strong> รู้ทันช่วงเงินตึง พร้อมชวนเก็บเศษเงินเข้า ePocket ช่วยให้ First Jobbers คุมเงินได้อย่างมั่นใจ
+            <strong className="text-slate-900 font-bold">K-Runway</strong> แนวคิดผู้ช่วยการเงิน AI บน K PLUS สำหรับ First Jobber ที่รายได้ไม่แน่นอน แนะนำ <strong className="text-slate-900 font-bold">งบวันนี้และโอกาสเงินพอ</strong> คิดเผื่อบิลและเงินเข้าช้า พร้อมชวนเก็บเงินที่ใช้ไม่ถึงงบเข้า <span className="whitespace-nowrap">K-ePocket</span> ที่คุณเลือก
           </p>
 
           {/* Action CTA Buttons */}
@@ -58,8 +58,8 @@ export default function Hero() {
                 <Clock className="w-6 h-6" />
               </div>
               <div>
-                <div className="text-sm font-bold text-slate-900">รู้ก่อนเงินช็อต</div>
-                <div className="text-xs text-slate-500 mt-0.5">งบวันนี้ + โอกาสเงินพอ แม้ค่าจ้างอาจเข้าช้า</div>
+                <div className="text-sm font-bold text-slate-900">รู้ก่อนเงินตึง</div>
+                <div className="text-xs text-slate-500 mt-0.5">เห็นงบวันนี้ คิดเผื่อวันที่เงินเข้าช้า</div>
               </div>
             </div>
 
@@ -69,7 +69,7 @@ export default function Hero() {
               </div>
               <div>
                 <div className="text-sm font-bold text-slate-900">เตือนถูกจังหวะ</div>
-                <div className="text-xs text-slate-500 mt-0.5">ออกแบบให้เตือนเมื่อเสี่ยง พร้อมทางเลือกปรับแผน</div>
+                <div className="text-xs text-slate-500 mt-0.5">เตือนเมื่อเสี่ยงขึ้น พร้อมงบที่ปรับตามสถานการณ์</div>
               </div>
             </div>
 
@@ -78,8 +78,8 @@ export default function Hero() {
                 <Wallet className="w-6 h-6" />
               </div>
               <div>
-                <div className="text-sm font-bold text-slate-900">เงินเหลือ ไปต่อได้</div>
-                <div className="text-xs text-slate-500 mt-0.5">ออมเข้า ePocket หรือสะสมไว้ คุณเป็นคนเลือก</div>
+                <div className="text-sm font-bold text-slate-900">เงินเหลือมีเป้าหมาย</div>
+                <div className="text-xs text-slate-500 mt-0.5">เก็บเข้า Pocket หรือสะสมไว้ คุณเลือกเอง</div>
               </div>
             </div>
 

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { ChevronDown, ChevronUp, Cpu } from 'lucide-react';
+import { dailyBudget, demoFinance } from '../lib/pocket-saving';
 
 export default function FeatureDeepDive() {
   const [showTechDetails, setShowTechDetails] = useState<boolean>(false);
@@ -19,7 +20,7 @@ export default function FeatureDeepDive() {
             คิดเผื่อเงินตึง เปิดทางให้เงินเก็บ
           </h2>
           <p className="mt-2 text-slate-600 text-sm sm:text-base">
-            ต่อยอดข้อมูลธุรกรรมให้ช่วยตัดสินใจก่อนเงินขาด และต่อยอด K-ePocket ให้เก็บเงินได้ถูกจังหวะ
+            ต่อยอดแนวคิดการตั้งงบของ My Budget ด้วยคำแนะนำจากข้อมูลเงินเข้า–ออก สำหรับคนที่รายได้ไม่แน่นอน พร้อมเชื่อมการออมเข้า K-ePocket
           </p>
         </div>
 
@@ -79,21 +80,21 @@ export default function FeatureDeepDive() {
 
                     {/* Altitude Radar Horizon Grid Lines */}
                     <line x1="40" y1="52" x2="500" y2="52" stroke="#E2E8F0" strokeWidth="1" strokeDasharray="3 3" />
-                    <text x="35" y="55" textAnchor="end" fill="#94A3B8" fontSize="8.5">฿9k</text>
+                    <text x="35" y="55" textAnchor="end" fill="#94A3B8" fontSize="8.5">สูง</text>
 
                     <line x1="40" y1="86" x2="500" y2="86" stroke="#E2E8F0" strokeWidth="1" strokeDasharray="3 3" />
-                    <text x="35" y="89" textAnchor="end" fill="#94A3B8" fontSize="8.5">฿5.5k</text>
+                    <text x="35" y="89" textAnchor="end" fill="#94A3B8" fontSize="8.5">พอใช้</text>
 
                     <line x1="40" y1="140" x2="500" y2="140" stroke="#E2E8F0" strokeWidth="1" strokeDasharray="3 3" />
-                    <text x="35" y="143" textAnchor="end" fill="#94A3B8" fontSize="8.5">฿3k</text>
+                    <text x="35" y="143" textAnchor="end" fill="#94A3B8" fontSize="8.5">ลดลง</text>
 
                     <line x1="40" y1="190" x2="500" y2="190" stroke="#FCA5A5" strokeWidth="1.2" strokeDasharray="4 4" />
-                    <text x="35" y="193" textAnchor="end" fill="#EF4444" fontSize="8.5" fontWeight="bold">฿1k</text>
+                    <text x="35" y="193" textAnchor="end" fill="#EF4444" fontSize="8.5" fontWeight="bold">สำรอง</text>
 
                     {/* Danger Zone Floor (Below ฿1,000) */}
                     <rect x="40" y="190" width="460" height="50" rx="8" fill="url(#runwayDangerZone)" />
                     <text x="48" y="218" fill="#DC2626" fontSize="10" fontWeight="bold" letterSpacing="0.4">
-                      DANGER ZONE : ยอดคงเหลือต่ำกว่า ฿1,000
+                      ช่วงที่เริ่มใช้เงินสำรอง
                     </text>
 
                     {/* Safe Glide Slope Shaded Area (Passes through ฿15k at Day 12) */}
@@ -130,7 +131,7 @@ export default function FeatureDeepDive() {
                     {/* AI Safe-to-Spend Floating Badge */}
                     <rect x="175" y="68" width="152" height="26" rx="13" fill="#00A950" filter="drop-shadow(0 2px 4px rgba(0,169,80,0.25))" />
                     <text x="251" y="85" textAnchor="middle" fill="#FFFFFF" fontSize="11" fontWeight="bold">
-                      Safe-to-Spend : ฿280 / วัน
+                      งบแนะนำ : ฿{dailyBudget} / วัน
                     </text>
 
                     {/* Payday Safe Touchdown (Day 30) */}
@@ -166,11 +167,11 @@ export default function FeatureDeepDive() {
               </div>
               <div className="bg-emerald-50/70 border border-emerald-200/80 rounded-xl p-2.5 text-center">
                 <span className="text-slate-500 block text-[11px] font-medium">เมื่อปรับงบ</span>
-                <strong className="text-[#008744] font-bold">โอกาสเงินพอ 30 วัน 87%*</strong>
+                <strong className="text-[#008744] font-bold">โอกาสเงินพอ {demoFinance.daysIncludingToday} วัน {demoFinance.illustrativeProbability}%*</strong>
               </div>
             </div>
             <div className="mt-2 text-right">
-              <span className="text-[10px] text-slate-400 font-normal">*กราฟและ 87% เป็นตัวอย่างประกอบแนวคิด ไม่ใช่ผลโมเดลจริงหรือการรับประกัน</span>
+              <span className="text-[10px] text-slate-400 font-normal">*เส้นกราฟสื่อแนวคิด ไม่ใช่ยอดเงินจริงตามสัดส่วน ส่วน {demoFinance.illustrativeProbability}% เป็นค่าตัวอย่างที่ยังไม่ได้ทดสอบกับข้อมูลจริง</span>
             </div>
           </div>
 
@@ -191,7 +192,7 @@ export default function FeatureDeepDive() {
                 Pocket Co-pilot · เงินเหลือมีเป้าหมาย
               </h3>
               <p className="text-xs sm:text-sm text-slate-500 mb-6">
-                ใช้ต่ำกว่างบ ฿50? เปลี่ยนเป็นเงินเก็บใน K-ePocket ที่คุณเลือก หรือสะสมไว้ก่อน ทุกการออมเริ่มจากคุณยืนยัน
+                วันนี้ใช้ ฿230 จากงบ ฿280 เหลือ ฿50 เลือกเก็บเข้า Pocket หรือสะสมไว้ก่อน เงินจะย้ายเมื่อคุณยืนยัน
               </p>
 
               {/* Stage: Clean Symbolic Vector Infographic (Wallet ➔ Smart Sweep ➔ Locked Vault) */}
@@ -230,22 +231,22 @@ export default function FeatureDeepDive() {
 
                     {/* Tier 1: Micro-Surplus (Outflow) */}
                     <rect x="30" y="66" width="165" height="48" rx="10" fill="#ECFDF5" stroke="#A7F3D0" strokeWidth="1" />
-                    <text x="42" y="86" fill="#065F46" fontSize="10" fontWeight="bold">Micro-Surplus</text>
+                    <text x="42" y="86" fill="#065F46" fontSize="10" fontWeight="bold">เงินเหลือวันนี้</text>
                     <text x="183" y="87" textAnchor="end" fill="#008744" fontSize="13" fontWeight="900">+฿50</text>
                     <text x="42" y="102" fill="#059669" fontSize="8">เงินเหลือหลังใช้ ฿230</text>
 
                     {/* Tier 2: Daily Budget (Operating) */}
                     <rect x="30" y="126" width="165" height="48" rx="10" fill="#F8FAFC" stroke="#E2E8F0" strokeWidth="1" />
-                    <text x="42" y="146" fill="#334155" fontSize="10" fontWeight="bold">Daily Budget</text>
+                    <text x="42" y="146" fill="#334155" fontSize="10" fontWeight="bold">งบวันนี้</text>
                     <text x="183" y="147" textAnchor="end" fill="#0F172A" fontSize="13" fontWeight="900">฿280</text>
                     <text x="42" y="162" fill="#64748B" fontSize="8">งบต้นวัน รวมส่วนที่เหลือ ฿50</text>
 
                     {/* Tier 3: Hard Floor Shield (Protection) */}
                     <rect x="30" y="186" width="165" height="68" rx="10" fill="#EFF6FF" stroke="#BFDBFE" strokeWidth="1" />
-                    <text x="42" y="208" fill="#1E40AF" fontSize="10" fontWeight="bold">Hard Floor</text>
+                    <text x="42" y="208" fill="#1E40AF" fontSize="10" fontWeight="bold">เงินสำรองขั้นต่ำ*</text>
                     <text x="183" y="209" textAnchor="end" fill="#1D4ED8" fontSize="13" fontWeight="900">฿1,000</text>
-                    <text x="42" y="226" fill="#3B82F6" fontSize="8">เงินก้นบัญชี (กันชนฉุกเฉิน)</text>
-                    <text x="42" y="240" fill="#60A5FA" fontSize="7.5">ตรวจงบวันถัดไปก่อนย้ายเงิน</text>
+                    <text x="42" y="226" fill="#3B82F6" fontSize="8">กันไว้เผื่อค่าใช้จ่ายจำเป็น</text>
+                    <text x="42" y="240" fill="#60A5FA" fontSize="7.5">เผื่องบระหว่างรอรับเงินก่อนออม</text>
 
                     {/* ========================================================= */}
                     {/* CENTER BRIDGE: Transfer Streams                           */}
@@ -325,7 +326,7 @@ export default function FeatureDeepDive() {
                 <span className="text-slate-500 block text-[11px] font-medium">RESERVE BEFORE SAVING</span>
                 <strong className="text-blue-800 font-bold">
                   กันเงินสำรองก่อนเสนอออม <br />
-                  (บิล + เงินสำรอง + งบวันถัดไป)
+                  (บิล + เงินสำรอง + งบระหว่างรอรับเงิน)
                 </strong>
               </div>
               <div className="bg-emerald-50/70 border border-emerald-200/80 rounded-xl p-2.5 text-center flex flex-col justify-center">
@@ -337,7 +338,7 @@ export default function FeatureDeepDive() {
               </div>
             </div>
             <div className="mt-2 text-right">
-              <span className="text-[10px] text-slate-400 font-normal">*เงินสำรอง ฿1,000 และเพดาน ฿150 เป็นค่าตัวอย่าง; การย้ายกลับเป็นแนวคิดต่อยอด ยังไม่มีในเดโม</span>
+              <span className="text-[10px] text-slate-400 font-normal">*เงินสำรอง ฿1,000 และเพดาน ฿150 เป็นค่าทดลองของทีม การยกเลิกใน 24 ชั่วโมงเป็นแนวคิดที่ยังไม่มีในเดโม</span>
             </div>
           </div>
 
@@ -350,11 +351,13 @@ export default function FeatureDeepDive() {
           <button
             type="button"
             onClick={() => setShowTechDetails(!showTechDetails)}
+            aria-expanded={showTechDetails}
+            aria-controls="technical-details"
             className="w-full bg-white hover:bg-slate-100/80 border border-slate-200/90 rounded-2xl p-4 text-xs sm:text-sm font-bold text-slate-700 flex items-center justify-between shadow-sm transition-all"
           >
             <span className="flex items-center gap-2">
               <Cpu className="w-4 h-4 text-[#00A950]" />
-              <span>เบื้องหลังไอเดีย: AI คิดและกันความเสี่ยงอย่างไร</span>
+              <span>ข้อมูล โมเดล และหลักการทำงาน</span>
             </span>
             <span className="flex items-center gap-1 text-slate-400 text-xs font-normal">
               {showTechDetails ? 'ย่อรายละเอียด' : 'ขยายดูรายละเอียด'}
@@ -364,40 +367,41 @@ export default function FeatureDeepDive() {
 
           {/* Collapsible Content */}
           {showTechDetails && (
-            <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div id="technical-details" className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
                 <div className="text-xs font-bold text-[#00A950] mb-1 uppercase tracking-wide">
-                  1. Predictive Time-Series
+                  1. Data & Model
                 </div>
                 <h4 className="text-sm font-bold text-slate-900 mb-1">
-                  Monte Carlo & Smooth Re-balancing
+                  ML พยากรณ์ · Monte Carlo ประเมินความเสี่ยง
                 </h4>
                 <p className="text-xs text-slate-600 leading-relaxed">
-                  พยากรณ์ยอดและจังหวะเงินเข้า–ออก แล้วใช้ Monte Carlo ประเมินหลายสถานการณ์ใน 30 วัน เพื่อแนะนำงบที่สอดคล้องกับความเสี่ยง หากรายรับเลื่อน แนวคิดระบบจะปรับงบและเตือนให้ทัน
+                  แนวคิดระบบใช้ข้อมูล 3 ส่วน: ยอดเงินและธุรกรรม บิลและภาระผ่อน ประวัติรายรับ พร้อมให้เติมเงินรอรับได้ตามสมัครใจ โดยไม่นับเป็นยอดเงินในบัญชี
                 </p>
+                <p className="mt-2 text-xs text-slate-600 leading-relaxed">ML ช่วยพยากรณ์รายจ่าย บิลประจำ และโอกาสเงินเข้าช้า จากนั้น Monte Carlo จำลองเงินเข้า–ออกหลายพันสถานการณ์ใน 30 วัน เพื่อหางบที่สอดคล้องกับระดับความเสี่ยง ทั้งสองส่วนยังต้องทดสอบกับข้อมูลจริง</p>
               </div>
 
               <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
                 <div className="text-xs font-bold text-blue-600 mb-1 uppercase tracking-wide">
-                  2. Micro-Surplus Detection
+                  2. Saving Guardrails
                 </div>
                 <h4 className="text-sm font-bold text-slate-900 mb-1">
-                  End-of-Day Surplus & Pocket Selection
+                  ออมได้ โดยยังมีเงินพร้อมใช้
                 </h4>
                 <p className="text-xs text-slate-600 leading-relaxed">
-                  เสนอเฉพาะเงินเหลือที่ไม่แตะบิล เงินสำรอง และงบวันถัดไป จำกัด ฿150/ครั้ง ให้เลือก Pocket และยืนยันก่อนย้ายทุกครั้ง แนวคิดย้ายกลับก็ต้องให้ผู้ใช้ยืนยันเอง
+                  เสนอออมจากส่วนที่ใช้ไม่ถึงงบ หลังกันบิล เงินสำรอง และงบระหว่างรอรับเงิน จำกัด ฿150/ครั้งและเหลือเงินสำรองอย่างน้อย ฿1,000 ตามค่าทดลองของทีม เลือก Pocket และยืนยันก่อนย้ายทุกครั้ง
                 </p>
               </div>
 
               <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
                 <div className="text-xs font-bold text-emerald-700 mb-1 uppercase tracking-wide">
-                  3. Anti-Feedback Loop
+                  3. Virtual Accumulation
                 </div>
                 <h4 className="text-sm font-bold text-slate-900 mb-1">
                   เงินสะสม ไม่เพิ่มงบให้ใช้เอง
                 </h4>
                 <p className="text-xs text-slate-600 leading-relaxed">
-                  แยกเงินสะสมออกจากงบวันนี้ ลดเงินสะสมตามยอดที่ออมแล้ว และใช้ชดเชยวันที่เกินงบก่อนเกลี่ยส่วนที่ขาด แนวคิดสิ้นรอบเปิดให้เลือกเก็บเข้า K-ePocket หรือยกยอดต่อ ยังไม่อยู่ในเดโม
+                  เงินสะสมเป็นยอดที่ติดตามในบัญชีหลัก ไม่ใช่เงินเพิ่ม ลดตามยอดที่ออมแล้ว และใช้รองรับวันที่เกินงบก่อนเกลี่ยส่วนที่ขาด โดยไม่ดึงเงินจาก Pocket ออม แนวคิดสิ้นรอบให้เลือกเก็บหรือยกยอดต่อ ยังไม่อยู่ในเดโม
                 </p>
               </div>
 
@@ -406,10 +410,10 @@ export default function FeatureDeepDive() {
                   4. Consent by Design
                 </div>
                 <h4 className="text-sm font-bold text-slate-900 mb-1">
-                  PDPA & Bounded Consent
+                  รู้ขอบเขตข้อมูล คุณเลือกให้ใช้ได้
                 </h4>
                 <p className="text-xs text-slate-600 leading-relaxed">
-                  แนวทางระบบจริงให้ผู้ใช้ตั้งเพดานและเงื่อนไขได้ รวมถึงปิดคำแนะนำหรือถอนความยินยอม เดโมแสดงการเลือก Pocket และยืนยันยอด โดยยังไม่มีหน้าตั้งค่าเงื่อนไข
+                  แนวทางระบบจริงจะแจ้งประเภทข้อมูลและวัตถุประสงค์ก่อนขอความยินยอม ผู้ใช้ใหม่เริ่มจากคำถามสั้น ๆ 4 ข้อ ส่วนเงินและภาระจากช่องทางอื่นต้องให้ผู้ใช้ช่วยยืนยัน เพื่อไม่ให้แผนประเมินจากข้อมูลเพียงบางส่วน
                 </p>
               </div>
             </div>

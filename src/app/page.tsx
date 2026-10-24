@@ -12,25 +12,25 @@ import Footer from '../components/Footer';
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-white text-slate-900 selection:bg-[#00A950] selection:text-white font-sans">
-      {/* 1. Sticky Navigation Bar with KBank Web Icon */}
+      {/* 1. Navigation with the custom K-Runway mark */}
       <Navbar />
 
       {/* 2. Hero Section - Data Science Track for First Jobbers */}
       <Hero />
 
-      {/* 3. Problem Statement (01 - 04 Grid with KBank Green Numbers) */}
+      {/* 3. Problems K-Runway aims to address */}
       <ProblemGrid />
 
       {/* 4. How It Works: Split-Screen Scrollytelling Walkthrough with Phone Mockup */}
       <Scrollytelling />
 
-      {/* 5. Deep-Dive: 2 Merged Superpowers (AI Brain & Auto-Save Engine) */}
+      {/* 5. Cash-flow prediction and user-confirmed saving */}
       <FeatureDeepDive />
 
-      {/* 6. Architecture & Trust Banner (Compliance & Security) */}
+      {/* 6. Trust and user control principles */}
       <TrustSecurityBanner />
 
-      {/* 7. K PLUS Innovation Concept Showcase (Restored beloved design without early access modal) */}
+      {/* 7. Concept and intended outcomes */}
       <InnovationConcept />
 
       {/* 8. Innovation Footer with KBank Brand */}

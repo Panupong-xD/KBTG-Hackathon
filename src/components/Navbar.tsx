@@ -57,7 +57,7 @@ export default function Navbar() {
               ความปลอดภัย
             </a>
             <a href="#concept" className="hover:text-[#00A950] transition-colors">
-              Concept
+              แนวคิดและเป้าหมาย
             </a>
           </nav>
 
@@ -76,6 +76,8 @@ export default function Navbar() {
           <div className="flex lg:hidden">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label={mobileMenuOpen ? 'ปิดเมนู' : 'เปิดเมนู'}
+              aria-expanded={mobileMenuOpen}
               className="p-2 rounded-lg text-slate-700 hover:text-[#00A950]"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -121,7 +123,7 @@ export default function Navbar() {
             onClick={() => setMobileMenuOpen(false)}
             className="block px-3 py-2 text-sm font-semibold text-slate-700 hover:text-[#00A950]"
           >
-            Concept
+            แนวคิดและเป้าหมาย
           </a>
           <div className="pt-2">
             <a

@@ -20,7 +20,7 @@ export default function InnovationConcept() {
           </h2>
 
           <p className="mt-4 text-emerald-50 text-sm sm:text-base max-w-xl mx-auto leading-relaxed font-normal">
-            จากแอปที่บอกว่า “เหลือเท่าไหร่” สู่ผู้ช่วยที่บอกว่า “วันนี้ใช้ได้เท่าไหร่” คิดเผื่อวันที่เงินเข้าช้า และเปิดทางให้เงินเก็บเริ่มจากเงินเหลือเล็ก ๆ ที่คุณเลือกเอง
+            เพิ่มมุมมอง “วันนี้ใช้ได้เท่าไหร่” ให้การจัดการเงินบน K PLUS คิดเผื่อวันที่เงินเข้าช้า ช่วยวางแผนก่อนต้องดึงเงินเก็บมาใช้ และเติมเงินออมจากส่วนที่ใช้ไม่ถึงงบ
           </p>
 
           {/* Action Buttons (Restored without Early Prototype) */}
@@ -40,6 +40,8 @@ export default function InnovationConcept() {
               ดูเบื้องหลังไอเดีย
             </a>
           </div>
+
+          <p className="mt-6 text-emerald-50 text-xs leading-relaxed max-w-2xl mx-auto">เป้าหมายที่ต้องทดสอบต่อ: ผู้ใช้มีเงินพอระหว่างรอรับเงินและเก็บออมได้ต่อเนื่องขึ้น ส่วน K PLUS มีโอกาสเพิ่มการใช้งานและการออมใน K-ePocket จากบริการที่ช่วยผู้ใช้วางแผนได้ทุกวัน</p>
 
           <p className="mt-6 text-emerald-50 text-xs leading-relaxed max-w-2xl mx-auto">
             ทำไมต้องเตือนก่อน? งานวิจัย FCA ในอังกฤษพบว่า การสมัครแจ้งเตือนให้อัตโนมัติลดค่าธรรมเนียมเบิกเกินบัญชีแบบไม่มีวงเงินได้ 25%*

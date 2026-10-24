@@ -2,8 +2,8 @@
 export const demoFinance = {
   openingBalance: 9000, fixedBills: 3500, hardFloor: 1000,
   openingAccumulated: 100, pendingIncome: 8000, daysUntilIncome: 12,
-  daysIncludingToday: 30, spentToday: 230, overspentToday: 340,
-  sweepCap: 150, illustrativeSafeZone: 87,
+  daysIncludingToday: 30, spentToday: 230,
+  sweepCap: 150, illustrativeProbability: 86,
 } as const;
 export const dailyBudget = 280;
 export const pockets = [

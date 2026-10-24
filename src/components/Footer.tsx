@@ -28,10 +28,10 @@ export default function Footer() {
               </div>
             </div>
             <p className="text-slate-600 text-xs leading-relaxed max-w-md">
-              AI Co-pilot สำหรับ First Jobber อายุ 22–30 ปี เริ่มจากฟรีแลนซ์ที่รายได้ไม่แน่นอน รู้ก่อนเงินตึง และให้เงินเหลือไปถึงเป้าหมายใน K-ePocket
+              แนวคิดผู้ช่วยการเงิน AI สำหรับ First Jobber ที่รายได้ไม่แน่นอน ทั้งฟรีแลนซ์และคนทำงานที่รับงานเสริม วางแผนให้เงินพอใช้ พร้อมเก็บเงินเข้า K-ePocket ที่คุณเลือก
             </p>
             <div className="text-[11px] text-slate-500 font-medium">
-              ต้นแบบสำหรับ KBTG Hackathon ใช้ข้อมูลและเปอร์เซ็นต์จำลอง ไม่มีการโอนเงินจริง และไม่ใช่บริการทางการของธนาคาร กลุ่มหลักยังอยู่ระหว่างยืนยันด้วย survey; การแจ้งเตือนและการเลือกจัดการเงินสิ้นรอบเป็นแนวคิดต่อยอด
+              ต้นแบบสำหรับ KBTG Kampus Hackathon 2026 ใช้ข้อมูลและเปอร์เซ็นต์ตัวอย่าง ไม่มีการโอนเงินจริง และไม่ใช่บริการทางการของธนาคาร กำลังศึกษากลุ่มเป้าหมายเพิ่มเติม ส่วนการแจ้งเตือน การจัดการเงินสิ้นรอบ และการยกเลิกใน 24 ชั่วโมงยังไม่อยู่ในเดโม
             </div>
           </div>
 
@@ -43,7 +43,7 @@ export default function Footer() {
             <ul className="space-y-2 text-xs">
               <li>
                 <a href="#problem" className="hover:text-[#00A950] transition-colors">
-                  01. ปัญหาของ First Jobbers
+                  01. โจทย์ของคนเริ่มทำงาน
                 </a>
               </li>
               <li>
@@ -63,7 +63,7 @@ export default function Footer() {
               </li>
               <li>
                 <a href="#concept" className="hover:text-[#00A950] transition-colors">
-                  05. ไอเดียที่เราอยากสร้าง
+                  05. เป้าหมายของ K-Runway
                 </a>
               </li>
             </ul>
@@ -75,11 +75,11 @@ export default function Footer() {
               เบื้องหลังต้นแบบ
             </h4>
             <ul className="space-y-2 text-xs text-slate-600">
-              <li>• Data Science & Time-Series ML</li>
-              <li>• Monte Carlo Probabilistic Sim</li>
-              <li>• Least-Disruptive Intervention (LDI)</li>
-              <li>• Next.js & React (TypeScript)</li>
-              <li>• Tailwind CSS & KBank Palette</li>
+              <li>• ML สำหรับแนวโน้มเงินเข้า–ออก</li>
+              <li>• Monte Carlo จำลองความไม่แน่นอน</li>
+              <li>• ชวนออมเมื่อมีเงินพร้อมเก็บ</li>
+              <li>• เงินสะสมในบัญชีหลัก</li>
+              <li>• เลือก Pocket และยืนยันเอง</li>
             </ul>
           </div>
 
@@ -88,7 +88,7 @@ export default function Footer() {
         {/* Bottom */}
         <div className="pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
           <div>
-            © 2026 K-Runway Prototype. Designed for KBTG Data Science Track Innovation Concept (Non-official).
+            © 2026 K-Runway · ทีม KBTG Bro · KBTG Kampus Hackathon · Track 2: Data Science & Intelligence
           </div>
 
           <button

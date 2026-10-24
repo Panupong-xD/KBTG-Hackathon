@@ -1,26 +1,26 @@
 'use client';
 
-import { Check, X } from 'lucide-react';
-import { dailyBudget, demoFinance } from '../lib/pocket-saving';
+import { Check, Info } from 'lucide-react';
+import { demoFinance } from '../lib/pocket-saving';
 
 export default function ProblemGrid() {
   const problems = [
     { id: '01', title: 'INCOME TIMING GAP', thaiTitle: 'งานจบแล้ว แต่เงินยังไม่มา',
-      description: 'รายจ่ายและบิลตัดตรงเวลาทุกเดือน แต่ค่าจ้างฟรีแลนซ์เข้าไม่แน่นอน ช่วงรอยต่อที่เงินก้อนถัดไปยังไม่เข้า จึงมักจบด้วยการรูดบัตร ผ่อน หรือยืมประคอง',
-      traditionalApp: 'เห็นแค่ยอดคงเหลือวันนี้ แต่ไม่เห็นช่วงรอยต่อที่เงินจะขาดมือ',
-      aiSolution: 'พยากรณ์ทั้งเงินเข้าและเงินออกล่วงหน้า เพื่อวางแผนข้ามช่วงรอยต่อได้อย่างปลอดภัย' },
-    { id: '02', title: 'AVERAGE BUDGET TRAP', thaiTitle: 'หารเฉลี่ยดูเหมือนพอ แต่ใช้จริงเงินช็อต',
+      description: 'บิลมีวันครบกำหนด แต่ค่าจ้างอาจเข้าช้าหรือได้ไม่เต็มจำนวน คนเริ่มทำงานที่รับงานอิสระหรือมีรายได้เสริมจึงต้องวางแผนให้เงินพอระหว่างรอรับเงิน',
+      painPoint: 'บิลถึงกำหนดก่อนค่าจ้างเข้า จึงเสี่ยงเงินไม่พอระหว่างรอรับเงิน',
+      aiSolution: 'ประเมินจังหวะเงินเข้า–ออกล่วงหน้า เพื่อแนะนำงบที่เผื่อความไม่แน่นอน' },
+    { id: '02', title: 'TIMING MATTERS', thaiTitle: 'ยอดรวมดูเหมือนพอ แต่จังหวะเงินเข้าอาจไม่ทัน',
       description: `ยอดต้นวัน ฿${demoFinance.openingBalance.toLocaleString('en-US')} กันบิล ฿${demoFinance.fixedBills.toLocaleString('en-US')} รอค่าจ้าง ฿${demoFinance.pendingIncome.toLocaleString('en-US')} อีก ${demoFinance.daysUntilIncome} วัน หากนับเงินที่ยังไม่เข้าแล้วหารใช้ทุกวัน เงินสดอาจหมดก่อนรับค่าจ้าง`,
-      traditionalApp: 'การหารเท่ากันทุกวัน นับรวมเงินอนาคตเหมือนได้มาแล้ว',
-      aiSolution: <>แนะนำ <strong>“ยอดวันนี้ใช้ได้” </strong> พร้อม <strong>“โอกาสเงินพอ”</strong> โดยคิดเผื่อรายรับที่อาจเลื่อน</> },
-    { id: '03', title: 'LATE WARNING', thaiTitle: 'แผนเปลี่ยนเงียบๆ รู้ตัวอีกทีตอนเงินตึง',
-      description: 'เมื่อค่าจ้างเลื่อนหรือมีรายจ่ายแทรก แผนที่คิดไว้ก็รวนทันที ยิ่งตอนเงินน้อยคนยิ่งเลี่ยงเปิดแอปดูยอด รู้ตัวอีกทีตอนเงินไม่พอจ่ายบิลแล้ว',
-      traditionalApp: 'ต้องคอยเปิดแอปมาคำนวณใหม่เอง ไม่มีสัญญาณเตือนล่วงหน้า',
-      aiSolution: 'เตือนเชิงรุกเฉพาะเมื่อความเสี่ยงเพิ่ม พร้อมปรับงบรายวันใหม่ให้รับมือทัน' },
-    { id: '04', title: 'MISSED SAVING MOMENTS', thaiTitle: 'ประหยัดได้เป็นบางวัน แต่เงินเก็บไม่โต',
-      description: 'วันไหนใช้ต่ำกว่างบ เงินที่อุตส่าห์ประหยัดได้ก็ยังปนอยู่ในบัญชีเดิม พอวันรุ่งขึ้นเผลอใช้เพลิน โอกาสสร้างเงินสำรองก้อนแรกจึงหลุดมือ',
-      traditionalApp: 'เงินที่ประหยัดได้ปนกับเงินรอใช้ จนไม่รู้ว่าแยกเก็บได้เท่าไหร่',
-      aiSolution: <>มีการ์ดชวนออมเข้า Pocket ใน K-ePocket แบบกดเอง และพักส่วนที่ใช้ไม่ถึงงบเป็น <strong>“เงินสะสม”</strong> ไว้ให้เลือกเก็บหรือยกไปรอบถัดไป</> },
+      painPoint: 'กะงบจากยอดรวมแล้ว อาจใช้เกินเงินที่มีพร้อมจ่ายจริง',
+      aiSolution: <>แนะนำ <strong>“วันนี้ใช้ได้เท่าไหร่” </strong> คู่กับ <strong>“โอกาสเงินพอ”</strong> โดยไม่นับเงินรอรับเป็นเงินสดในบัญชี</> },
+    { id: '03', title: 'UNCLEAR DAILY BUDGET', thaiTitle: 'รู้ว่าเงินจะตึง แต่ไม่รู้ควรใช้วันละเท่าไหร่',
+      description: 'แม้รู้ล่วงหน้าว่าเงินอาจไม่พอ ก็ยังต้องคิดว่าจะปรับการใช้จ่ายอย่างไร เมื่อค่าจ้างเลื่อนหรือมีรายจ่ายแทรก แผนรายวันจึงควรปรับตามสถานการณ์',
+      painPoint: 'รู้ว่าเงินอาจไม่พอ แต่ไม่รู้ต้องลดใช้วันละเท่าไหร่',
+      aiSolution: 'คำนวณงบรายวันใหม่ และแจ้งเตือนเฉพาะเมื่อความเสี่ยงเพิ่มขึ้นชัดเจน' },
+    { id: '04', title: 'SAVINGS UNDER PRESSURE', thaiTitle: 'ออมอยู่แล้ว แต่ต้องดึงเงินเก็บมาใช้ซ้ำ',
+      description: 'เมื่อเงินไม่พอก่อนรอบรับเงิน คนที่มีเงินเก็บอาจต้องถอนมาประคอง ส่วนคนที่ยังไม่มีเงินสำรองอาจต้องยืมหรือพึ่งเครดิต จึงควรดูแลสภาพคล่องควบคู่กับการออม',
+      painPoint: 'เงินที่ตั้งใจเก็บ ถูกดึงกลับมาใช้เมื่อรายจ่ายเกินแผน',
+      aiSolution: <>ชวนเก็บเงินที่ใช้ไม่ถึงงบเข้า Pocket เมื่อพร้อม หรือคงเป็น <strong>“เงินสะสม”</strong> ในบัญชีหลักเพื่อรองรับวันที่ใช้เกินงบ</> },
   ];
 
   return (
@@ -36,7 +36,7 @@ export default function ProblemGrid() {
             ยอดเงินยังเหลือ <span className="text-[#00A950]">ทำไมถึงไปต่อไม่ไหว?</span>
           </h2>
           <p className="mt-3 text-slate-600 text-sm sm:text-base leading-relaxed">
-            4 ช่องว่างที่เราอยากแก้ให้คนเริ่มทำงาน เมื่อวันรับเงินไม่แน่นอน แต่ค่าใช้จ่ายยังเดินต่อ
+            4 ปัญหาที่ K-Runway ตั้งใจช่วยแก้ให้คนเริ่มทำงานที่รายได้ไม่แน่นอน ทั้งเรื่องเงินพอใช้และเงินเก็บ
           </p>
         </div>
 
@@ -70,12 +70,12 @@ export default function ProblemGrid() {
               {/* Comparison Box with Enhanced Contrast and Icons */}
               <div className="space-y-2 pt-3 border-t border-slate-100 text-xs">
                 <div className="flex items-start gap-2.5 text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-200">
-                  <div className="w-5 h-5 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center shrink-0 mt-0.5">
-                    <X className="w-3.5 h-3.5" />
+                  <div className="w-5 h-5 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center shrink-0 mt-0.5">
+                    <Info className="w-3.5 h-3.5" />
                   </div>
                   <div>
-                    <span className="font-bold text-slate-700 block mb-0.5">จุดบอดของการกะงบแบบเดิม</span>
-                    <span>{item.traditionalApp}</span>
+                    <span className="font-bold text-slate-700 block mb-0.5">ปัญหาที่เจอ</span>
+                    <span>{item.painPoint}</span>
                   </div>
                 </div>
                 <div className="flex items-start gap-2.5 text-slate-800 bg-emerald-50/80 p-3 rounded-xl border border-emerald-200">

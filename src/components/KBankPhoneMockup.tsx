@@ -39,7 +39,7 @@ export default function KBankPhoneMockup({ activeStep, onSelectStep }: KBankPhon
   const [savingState, dispatchSaving] = useReducer(pocketSavingReducer, initialSavingState);
   const showPockets = savingState.status === 'choosing';
   const saved = savingState.status === 'saved';
-  const [spentToday, setSpentToday] = useState<number>(demoFinance.spentToday);
+  const spentToday = demoFinance.spentToday;
   const infoTrigger = useRef<HTMLButtonElement>(null);
   const saveTrigger = useRef<HTMLButtonElement>(null);
   const reducedMotion = useReducedMotion();
@@ -78,6 +78,7 @@ export default function KBankPhoneMockup({ activeStep, onSelectStep }: KBankPhon
   const budgetDifference = summary.difference;
   const accountBalance = pockets.reduce((total, pocket) => total + pocketBalance(pocket.id, savingState, spentToday), 0);
   const withinBudget = budgetDifference >= 0;
+  const showIllustrativeProbability = withinBudget && !saved;
   const destinationPocket = pockets.find(pocket => pocket.id === savingState.pocketId);
 
   const closeDialog = () => {
@@ -210,24 +211,24 @@ export default function KBankPhoneMockup({ activeStep, onSelectStep }: KBankPhon
                     </div>
                     <div className={styles.budgetGrid}>
                       <div><span>งบวันนี้</span><strong>฿{dailyBudget} <small>/ วัน</small></strong></div>
-                      <div><span>คาดได้เงินใน</span><strong>{demoFinance.daysUntilIncome} <small>วัน</small></strong></div>
+                      <div><span>คาดว่าเงินเข้าใน</span><strong>{demoFinance.daysUntilIncome} <small>วัน</small></strong></div>
                     </div>
                     <div className={styles.runway}>
-                      <div className={styles.runwayHeading}><strong>Financial Runway</strong><span><i />{withinBudget ? `${demoFinance.illustrativeSafeZone}%* Safe Zone` : 'รอประเมิน*'}</span></div>
-                      <div className={styles.runwayTrack} role={withinBudget ? "meter" : "img"} aria-label="โอกาสเงินพอ 30 วัน ข้อมูลจำลอง" aria-valuemin={withinBudget ? 0 : undefined} aria-valuemax={withinBudget ? 100 : undefined} aria-valuenow={withinBudget ? demoFinance.illustrativeSafeZone : undefined}><span style={{ width: withinBudget ? `${demoFinance.illustrativeSafeZone}%` : '0%' }} /></div>
+                      <div className={styles.runwayHeading}><strong>โอกาสเงินพอ {demoFinance.daysIncludingToday} วัน</strong><span><i />{showIllustrativeProbability ? `${demoFinance.illustrativeProbability}%*` : 'รอประเมินใหม่*'}</span></div>
+                      <div className={styles.runwayTrack} role={showIllustrativeProbability ? "meter" : "img"} aria-label={showIllustrativeProbability ? "โอกาสเงินพอ 30 วัน ข้อมูลจำลอง" : "โอกาสเงินพอ ต้องประเมินใหม่หลังแผนเปลี่ยน"} aria-valuemin={showIllustrativeProbability ? 0 : undefined} aria-valuemax={showIllustrativeProbability ? 100 : undefined} aria-valuenow={showIllustrativeProbability ? demoFinance.illustrativeProbability : undefined}><span style={{ width: showIllustrativeProbability ? `${demoFinance.illustrativeProbability}%` : '0%' }} /></div>
                     </div>
                   </div>
                   <div className={`${styles.featureCard} ${styles.savingsContent}`} role="group" aria-roledescription="slide" aria-label="ออมเงิน 2 จาก 2" inert={activeStep !== 1}>
                     <div className={styles.savingsHeader}>
                       <span className={styles.featureIcon}><PiggyBank /></span>
-                      <div><h4>ออมเงินให้เป้าหมาย</h4><p>{withinBudget ? 'เก็บเศษเงินไว้สำหรับช่วงงานน้อย' : 'วันนี้ใช้เกินงบ พักการออมก่อน'}</p></div>
+                      <div><h4>เก็บเงินให้ถึงเป้าหมาย</h4><p>{withinBudget ? 'ใช้ไม่ถึงงบ แบ่งเก็บไว้ให้อุ่นใจ' : 'วันนี้ใช้เกินงบ พักการออมก่อน'}</p></div>
                     </div>
                     <div className={styles.savingsSuggestion}>
                       <div className={styles.suggestionCopy}><Sparkles /><p><strong>เงินสำรองฉุกเฉิน</strong><span>เก็บทีละนิด ให้เงินเหลือมีเป้าหมาย</span></p></div>
                       <div className={styles.goalProgress}><span>เงินสะสมของรอบนี้</span><strong>฿{formatPocketBalance(summary.accumulated)}</strong></div>
                     </div>
                     <button ref={saveTrigger} type="button" className={styles.saveButton} onClick={openPockets} aria-haspopup="dialog" disabled={saved || summary.suggestedAmount <= 0} aria-disabled={saved || summary.suggestedAmount <= 0}>
-                      {saved ? <><CheckCircle2 /> ออมเรียบร้อย</> : summary.suggestedAmount > 0 ? <>เลือก Pocket ฿{summary.suggestedAmount} <ChevronRight /></> : <>วันนี้ยังไม่มีเงินเหลือ</>}
+                      {saved ? <><CheckCircle2 /> ออมเรียบร้อย</> : summary.suggestedAmount > 0 ? <>เลือก Pocket ฿{summary.suggestedAmount} <ChevronRight /></> : <>พักออมวันนี้</>}
                     </button>
                     <span className={styles.consentNote}>ย้ายเงินเมื่อคุณยืนยันเท่านั้น</span>
                   </div>
@@ -318,7 +319,7 @@ export default function KBankPhoneMockup({ activeStep, onSelectStep }: KBankPhon
               <dl className={styles.costDetails}>
                 <div><dt>ยอดเงินต้นวัน</dt><dd>฿9,000</dd></div>
                 <div><dt>ค่าห้องที่กันไว้</dt><dd>฿3,500</dd></div>
-                <div><dt>เงินสำรองก้นบัญชี</dt><dd>฿1,000</dd></div>
+                <div><dt>เงินสำรองขั้นต่ำ*</dt><dd>฿1,000</dd></div>
                 <div><dt>ค่าจ้างที่รอเข้า*</dt><dd>฿8,000</dd></div>
                 <div><dt>วันรับเงินที่คาด*</dt><dd>อีก 12 วัน</dd></div>
                 <div><dt>งบใช้จ่ายวันนี้</dt><dd>฿{dailyBudget}</dd></div>
@@ -326,14 +327,11 @@ export default function KBankPhoneMockup({ activeStep, onSelectStep }: KBankPhon
                 <div><dt>เงินสะสมเดิม</dt><dd>฿100</dd></div>
                 <div><dt>เงินสะสมคงเหลือ</dt><dd>฿{formatPocketBalance(summary.accumulated)}</dd></div>
               </dl>
-              <p className={styles.comparisonNote}>*ค่าจ้างอาจเข้าช้าและยังไม่รวมในยอดบัญชี · 87% เป็นตัวอย่างโอกาสเงินพอ 30 วัน ไม่ใช่ผลโมเดลจริง · เงินสะสมยังอยู่บัญชีหลัก และลดตามยอดที่คุณย้ายเข้า Pocket</p>
-              <div className={styles.exampleChoices} aria-label="เลือกข้อมูลใช้จ่ายตัวอย่าง">
-                <button type="button" disabled={saved} aria-pressed={spentToday === demoFinance.spentToday} onClick={() => setSpentToday(demoFinance.spentToday)}>ใช้ต่ำกว่างบ</button>
-                <button type="button" disabled={saved} aria-pressed={spentToday === demoFinance.overspentToday} onClick={() => setSpentToday(demoFinance.overspentToday)}>ใช้เกินงบ</button>
-              </div>
+              <p className={styles.comparisonNote}>*เงินรอรับยังไม่รวมในยอดบัญชี · {demoFinance.illustrativeProbability}% เป็นค่าตัวอย่างตลอด {demoFinance.daysIncludingToday} วัน เพื่อเผื่อเงินเข้าช้ากว่าวันที่คาด ไม่ใช่ผลโมเดลจริง · เงินสำรอง ฿1,000 เป็นค่าทดลอง</p>
+              <p className={styles.comparisonNote}>เงินสะสมอยู่ในบัญชีหลักและลดตามยอดที่เก็บเข้า Pocket หลังออม ระบบจริงต้องประเมินงบและโอกาสเงินพอใหม่ เดโมจะแสดง “รอประเมินใหม่”</p>
             </> : <>
               <span className={styles.successIcon}><CheckCircle2 /></span>
-              <h4 id="phone-dialog-title">ย้ายเงินสำเร็จ</h4>
+              <h4 id="phone-dialog-title">ออมสำเร็จในเดโม</h4>
               <p id="phone-dialog-description">ย้าย ฿{savingState.status === 'saved' ? savingState.amount : 0} เข้า {destinationPocket?.name} แล้ว<br/>ยอดใน Pocket ฿{formatPocketBalance(destinationPocket ? pocketBalance(destinationPocket.id, savingState, spentToday) : 0)}</p>
               <button type="button" className={styles.saveButton} onClick={closeDialog}>เรียบร้อย</button>
             </>}

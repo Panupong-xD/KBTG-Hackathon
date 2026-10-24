@@ -3,7 +3,7 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: 'K-Runway | รู้ก่อนเงินตึง · KBTG Hackathon',
-  description: 'เงินยังไม่เข้า แต่ค่าใช้จ่ายไม่เคยรอ พบกับ K-Runway แนวคิด AI Co-pilot สำหรับ First Jobber รู้วันนี้ใช้ได้เท่าไหร่ ให้เงินพอถึงก้อนถัดไป พร้อมออมเข้า K-ePocket ที่คุณเลือกเอง',
+  description: 'K-Runway แนวคิดผู้ช่วยการเงิน AI บน K PLUS สำหรับ First Jobber ที่รายได้ไม่แน่นอน แนะนำงบวันนี้และโอกาสเงินพอ คิดเผื่อบิลและเงินเข้าช้า พร้อมชวนออมเข้า K-ePocket ที่คุณเลือกเอง',
 };
 
 export default function RootLayout({
