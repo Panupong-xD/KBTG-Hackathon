@@ -24,7 +24,8 @@ ${signedIn ? '<p class="status">คุณเข้าสู่การเข้
       ...PRIVATE_HEADERS,
       'Content-Type': 'text/html; charset=utf-8',
       'Content-Security-Policy': "default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
-      'Referrer-Policy': 'no-referrer',
+      // Same-origin form POSTs must retain Origin for the CSRF check.
+      'Referrer-Policy': 'same-origin',
       'X-Content-Type-Options': 'nosniff',
       'X-Frame-Options': 'DENY',
     },

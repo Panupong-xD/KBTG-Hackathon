@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { randomBytes } from 'node:crypto';
 import { createTeamSession, DEMO_REOPEN_TIMESTAMP, isDemoPaused, passwordMatches, readTeamPassword, sameOriginPost, TEAM_SESSION_SECONDS, teamPassword, validTeamSession } from '../src/lib/demo-access.ts';
+import { teamGateResponse } from '../src/lib/demo-gate.ts';
 
 const password = randomBytes(6).toString('base64url');
 const now = Date.parse('2026-10-27T12:00:00+07:00');
@@ -76,6 +77,13 @@ test('login and logout require same-origin POST, not missing, null or lookalike 
   }
   assert.equal(sameOriginPost(new Request(url, { method: 'GET', headers: { origin: 'https://demo.example' } })), false);
   assert.equal(sameOriginPost(new Request(url, { method: 'POST', headers: { origin: 'https://demo.example' } })), true);
+});
+
+test('the login form preserves same-origin POST metadata for the CSRF check', () => {
+  const response = teamGateResponse({ ready: true });
+  assert.equal(response.headers.get('referrer-policy'), 'same-origin');
+  assert.match(response.headers.get('content-security-policy'), /form-action 'self'/);
+  assert.match(response.headers.get('cache-control'), /no-store/);
 });
 
 test('password parser bounds request size and rejects other body formats and repeated values', async () => {
