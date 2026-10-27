@@ -14,7 +14,7 @@ export default function Footer() {
         
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
           
-          {/* Col 1: Brand with Custom K-Runway Concept Mark (No official KBank logo) */}
+          {/* Col 1: Brand with Custom K-Runway Concept Mark (custom prototype logo) */}
           <div className="md:col-span-2 space-y-3">
             <div className="flex items-center gap-3">
               <BrandMark />
@@ -23,15 +23,15 @@ export default function Footer() {
                   K-Runway
                 </span>
                 <span className="text-[10px] font-bold text-[#00A950] tracking-wider uppercase leading-none mt-1">
-                  KBTG Hackathon · Concept Demo
+                  Innovation Prototype · Concept Demo
                 </span>
               </div>
             </div>
             <p className="text-slate-600 text-xs leading-relaxed max-w-md">
-              แนวคิดผู้ช่วยการเงิน AI สำหรับ First Jobber ที่รายได้ไม่แน่นอน ทั้งฟรีแลนซ์และคนทำงานที่รับงานเสริม วางแผนให้เงินพอใช้ พร้อมเก็บเงินเข้า K-ePocket ที่คุณเลือก
+              แนวคิดผู้ช่วยการเงิน AI สำหรับ First Jobber ที่รายได้ไม่แน่นอน ทั้งฟรีแลนซ์และคนทำงานที่รับงานเสริม วางแผนให้เงินพอใช้ พร้อมเก็บเงินเข้า Pocket ที่คุณเลือก
             </p>
             <div className="text-[11px] text-slate-500 font-medium">
-              ต้นแบบสำหรับ KBTG Kampus Hackathon 2026 ใช้ข้อมูลและเปอร์เซ็นต์ตัวอย่าง ไม่มีการโอนเงินจริง และไม่ใช่บริการทางการของธนาคาร กำลังศึกษากลุ่มเป้าหมายเพิ่มเติม ส่วนการแจ้งเตือน การจัดการเงินสิ้นรอบ และการยกเลิกใน 24 ชั่วโมงยังไม่อยู่ในเดโม
+              ต้นแบบสำหรับการแข่งขัน Hackathon 2026 ใช้ข้อมูลและเปอร์เซ็นต์ตัวอย่าง ไม่มีการโอนเงินจริง และไม่ใช่บริการทางการของธนาคาร กำลังศึกษากลุ่มเป้าหมายเพิ่มเติม ส่วนการแจ้งเตือน การจัดการเงินสิ้นรอบ และการยกเลิกใน 24 ชั่วโมงยังไม่อยู่ในเดโม
             </div>
           </div>
 
@@ -53,7 +53,7 @@ export default function Footer() {
               </li>
               <li>
                 <a href="#features" className="hover:text-[#00A950] transition-colors">
-                  03. เบื้องหลัง AI & K-ePocket
+                  03. เบื้องหลัง AI & Pocket
                 </a>
               </li>
               <li>
@@ -88,7 +88,7 @@ export default function Footer() {
         {/* Bottom */}
         <div className="pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
           <div>
-            © 2026 K-Runway · ทีม KBTG Bro · KBTG Kampus Hackathon · Track 2: Data Science & Intelligence
+            © 2026 K-Runway · ทีมผู้พัฒนา · Hackathon · Data Science & Intelligence
           </div>
 
           <button

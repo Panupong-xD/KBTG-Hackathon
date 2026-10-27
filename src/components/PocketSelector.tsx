@@ -2,7 +2,7 @@ import { useLayoutEffect, useRef, useState } from 'react';
 import { ArrowLeft, Bell, Check, ChevronDown, ChevronRight, Home, Power, RefreshCw, ScanLine, ShoppingBasket, User } from 'lucide-react';
 import { pockets, pocketBalance, initialSavingState, formatPocketBalance, type PocketId, type SavingPocketId } from '@/lib/pocket-saving';
 import PocketIllustration from './PocketIllustration';
-import phoneStyles from './KBankPhoneMockup.module.css';
+import phoneStyles from './BankPhoneMockup.module.css';
 import styles from './PocketSelector.module.css';
 
 interface PocketSelectorProps {
@@ -84,7 +84,7 @@ export default function PocketSelector({ amount, spentToday, onCancel, onConfirm
       <div ref={contentRef} className={`${styles.content} ${selected ? styles.hasSelection : ''}`}>
         <div ref={accountRef} className={styles.accountCarousel}>
           <div className={styles.account}>
-            <div className={styles.accountIdentity}><strong>ออมทรัพย์ K-ePocket <ChevronDown /></strong><small>xxx-x-x3253-x</small><span className={styles.accountWallet}><PocketIllustration pocket="bills" /></span></div>
+            <div className={styles.accountIdentity}><strong>ออมทรัพย์ Pocket <ChevronDown /></strong><small>บัญชีตัวอย่าง</small><span className={styles.accountWallet}><PocketIllustration pocket="bills" /></span></div>
             <div className={styles.accountBalance}><span>ยอดรวมทุก Pocket</span><strong>{formatPocketBalance(totalBalance)}</strong><span className={styles.latest}>ดูรายการล่าสุด <ChevronRight /></span></div>
           </div>
         </div>

@@ -40,7 +40,7 @@ export default function ProblemGrid() {
           </p>
         </div>
 
-        {/* 4 Cards Grid with Bold KBank Green Accents */}
+        {/* 4 Cards Grid with Bold green Accents */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {problems.map((item) => (
             <div

@@ -33,7 +33,7 @@ export default function LandingPage() {
       {/* 7. Concept and intended outcomes */}
       <InnovationConcept />
 
-      {/* 8. Innovation Footer with KBank Brand */}
+      {/* 8. Innovation Footer with prototype branding */}
       <Footer />
     </div>
   );

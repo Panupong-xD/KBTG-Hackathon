@@ -1,9 +1,15 @@
 import type { Metadata } from 'next';
 import './globals.css';
 
+const title = 'K-Runway | รู้ก่อนเงินตึง · Concept Demo';
+const description = 'K-Runway แนวคิดผู้ช่วยการเงิน AI ในแอปธนาคาร สำหรับ First Jobber ที่รายได้ไม่แน่นอน แนะนำงบวันนี้และโอกาสเงินพอ คิดเผื่อบิลและเงินเข้าช้า พร้อมชวนออมเข้ากระเป๋าเงินเก็บ (Pocket) ที่คุณเลือกเอง';
+
 export const metadata: Metadata = {
-  title: 'K-Runway | รู้ก่อนเงินตึง · KBTG Hackathon',
-  description: 'K-Runway แนวคิดผู้ช่วยการเงิน AI บน K PLUS สำหรับ First Jobber ที่รายได้ไม่แน่นอน แนะนำงบวันนี้และโอกาสเงินพอ คิดเผื่อบิลและเงินเข้าช้า พร้อมชวนออมเข้า K-ePocket ที่คุณเลือกเอง',
+  title,
+  description,
+  openGraph: { title, description, siteName: 'K-Runway', locale: 'th_TH', type: 'website' },
+  twitter: { card: 'summary', title, description },
+  robots: { index: false, follow: false },
 };
 
 export default function RootLayout({

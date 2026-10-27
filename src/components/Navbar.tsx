@@ -27,7 +27,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           
-          {/* Brand Logo with Custom K-Runway Concept Mark (No official KBank logo) */}
+          {/* Brand Logo with Custom K-Runway Concept Mark (custom prototype logo) */}
           <div className="flex items-center gap-3 shrink-0">
             <a href="#" className="flex items-center gap-3 group">
               <BrandMark className="group-hover:scale-105 transition-transform" />
@@ -36,7 +36,7 @@ export default function Navbar() {
                   <span>K-Runway</span>
                 </div>
                 <span className="text-[10px] font-bold text-[#00A950] tracking-wider uppercase leading-none mt-1">
-                  KBTG Hackathon · Concept Demo
+                  Innovation Prototype · Concept Demo
                 </span>
               </div>
             </a>
@@ -65,7 +65,7 @@ export default function Navbar() {
           <div className="hidden sm:flex items-center gap-3 shrink-0">
             <a
               href="#how-it-works"
-              className="kbank-btn px-4 py-2 text-xs font-bold rounded-xl shadow-sm hover:brightness-105 flex items-center gap-1.5 transition-all"
+              className="demo-btn px-4 py-2 text-xs font-bold rounded-xl shadow-sm hover:brightness-105 flex items-center gap-1.5 transition-all"
             >
               <span>ลองใช้เดโม</span>
               <ArrowUpRight className="w-3.5 h-3.5" />
@@ -129,7 +129,7 @@ export default function Navbar() {
             <a
               href="#how-it-works"
               onClick={() => setMobileMenuOpen(false)}
-              className="w-full text-center py-2.5 rounded-xl kbank-btn text-xs font-bold block"
+              className="w-full text-center py-2.5 rounded-xl demo-btn text-xs font-bold block"
             >
               ลองใช้เดโม
             </a>

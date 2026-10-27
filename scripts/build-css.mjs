@@ -96,19 +96,19 @@ export async function generateTailwindCSS() {
 
   const generatedCss = compiler.build(Array.from(allCandidates));
 
-  // Custom KBank Light Theme styles
+  // Custom prototype light theme styles
   const customCss = `
 body {
   font-family: 'Prompt', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-.kbank-btn {
+.demo-btn {
   background-color: #00A950;
   color: #ffffff;
   transition: all 0.2s ease-in-out;
 }
 
-.kbank-btn:hover {
+.demo-btn:hover {
   background-color: #008744;
 }
 

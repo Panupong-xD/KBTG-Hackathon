@@ -20,7 +20,7 @@ export default function FeatureDeepDive() {
             คิดเผื่อเงินตึง เปิดทางให้เงินเก็บ
           </h2>
           <p className="mt-2 text-slate-600 text-sm sm:text-base">
-            ต่อยอดแนวคิดการตั้งงบของ My Budget ด้วยคำแนะนำจากข้อมูลเงินเข้า–ออก สำหรับคนที่รายได้ไม่แน่นอน พร้อมเชื่อมการออมเข้า K-ePocket
+            ต่อยอดแนวคิดการตั้งงบรายหมวด ด้วยคำแนะนำจากข้อมูลเงินเข้า–ออก สำหรับคนที่รายได้ไม่แน่นอน พร้อมเชื่อมการออมเข้า Pocket
           </p>
         </div>
 
@@ -119,7 +119,7 @@ export default function FeatureDeepDive() {
                       เงินเข้าช้า : เริ่มแตะเงินสำรอง
                     </text>
 
-                    {/* AI Controlled Glide Path (Solid KBank Green Curve, passing ฿15k at Day 12) */}
+                    {/* AI Controlled Glide Path (Solid green Curve, passing ฿15k at Day 12) */}
                     <path
                       d="M 45 52 C 175 75, 300 115, 475 165"
                       fill="none"
@@ -210,7 +210,7 @@ export default function FeatureDeepDive() {
 
                     {/* Top Legend / Header Bar */}
                     <text x="22" y="22" fill="#0F172A" fontSize="11" fontWeight="bold">
-                      K-ePocket : กระเป๋าหลัก
+                      Pocket : กระเป๋าหลัก
                     </text>
                     
                     <text x="280" y="22" textAnchor="middle" fill="#94A3B8" fontSize="9.5" fontWeight="bold" letterSpacing="0.4">
@@ -280,7 +280,7 @@ export default function FeatureDeepDive() {
                     <path d="M 224 220 L 210 220" fill="none" stroke="#3B82F6" strokeWidth="2" markerEnd="url(#arrowBlue)" />
 
                     {/* ========================================================= */}
-                    {/* RIGHT CONTAINER: selected Pocket within K-ePocket        */}
+                    {/* RIGHT CONTAINER: selected Pocket within Pocket        */}
                     {/* ========================================================= */}
                     <rect x="355" y="36" width="185" height="232" rx="16" fill="#FFFFFF" stroke="#A7F3D0" strokeWidth="1.5" />
                     <text x="447.5" y="54" textAnchor="middle" fill="#008744" fontSize="9" fontWeight="bold" letterSpacing="0.4">
@@ -301,7 +301,7 @@ export default function FeatureDeepDive() {
                       เลือกเอง
                     </text>
                     <text x="447.5" y="159" textAnchor="middle" fill="#059669" fontSize="9" fontWeight="bold" letterSpacing="0.5">
-                      K-ePocket · POCKET
+                      กระเป๋าเงินเก็บ
                     </text>
 
                     {/* Accumulated Reserve Box */}
@@ -330,7 +330,7 @@ export default function FeatureDeepDive() {
                 </strong>
               </div>
               <div className="bg-emerald-50/70 border border-emerald-200/80 rounded-xl p-2.5 text-center flex flex-col justify-center">
-                <span className="text-slate-500 block text-[11px] font-medium">K-ePocket Allocation</span>
+                <span className="text-slate-500 block text-[11px] font-medium">Pocket Allocation</span>
                 <strong className="text-[#008744] font-bold">
                   เลือก Pocket และยืนยันเอง <br />
                   (ไม่มีการหักเงินอัตโนมัติ)

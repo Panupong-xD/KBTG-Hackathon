@@ -2,6 +2,18 @@
 
 A bank-app feature concept for First Jobbers with variable income such as freelance work or side gigs. The segment remains provisional pending survey and interviews. Salaried users are a simpler case of the same engine.
 
+## Public demo access and naming
+
+Production is temporarily closed until **7 November 2026, 00:00 Asia/Bangkok**. A server-side Proxy returns a neutral HTTP 503 page with `no-store` headers for every path, including direct asset requests. It reopens automatically at that time, without a password, API key or scheduled redeployment. Local `npm run dev` remains available for development; `npm run start` follows the production pause.
+
+The public interface, share metadata, mockups and browser assets use generic terms such as **banking app**, **category budgeting** and **Pocket**. Do not add official bank, organizer or banking-product names or logos. The custom project name and mark identify a concept prototype only. Historical architecture documents are background notes, not public website content.
+
+## Security and data
+
+The demo does not invoke an AI API, banking API or database. AI/ML descriptions explain the proposed product; they are not live integrations. No application API key is required. Balances and Pocket entries are local fixtures, reset on reload, and the account label explicitly says it is an example. Do not add real customer data, credentials or secrets to source files, `public/`, share metadata or browser environment variables.
+
+Environment files and private-key formats are ignored by Git. Production browser source maps are disabled, and production builds must pass TypeScript validation. Before publishing changes, run the checks below and `npm audit --omit=dev`. See [security review](docs/04_SECURITY_REVIEW.md) for the latest scope and findings.
+
 ## Simple two-step interface
 
 1. Financial overview: balance, today’s spending limit, budget difference, estimated time to the next income, and illustrative 30-day probability. Pending income and bills are disclosed through the existing information button.
@@ -23,7 +35,7 @@ Pain points, walkthrough, and architecture use this same fixture: opening ฿9,0
 
 ## Mentor alignment (23 October 2026)
 
-The existing layout and two-step demo are preserved. Pain-point cards pair the problem K-Runway aims to address with its proposed solution. The initial eight-person survey is retained in internal notes only; its sample is too small to present as supporting evidence on the website. The site presents K-Runway as an extension of My Budget and clarifies the proposed data and ML/Monte Carlo pipeline. The validation-plan block has been removed from the website; model backtesting, calibration and UI A/B testing remain internal plans. Alerts and 24-hour reversal remain outside this browser prototype.
+The existing layout and two-step demo are preserved. Pain-point cards pair the problem K-Runway aims to address with its proposed solution. The initial eight-person survey is retained in internal notes only; its sample is too small to present as supporting evidence on the website. The site presents K-Runway as an extension of category budgeting and clarifies the proposed data and ML/Monte Carlo pipeline. The validation-plan block has been removed from the website; model backtesting, calibration and UI A/B testing remain internal plans. Alerts and 24-hour reversal remain outside this browser prototype.
 
 ## Documents and evidence
 
@@ -42,6 +54,8 @@ npm install
 npm run dev
 npx tsc --noEmit --noUnusedLocals --noUnusedParameters --incremental false
 node --test scripts/pocket-saving.test.mjs
+node --test scripts/demo-access.test.mjs
+npm audit --omit=dev
 npm run build
 ```
 

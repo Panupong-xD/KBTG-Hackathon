@@ -28,14 +28,14 @@ export default function Hero() {
 
           {/* Sub-headline tailored to First Jobbers */}
           <p className="mt-6 text-base sm:text-lg text-slate-600 max-w-3xl leading-relaxed font-normal">
-            <strong className="text-slate-900 font-bold">K-Runway</strong> แนวคิดผู้ช่วยการเงิน AI บน K PLUS สำหรับ First Jobber ที่รายได้ไม่แน่นอน แนะนำ <strong className="text-slate-900 font-bold">งบวันนี้และโอกาสเงินพอ</strong> คิดเผื่อบิลและเงินเข้าช้า พร้อมชวนเก็บเงินที่ใช้ไม่ถึงงบเข้า <span className="whitespace-nowrap">K-ePocket</span> ที่คุณเลือก
+            <strong className="text-slate-900 font-bold">K-Runway</strong> แนวคิดผู้ช่วยการเงิน AI ในแอปธนาคาร สำหรับ First Jobber ที่รายได้ไม่แน่นอน แนะนำ <strong className="text-slate-900 font-bold">งบวันนี้และโอกาสเงินพอ</strong> คิดเผื่อบิลและเงินเข้าช้า พร้อมชวนเก็บเงินที่ใช้ไม่ถึงงบเข้ากระเป๋าเงินเก็บ <span className="whitespace-nowrap">(Pocket)</span> ที่คุณเลือก
           </p>
 
           {/* Action CTA Buttons */}
           <div className="mt-8 flex flex-col sm:flex-row items-center gap-3.5 w-full sm:w-auto">
             <a
               href="#how-it-works"
-              className="w-full sm:w-auto kbank-btn px-7 py-3.5 rounded-xl font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-sm hover:brightness-105 transition-all"
+              className="w-full sm:w-auto demo-btn px-7 py-3.5 rounded-xl font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-sm hover:brightness-105 transition-all"
             >
               <span>ลองใช้เดโม 2 ขั้นตอน</span>
               <ArrowDown className="w-4 h-4" />

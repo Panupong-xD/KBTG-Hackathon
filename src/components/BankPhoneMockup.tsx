@@ -4,11 +4,11 @@ import { useEffect, useReducer, useRef, useState } from 'react';
 import Image from 'next/image';
 import { motion, useAnimationControls, useDragControls, useReducedMotion } from 'framer-motion';
 import { Wifi, Bell, Power, ArrowRightLeft, Download, ScanLine, Banknote, Home, ShoppingBasket, User, ChevronRight, CheckCircle2, Info, ArrowUpRight, ArrowDownRight, PiggyBank, Sparkles, X, Navigation, ChartPie, Star, MapPin, SquarePen, Paintbrush } from 'lucide-react';
-import styles from './KBankPhoneMockup.module.css';
+import styles from './BankPhoneMockup.module.css';
 import PocketSelector from './PocketSelector';
 import { pockets, demoFinance, dailyBudget, dailySummary, formatPocketBalance, initialSavingState, pocketSavingReducer, pocketBalance, type SavingPocketId } from '@/lib/pocket-saving';
 
-interface KBankPhoneMockupProps {
+interface BankPhoneMockupProps {
   activeStep: number;
   onSelectStep?: (index: number) => void;
 }
@@ -32,7 +32,7 @@ const quickActions = [
 
 const slideSpring = { type: 'spring' as const, stiffness: 230, damping: 30, mass: 1.05, restDelta: 0.2, restSpeed: 0.2 };
 
-export default function KBankPhoneMockup({ activeStep, onSelectStep }: KBankPhoneMockupProps) {
+export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneMockupProps) {
   const [showInfo, setShowInfo] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [homeScrolled, setHomeScrolled] = useState(false);

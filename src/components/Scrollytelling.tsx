@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { SCROLLY_STEPS } from '../data/scrollySteps';
 import StepCard from './StepCard';
-import KBankPhoneMockup from './KBankPhoneMockup';
+import BankPhoneMockup from './BankPhoneMockup';
 import styles from './Scrollytelling.module.css';
 
 export default function Scrollytelling() {
@@ -94,7 +94,7 @@ export default function Scrollytelling() {
             </div>)}
           </div>
           <div className={styles.phoneColumn}>
-            <KBankPhoneMockup activeStep={activeStep} onSelectStep={selectPhoneStep} />
+            <BankPhoneMockup activeStep={activeStep} onSelectStep={selectPhoneStep} />
           </div>
         </div>
       </div>
