@@ -2,9 +2,9 @@
 
 ## Application keys and actual data
 
-No application API keys, access tokens or private keys were found in the current project, the reachable local Git history, or the browser-facing files checked. There are no project-root environment files and no tracked environment/private-key files.
+No application API keys, access tokens or private keys were found in the project, the reachable local Git history, or the browser-facing files checked before adding team access. No environment/private-key files are tracked. Team access now requires one new server-side environment secret, `DEMO_TEAM_PASSWORD`; its value must stay out of source and browser assets. It is unrelated to AI or banking APIs.
 
-Source inspection found no model/API invocation, database connection, external transaction request, analytics transmission or browser persistence. The financial interactions run against local fixtures through React state and a reducer. No bank account is opened and no money is transferred. The previous masked account label was replaced with an explicit example-account label.
+Source inspection found no model/API invocation, database connection, external transaction request or analytics transmission. Financial interactions run against local fixtures through React state and a reducer. No bank account is opened and no money is transferred. Team access adds a signed session cookie only; it stores no financial data or password. The account label explicitly identifies an example account.
 
 The app loads font styles from a public font service and links to a public research paper. These are external resources, not authenticated app integrations. The photograph and custom SVG mark were visually inspected for bank/product logos.
 
@@ -18,7 +18,11 @@ The updated lockfile pins the framework to **16.4.3** and the image-processing p
 
 ## Access restriction and public content
 
-Production requests are blocked server-side until **7 November 2026 at 00:00 Asia/Bangkok**. The restriction covers the page, RSC/data requests, static bundles, images and direct public-file paths. The pause page is self-contained, uses HTTP 503, disables caching and indexing, and does not include the demo content. It requires no additional secret or client-side password check. Development mode remains usable locally.
+Unauthenticated production requests are blocked server-side until **7 November 2026 at 00:00 Asia/Bangkok**. The restriction covers pages, RSC/data requests, bundles, images and direct public-file paths. The self-contained pause page uses HTTP 503 and includes a team login form only when the server password is configured. Missing/invalid configuration fails closed. Development mode remains usable locally.
+
+The password is checked on the server with a constant-time digest comparison. Login accepts only same-origin, bounded URL-encoded POST bodies; credentials are never reflected in HTML or application logs. Sessions are HMAC-signed with domain separation, expire after eight hours or at reopening, and use `HttpOnly`, `Secure`, `SameSite=Strict`, `Path=/` and the `__Host-` cookie prefix. Password rotation invalidates sessions after redeployment. Logout is a same-origin POST that clears the cookie; it does not revoke copies of an already issued cookie before expiry. Authenticated and unauthenticated restricted responses disable browser/CDN caching. The form's CSP restricts submission to the same origin.
+
+This is a temporary shared-password preview gate, with no database or distributed brute-force limiter. The environment password must be generated randomly (at least 24 URL-safe characters); it is also the session-signing secret. Do not reuse a personal password. This gate is not a customer identity system.
 
 Bank/organizer/product names were removed from rendered text, metadata used for link previews, generated browser code and component/CSS identifiers. Open Graph and Twitter descriptions use the same generic wording as the ordinary description. An example label replaces the masked account number.
 
@@ -29,5 +33,6 @@ The Git repository is public. Restricting the website does not restrict the repo
 - TypeScript validation and the production build.
 - Existing saving tests: cancellation, confirmation, duplicate confirmation, balance conservation, accumulation and liquidity limits.
 - Reopening boundary tests immediately before, exactly at, and after midnight in Bangkok; invalid-clock values fail closed.
+- Team-access tests for missing/invalid configuration, incorrect passwords, forged/expired sessions, password rotation, cross-origin requests and malformed/oversized bodies.
 - HTTP checks for the page, assets, RSC requests and arbitrary file paths during the production pause, plus generic metadata and interactive saving in local development.
 - A second scan of the rebuilt browser assets and a follow-up npm audit.
