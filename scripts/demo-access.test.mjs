@@ -3,7 +3,7 @@ import test from 'node:test';
 import { randomBytes } from 'node:crypto';
 import { createTeamSession, DEMO_REOPEN_TIMESTAMP, isDemoPaused, passwordMatches, readTeamPassword, sameOriginPost, TEAM_SESSION_SECONDS, teamPassword, validTeamSession } from '../src/lib/demo-access.ts';
 
-const password = randomBytes(24).toString('base64url');
+const password = randomBytes(6).toString('base64url');
 const now = Date.parse('2026-10-27T12:00:00+07:00');
 
 test('the production pause ends at midnight on 7 November in Bangkok', () => {
@@ -20,7 +20,7 @@ test('an invalid clock cannot open the demo', () => {
 });
 
 test('missing, malformed and short environment passwords fail closed', () => {
-  for (const value of ['', 'short', 'a'.repeat(23), 'a'.repeat(129), password + '\n', password + ' ', password + '\0', password + '\t']) {
+  for (const value of ['', 'short', 'a'.repeat(7), 'a'.repeat(129), password + '\n', password + ' ', password + '\0', password + '\t']) {
     assert.equal(teamPassword(value), undefined);
     assert.equal(createTeamSession(value, now), undefined);
     assert.equal(passwordMatches(value, value), false);
@@ -31,7 +31,9 @@ test('missing, malformed and short environment passwords fail closed', () => {
   assert.equal(passwordMatches(password, undefined), false);
 });
 
-test('long passwords accept ordinary symbols and preserve their exact value', () => {
+test('eight-character passwords and ordinary symbols retain their exact value', () => {
+  assert.equal(password.length, 8);
+  assert.equal(teamPassword(password), password);
   const withSymbols = password + '!@#$%^&*()+=';
   assert.equal(teamPassword(withSymbols), withSymbols);
   assert.equal(passwordMatches(withSymbols, withSymbols), true);

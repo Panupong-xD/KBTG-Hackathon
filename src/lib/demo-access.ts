@@ -10,9 +10,9 @@ export function isDemoPaused(now = Date.now()) {
   return !Number.isFinite(now) || now < DEMO_REOPEN_TIMESTAMP;
 }
 
-// A long, randomly generated server environment value is required; no fallback.
+// The team chose an easy-to-remember password for this temporary preview; no fallback.
 export function teamPassword(value = process.env.DEMO_TEAM_PASSWORD) {
-  return value && value.length >= 24 && value.length <= 128 && value === value.trim() &&
+  return value && value.length >= 8 && value.length <= 128 && value === value.trim() &&
     !/[\u0000-\u001f\u007f]/.test(value) ? value : undefined;
 }
 
