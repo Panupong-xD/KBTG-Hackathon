@@ -20,7 +20,7 @@ test('an invalid clock cannot open the demo', () => {
 });
 
 test('missing, malformed and short environment passwords fail closed', () => {
-  for (const value of ['', 'short', 'a'.repeat(129), password + '\n', password + ' ']) {
+  for (const value of ['', 'short', 'a'.repeat(23), 'a'.repeat(129), password + '\n', password + ' ', password + '\0', password + '\t']) {
     assert.equal(teamPassword(value), undefined);
     assert.equal(createTeamSession(value, now), undefined);
     assert.equal(passwordMatches(value, value), false);
@@ -29,6 +29,14 @@ test('missing, malformed and short environment passwords fail closed', () => {
   assert.equal(passwordMatches(password, password), true);
   assert.equal(passwordMatches('wrong', password), false);
   assert.equal(passwordMatches(password, undefined), false);
+});
+
+test('long passwords accept ordinary symbols and preserve their exact value', () => {
+  const withSymbols = password + '!@#$%^&*()+=';
+  assert.equal(teamPassword(withSymbols), withSymbols);
+  assert.equal(passwordMatches(withSymbols, withSymbols), true);
+  assert.equal(passwordMatches(password, withSymbols), false);
+  assert.equal(validTeamSession(createTeamSession(withSymbols, now), withSymbols, now), true);
 });
 
 test('session is signed, lasts eight hours and contains no password', () => {

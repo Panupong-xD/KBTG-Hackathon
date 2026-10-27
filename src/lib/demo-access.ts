@@ -12,7 +12,8 @@ export function isDemoPaused(now = Date.now()) {
 
 // A long, randomly generated server environment value is required; no fallback.
 export function teamPassword(value = process.env.DEMO_TEAM_PASSWORD) {
-  return value && /^[A-Za-z0-9_-]{24,128}$/.test(value) ? value : undefined;
+  return value && value.length >= 24 && value.length <= 128 && value === value.trim() &&
+    !/[\u0000-\u001f\u007f]/.test(value) ? value : undefined;
 }
 
 export function passwordMatches(candidate: string, password: string | undefined) {
