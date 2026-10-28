@@ -145,8 +145,8 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
               <div className={styles.headerIcons}><Bell/><Power/></div>
             </div>
             <div className={styles.heroCopy}>
-              <strong>ปรับใหม่<br/>รู้ใจเรื่องจัดการเงิน</strong>
-              <p>ยกระดับประสบการณ์ใช้งาน<br/>จัดเมนูใหม่ เห็นชัด หาง่าย ใช้คล่อง</p>
+              <strong>รู้ก่อนเงินตึง<br/>เงินเหลือมีเป้าหมาย</strong>
+              <p>ดูยอดใช้ได้วันนี้<br/>พร้อมเลือกเก็บเข้า Pocket</p>
             </div>
             <Image src="/images/banking-lifestyle.png" alt="กลุ่มเพื่อนกับแอปจัดการเงิน" width={1536} height={1024} sizes="130px" className={styles.lifestyle} />
             <span className={styles.starOne}>✦</span><span className={styles.starTwo}>✦</span><span className={styles.starThree}>✦</span>
