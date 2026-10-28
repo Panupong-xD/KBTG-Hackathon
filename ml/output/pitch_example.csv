@@ -1,0 +1,6 @@
+scenario,daily_budget,chance_enough
+Even split (balance + income - rent) / 30,450.0,
+"Usual spending, client always pays on time",395.0,0.812
+"Usual spending, client may pay late",395.0,0.5246
+"Spend 280/day, client may pay late",280.0,0.85855
+Recommended at 85% target,284.20964176549876,0.85

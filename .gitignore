@@ -43,3 +43,7 @@ next-env.d.ts
 # Project cache & temporary data
 .npm-cache/
 scratch/
+
+# ML prototype
+ml/.venv/
+__pycache__/

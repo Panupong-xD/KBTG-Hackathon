@@ -1,0 +1,6 @@
+check,ml,without_ml,last_7_days
+"Spend forecast error, 30-day total (median %)",17.437093578706914,17.006323365576108,25.554639247549048
+"Late-payment AUC, all income",0.8146775496077527,0.7221965851407476,
+"Late-payment AUC, freelance clients only",0.6988865197820422,0.5,
+Run-out warning (chance < 70%): real run-outs caught %,92.83819628647215,90.71618037135279,
+Run-out warning (chance < 70%): warnings that were right %,77.43362831858407,74.34782608695652,
