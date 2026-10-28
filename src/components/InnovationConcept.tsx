@@ -49,7 +49,7 @@ export default function InnovationConcept() {
           </p>
           {/* Protection Subtext */}
           <div className="mt-8 flex flex-wrap items-center justify-center gap-6 text-xs text-emerald-100">
-            <span>• งบวันนี้ + โอกาสเงินพอ</span>
+            <span>• ยอดใช้ได้วันนี้ + โอกาสเงินพอ</span>
             <span>• เตือนเมื่อความเสี่ยงเพิ่ม</span>
             <span>• ออมเข้า Pocket</span>
             <span>• ทุกการออม คุณยืนยันเอง</span>

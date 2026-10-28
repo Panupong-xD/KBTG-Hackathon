@@ -2,7 +2,8 @@
 export const demoFinance = {
   openingBalance: 9000, fixedBills: 3500, hardFloor: 1000,
   openingAccumulated: 100, pendingIncome: 8000, daysUntilIncome: 12,
-  daysIncludingToday: 30, spentToday: 230,
+  daysIncludingToday: 30, spentToday: 250,
+  sweepMinRate: 0.1, sweepMaxRate: 0.2,
   sweepCap: 150, illustrativeProbability: 86,
 } as const;
 export const dailyBudget = 280;
@@ -28,7 +29,9 @@ export function dailySummary(spentToday: number, allocated = 0) {
   const protectedFutureBudget = dailyBudget * (demoFinance.daysUntilIncome - 1);
   const liquidLimit = pockets[0].balance - spentToday - allocated - demoFinance.hardFloor - protectedFutureBudget;
   const validSpending = Number.isFinite(spentToday) && spentToday >= 0;
-  const suggestedAmount = validSpending ? Math.max(0, Math.min(demoFinance.sweepCap, difference, accumulated, liquidLimit)) : 0;
+  const minimumSuggestion = dailyBudget * demoFinance.sweepMinRate;
+  const availableSuggestion = Math.min(dailyBudget * demoFinance.sweepMaxRate, demoFinance.sweepCap, difference, accumulated, liquidLimit);
+  const suggestedAmount = validSpending && availableSuggestion >= minimumSuggestion ? availableSuggestion : 0;
   return {difference, accumulated, overspendCovered, futureDays, futureBudget, suggestedAmount};
 }
 

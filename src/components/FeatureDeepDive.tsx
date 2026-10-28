@@ -131,7 +131,7 @@ export default function FeatureDeepDive() {
                     {/* AI Safe-to-Spend Floating Badge */}
                     <rect x="175" y="68" width="152" height="26" rx="13" fill="#00A950" filter="drop-shadow(0 2px 4px rgba(0,169,80,0.25))" />
                     <text x="251" y="85" textAnchor="middle" fill="#FFFFFF" fontSize="11" fontWeight="bold">
-                      งบแนะนำ : ฿{dailyBudget} / วัน
+                      ยอดใช้ได้วันนี้ : ฿{dailyBudget} / วัน
                     </text>
 
                     {/* Payday Safe Touchdown (Day 30) */}
@@ -167,7 +167,7 @@ export default function FeatureDeepDive() {
               </div>
               <div className="bg-emerald-50/70 border border-emerald-200/80 rounded-xl p-2.5 text-center">
                 <span className="text-slate-500 block text-[11px] font-medium">เมื่อปรับงบ</span>
-                <strong className="text-[#008744] font-bold">โอกาสเงินพอ {demoFinance.daysIncludingToday} วัน {demoFinance.illustrativeProbability}%*</strong>
+                <strong className="text-[#008744] font-bold">โอกาสเงินพอใน {demoFinance.daysIncludingToday} วัน {demoFinance.illustrativeProbability}%*</strong>
               </div>
             </div>
             <div className="mt-2 text-right">
@@ -192,7 +192,7 @@ export default function FeatureDeepDive() {
                 Pocket Co-pilot · เงินเหลือมีเป้าหมาย
               </h3>
               <p className="text-xs sm:text-sm text-slate-500 mb-6">
-                วันนี้ใช้ ฿230 จากงบ ฿280 เหลือ ฿50 เลือกเก็บเข้า Pocket หรือสะสมไว้ก่อน เงินจะย้ายเมื่อคุณยืนยัน
+                วันนี้ใช้ ฿250 จากงบ ฿280 เหลือ ฿30 เลือกเก็บเข้า Pocket หรือสะสมไว้ก่อน เงินจะย้ายเมื่อคุณยืนยัน
               </p>
 
               {/* Stage: Clean Symbolic Vector Infographic (Wallet ➔ Smart Sweep ➔ Locked Vault) */}
@@ -232,14 +232,14 @@ export default function FeatureDeepDive() {
                     {/* Tier 1: Micro-Surplus (Outflow) */}
                     <rect x="30" y="66" width="165" height="48" rx="10" fill="#ECFDF5" stroke="#A7F3D0" strokeWidth="1" />
                     <text x="42" y="86" fill="#065F46" fontSize="10" fontWeight="bold">เงินเหลือวันนี้</text>
-                    <text x="183" y="87" textAnchor="end" fill="#008744" fontSize="13" fontWeight="900">+฿50</text>
-                    <text x="42" y="102" fill="#059669" fontSize="8">เงินเหลือหลังใช้ ฿230</text>
+                    <text x="183" y="87" textAnchor="end" fill="#008744" fontSize="13" fontWeight="900">+฿30</text>
+                    <text x="42" y="102" fill="#059669" fontSize="8">เงินเหลือหลังใช้ ฿250</text>
 
                     {/* Tier 2: Daily Budget (Operating) */}
                     <rect x="30" y="126" width="165" height="48" rx="10" fill="#F8FAFC" stroke="#E2E8F0" strokeWidth="1" />
-                    <text x="42" y="146" fill="#334155" fontSize="10" fontWeight="bold">งบวันนี้</text>
+                    <text x="42" y="146" fill="#334155" fontSize="10" fontWeight="bold">ยอดใช้ได้วันนี้</text>
                     <text x="183" y="147" textAnchor="end" fill="#0F172A" fontSize="13" fontWeight="900">฿280</text>
-                    <text x="42" y="162" fill="#64748B" fontSize="8">งบต้นวัน รวมส่วนที่เหลือ ฿50</text>
+                    <text x="42" y="162" fill="#64748B" fontSize="8">งบต้นวัน รวมส่วนที่เหลือ ฿30</text>
 
                     {/* Tier 3: Hard Floor Shield (Protection) */}
                     <rect x="30" y="186" width="165" height="68" rx="10" fill="#EFF6FF" stroke="#BFDBFE" strokeWidth="1" />
@@ -255,7 +255,7 @@ export default function FeatureDeepDive() {
                     <path d="M 205 90 L 228 90" fill="none" stroke="#00A950" strokeWidth="2" strokeDasharray="3 2" />
                     <rect x="228" y="76" width="104" height="28" rx="14" fill="#00A950" filter="drop-shadow(0 2px 4px rgba(0,169,80,0.22))" />
                     <text x="280" y="90" dominantBaseline="central" textAnchor="middle" fill="#FFFFFF" fontSize="10.5" fontWeight="bold">
-                      ยืนยัน ฿50 ➔
+                      ยืนยัน ฿30 ➔
                     </text>
                     <path d="M 332 90 L 350 90" fill="none" stroke="#00A950" strokeWidth="2" markerEnd="url(#arrowGreen)" />
 
@@ -310,7 +310,7 @@ export default function FeatureDeepDive() {
                       เงินที่จัดสรรจากวันนี้
                     </text>
                     <text x="447.5" y="224" textAnchor="middle" fill="#064E3B" fontSize="14" fontWeight="900">
-                      ฿50 / ครั้งนี้
+                      ฿30 / ครั้งนี้
                     </text>
                     <text x="447.5" y="240" textAnchor="middle" fill="#059669" fontSize="8">
                       ยอดรวมทุก Pocket เท่าเดิม
@@ -338,7 +338,7 @@ export default function FeatureDeepDive() {
               </div>
             </div>
             <div className="mt-2 text-right">
-              <span className="text-[10px] text-slate-400 font-normal">*เงินสำรอง ฿1,000 และเพดาน ฿150 เป็นค่าทดลองของทีม การยกเลิกใน 24 ชั่วโมงเป็นแนวคิดที่ยังไม่มีในเดโม</span>
+              <span className="text-[10px] text-slate-400 font-normal">*เงินสำรอง ฿1,000 และกติกาชวนเก็บ 10–20% ของยอดใช้ได้วันนี้ ไม่เกิน ฿150 ต่อครั้ง เป็นค่าทดลองของทีม การยกเลิกใน 24 ชั่วโมงเป็นแนวคิดที่ยังไม่มีในเดโม</span>
             </div>
           </div>
 
@@ -389,7 +389,7 @@ export default function FeatureDeepDive() {
                   ออมได้ โดยยังมีเงินพร้อมใช้
                 </h4>
                 <p className="text-xs text-slate-600 leading-relaxed">
-                  เสนอออมจากส่วนที่ใช้ไม่ถึงงบ หลังกันบิล เงินสำรอง และงบระหว่างรอรับเงิน จำกัด ฿150/ครั้งและเหลือเงินสำรองอย่างน้อย ฿1,000 ตามค่าทดลองของทีม เลือก Pocket และยืนยันก่อนย้ายทุกครั้ง
+                  เสนอออมจากส่วนที่ใช้ไม่ถึงงบ หลังกันบิล เงินสำรอง และงบระหว่างรอรับเงิน ชวนเก็บ 10–20% ของยอดใช้ได้วันนี้ ไม่เกิน ฿150 ต่อครั้ง และเหลือเงินสำรองอย่างน้อย ฿1,000 ตามค่าทดลองของทีม เลือก Pocket และยืนยันก่อนย้ายทุกครั้ง
                 </p>
               </div>
 

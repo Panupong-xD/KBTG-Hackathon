@@ -29,11 +29,11 @@ The two cards retain the original equal sizing, swipe, pagination, keyboard cont
 
 Opening total ฿9,000 consists of main Pocket ฿5,500 and reserved bills ฿3,500. Pending income ฿8,000 expected in 12 days is not counted as cash. The illustrative budget is ฿280/day and the probability is 86% over 30 days, not a trained model prediction.
 
-Spending ฿230 leaves an account total of ฿8,770 and daily surplus ฿50. Previous accumulated funds ฿100 plus today’s ฿50 creates a virtual ฿150 inside the main Pocket. Saving ฿50 decreases the main Pocket, increases the chosen destination and reduces accumulation to ฿100 without changing the total.
+Spending ฿250 leaves an account total of ฿8,750 and daily surplus ฿30. Previous accumulated funds ฿100 plus today’s ฿30 creates a virtual ฿130 inside the main Pocket. Saving ฿30 decreases the main Pocket, increases the chosen destination and reduces accumulation to ฿100 without changing the total.
 
-The website uses only this ฿230 spending example, with no alternative-scenario controls. The underlying accumulation helper still covers overspending in its unit tests. A confirmed allocation cannot be repeated, and cancelling selection does not move money.
+The website uses only this ฿250 spending example, with no alternative-scenario controls. The underlying accumulation helper still covers overspending in its unit tests. A confirmed allocation cannot be repeated, and cancelling selection does not move money.
 
-The provisional ฿150 cap and ฿1,000 buffer are team choices, not bank rules. Current cash must cover the buffer and spending before expected income; reserved bills remain separate. A production system needs recalculation of risk and atomic ledger checks. Reloading resets this browser-only prototype.
+The provisional 10–20% saving range of today’s available amount, capped at ฿150 per transfer, and ฿1,000 buffer are team choices, not bank rules. Current cash must cover the buffer and spending before expected income; reserved bills remain separate. A production system needs recalculation of risk and atomic ledger checks. Reloading resets this browser-only prototype.
 
 Pain points, walkthrough, and architecture use this same fixture: opening ฿9,000, bills ฿3,500, pending ฿8,000 expected in 12 days, budget ฿280/day, and illustrative 86% over 30 days. Pending income is never counted as current cash. The probability is a prototype input, not proof of model quality. The 30-day horizon is distinct from the next expected income in 12 days. After saving, the phone shows that risk needs reassessment instead of retaining the illustrative percentage.
 

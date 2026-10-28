@@ -28,7 +28,7 @@ export default function Hero() {
 
           {/* Sub-headline tailored to First Jobbers */}
           <p className="mt-6 text-base sm:text-lg text-slate-600 max-w-3xl leading-relaxed font-normal">
-            <strong className="text-slate-900 font-bold">K-Runway</strong> แนวคิดผู้ช่วยการเงิน AI ในแอปธนาคาร สำหรับ First Jobber ที่รายได้ไม่แน่นอน แนะนำ <strong className="text-slate-900 font-bold">งบวันนี้และโอกาสเงินพอ</strong> คิดเผื่อบิลและเงินเข้าช้า พร้อมชวนเก็บเงินที่ใช้ไม่ถึงงบเข้ากระเป๋าเงินเก็บ <span className="whitespace-nowrap">(Pocket)</span> ที่คุณเลือก
+            <strong className="text-slate-900 font-bold">K-Runway</strong> แนวคิดผู้ช่วยการเงิน AI ในแอปธนาคาร สำหรับ First Jobber ที่รายได้ไม่แน่นอน แนะนำ <strong className="text-slate-900 font-bold">ยอดใช้ได้วันนี้และโอกาสเงินพอ</strong> คิดเผื่อบิลและเงินเข้าช้า พร้อมชวนเก็บเงินที่ใช้ไม่ถึงงบเข้ากระเป๋าเงินเก็บ <span className="whitespace-nowrap">(Pocket)</span> ที่คุณเลือก
           </p>
 
           {/* Action CTA Buttons */}
@@ -59,7 +59,7 @@ export default function Hero() {
               </div>
               <div>
                 <div className="text-sm font-bold text-slate-900">รู้ก่อนเงินตึง</div>
-                <div className="text-xs text-slate-500 mt-0.5">เห็นงบวันนี้ คิดเผื่อวันที่เงินเข้าช้า</div>
+                <div className="text-xs text-slate-500 mt-0.5">เห็นยอดใช้ได้วันนี้ คิดเผื่อวันที่เงินเข้าช้า</div>
               </div>
             </div>
 

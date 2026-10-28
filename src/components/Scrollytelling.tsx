@@ -78,8 +78,8 @@ export default function Scrollytelling() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-14">
           <span className="inline-block text-xs font-bold text-[#00A950] bg-[#00A950]/10 px-3 py-1 rounded-full mb-3">TRY THE DEMO</span>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">คุมงบวันนี้ ต่อยอดเงินเก็บ ใน 2 ขั้นตอน</h2>
-          <p className="mt-3 text-slate-600 text-sm sm:text-base leading-relaxed">ดูงบวันนี้และโอกาสเงินพอ แล้วเลือกเก็บเงินเข้า Pocket ด้วยตัวเอง</p>
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">คุมยอดใช้ได้วันนี้ ต่อยอดเงินเก็บ ใน 2 ขั้นตอน</h2>
+          <p className="mt-3 text-slate-600 text-sm sm:text-base leading-relaxed">ดูยอดใช้ได้วันนี้และโอกาสเงินพอ แล้วเลือกเก็บเงินเข้า Pocket ด้วยตัวเอง</p>
           <div className="flex flex-wrap items-center justify-center gap-2 mt-6">
             {SCROLLY_STEPS.map((step, index) => <button key={step.id} type="button" onClick={() => selectWalkthroughStep(index)} aria-pressed={activeStep === index}
               className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all ${activeStep === index ? 'bg-[#00A950] text-white shadow-sm' : 'bg-white text-slate-600 hover:text-slate-900 border border-slate-200'}`}>

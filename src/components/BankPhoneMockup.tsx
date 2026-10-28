@@ -197,25 +197,25 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
                       <div className={styles.balanceSummary}>
                         <div className={styles.balanceHeading}>
                           <span>ยอดเงินคงเหลือ</span>
-                          <button ref={infoTrigger} type="button" className={styles.infoButton} aria-label="ดูรายละเอียดค่าใช้จ่ายและงบวันนี้" aria-haspopup="dialog" onClick={() => setShowInfo(true)}><Info /></button>
+                          <button ref={infoTrigger} type="button" className={styles.infoButton} aria-label="ดูรายละเอียดค่าใช้จ่ายและยอดใช้ได้วันนี้" aria-haspopup="dialog" onClick={() => setShowInfo(true)}><Info /></button>
                         </div>
                         <strong className={styles.balanceAmount}>฿{formatPocketBalance(accountBalance)}</strong>
                       </div>
                       <div className={styles.budgetComparison}>
-                        <span className={withinBudget ? styles.positiveChange : styles.negativeChange} aria-label={`${withinBudget ? 'ประหยัด' : 'ใช้เกินงบ'} ${Math.abs(budgetDifference)} บาทจากงบวันนี้`}>
+                        <span className={withinBudget ? styles.positiveChange : styles.negativeChange} aria-label={`${withinBudget ? 'ประหยัด' : 'ใช้เกินงบ'} ${Math.abs(budgetDifference)} บาทจากยอดใช้ได้วันนี้`}>
                           {withinBudget ? <ArrowUpRight /> : <ArrowDownRight />}
                           {budgetDifference > 0 ? '+' : ''}{budgetDifference}
                         </span>
-                        <span>{withinBudget ? 'ต่ำกว่างบวันนี้' : 'เกินงบวันนี้'}</span>
+                        <span>{withinBudget ? 'ต่ำกว่ายอดใช้ได้วันนี้' : 'เกินยอดใช้ได้วันนี้'}</span>
                       </div>
                     </div>
                     <div className={styles.budgetGrid}>
-                      <div><span>งบวันนี้</span><strong>฿{dailyBudget} <small>/ วัน</small></strong></div>
+                      <div><span>ยอดใช้ได้วันนี้</span><strong>฿{dailyBudget} <small>/ วัน</small></strong></div>
                       <div><span>คาดว่าเงินเข้าใน</span><strong>{demoFinance.daysUntilIncome} <small>วัน</small></strong></div>
                     </div>
                     <div className={styles.runway}>
-                      <div className={styles.runwayHeading}><strong>โอกาสเงินพอ {demoFinance.daysIncludingToday} วัน</strong><span><i />{showIllustrativeProbability ? `${demoFinance.illustrativeProbability}%*` : 'รอประเมินใหม่*'}</span></div>
-                      <div className={styles.runwayTrack} role={showIllustrativeProbability ? "meter" : "img"} aria-label={showIllustrativeProbability ? "โอกาสเงินพอ 30 วัน ข้อมูลจำลอง" : "โอกาสเงินพอ ต้องประเมินใหม่หลังแผนเปลี่ยน"} aria-valuemin={showIllustrativeProbability ? 0 : undefined} aria-valuemax={showIllustrativeProbability ? 100 : undefined} aria-valuenow={showIllustrativeProbability ? demoFinance.illustrativeProbability : undefined}><span style={{ width: showIllustrativeProbability ? `${demoFinance.illustrativeProbability}%` : '0%' }} /></div>
+                      <div className={styles.runwayHeading}><strong>โอกาสเงินพอใน {demoFinance.daysIncludingToday} วัน</strong><span><i />{showIllustrativeProbability ? `${demoFinance.illustrativeProbability}%*` : 'รอประเมินใหม่*'}</span></div>
+                      <div className={styles.runwayTrack} role={showIllustrativeProbability ? "meter" : "img"} aria-label={showIllustrativeProbability ? "โอกาสเงินพอใน 30 วัน ข้อมูลจำลอง" : "โอกาสเงินพอ ต้องประเมินใหม่หลังแผนเปลี่ยน"} aria-valuemin={showIllustrativeProbability ? 0 : undefined} aria-valuemax={showIllustrativeProbability ? 100 : undefined} aria-valuenow={showIllustrativeProbability ? demoFinance.illustrativeProbability : undefined}><span style={{ width: showIllustrativeProbability ? `${demoFinance.illustrativeProbability}%` : '0%' }} /></div>
                     </div>
                   </div>
                   <div className={`${styles.featureCard} ${styles.savingsContent}`} role="group" aria-roledescription="slide" aria-label="ออมเงิน 2 จาก 2" inert={activeStep !== 1}>
@@ -314,7 +314,7 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
           >
             <button type="button" autoFocus className={styles.closeDialog} aria-label="ปิดหน้าต่าง" onClick={closeDialog}><X /></button>
             {showInfo ? <>
-              <h4 id="phone-dialog-title">ค่าใช้จ่ายและงบวันนี้</h4>
+              <h4 id="phone-dialog-title">ค่าใช้จ่ายและยอดใช้ได้วันนี้</h4>
               <p id="phone-dialog-description">รายได้ไม่แน่นอน · ตัวอย่างช่วง 30 วัน</p>
               <dl className={styles.costDetails}>
                 <div><dt>ยอดเงินต้นวัน</dt><dd>฿9,000</dd></div>
@@ -322,7 +322,7 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
                 <div><dt>เงินสำรองขั้นต่ำ*</dt><dd>฿1,000</dd></div>
                 <div><dt>ค่าจ้างที่รอเข้า*</dt><dd>฿8,000</dd></div>
                 <div><dt>วันรับเงินที่คาด*</dt><dd>อีก 12 วัน</dd></div>
-                <div><dt>งบใช้จ่ายวันนี้</dt><dd>฿{dailyBudget}</dd></div>
+                <div><dt>ยอดใช้ได้วันนี้</dt><dd>฿{dailyBudget}</dd></div>
                 <div><dt>ใช้ไปแล้ววันนี้</dt><dd>฿{spentToday}</dd></div>
                 <div><dt>เงินสะสมเดิม</dt><dd>฿100</dd></div>
                 <div><dt>เงินสะสมคงเหลือ</dt><dd>฿{formatPocketBalance(summary.accumulated)}</dd></div>
