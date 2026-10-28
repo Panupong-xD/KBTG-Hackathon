@@ -4,7 +4,6 @@ detect_bills   recurring bills from outgoing payments (rule-based)
 UserHistory    everything visible about one user before a given day
 SpendModel     gradient boosting: each future day's spending relative to the user's usual level
 DelayModel     how late each payer tends to pay, shrunk toward a bank-wide prior (cold start)
-StatsBaseline  the same outputs without ML: a flat recent average and pooled delays
 """
 import numpy as np
 import pandas as pd
@@ -164,23 +163,9 @@ class DelayModel:
         return weight * own_rate + (1 - weight) * self.prior_late(payer)
 
 
-class StatsBaseline:
-    """No ML: a flat 60-day average, day-to-day noise from the same window, delays pooled across payers."""
-
-    def __init__(self, pooled_delays):
-        self.pooled = pooled_delays
-
-    def forecast(self, history: UserHistory, horizon: int, window=60):
-        recent = history.spend[-window:]
-        level = float(recent.mean())
-        return np.full(horizon, level), recent / level
-
-    def sample(self, rng, history, payer, size, min_delay=0):
-        return _not_yet_paid(rng, rng.choice(self.pooled, size), self.pooled, self.pooled, min_delay)
-
-
 def prior_delays(invoices: pd.DataFrame, before_day: int) -> dict:
+    """Bank-wide delays observed before `before_day`, by payer kind."""
     paid = invoices[invoices.actual_day < before_day]
     delays = (paid.actual_day - paid.expected_day).to_numpy()
     employer = (paid.payer == 'EMPLOYER').to_numpy()
-    return {'EMPLOYER': delays[employer], 'CLIENT': delays[~employer], 'ALL': delays}
+    return {'EMPLOYER': delays[employer], 'CLIENT': delays[~employer]}

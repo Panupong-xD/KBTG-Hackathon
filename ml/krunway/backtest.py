@@ -1,22 +1,21 @@
-"""Rolling-origin backtest: four ways to set "safe to spend today", checked against what really happened.
+"""Rolling-origin backtest: three ways to set "safe to spend today", checked against what really happened.
 
 (a) even    (balance + expected income - bills) / days
 (b) direct  day-by-day cash flow with every income on its expected date: timing, but no uncertainty
-(c) stats   Monte Carlo with a flat recent average, iid noise and pooled payer delays (no ML)
-(d) ml      Monte Carlo with the gradient-boosting spend model and per-payer delays
+(c) ml      K-Runway: gradient-boosting spend model + per-payer delays + Monte Carlo
 
 Models are trained on the first 180 days. For every user and start day after
-that, each method recommends a daily budget for the next 30 days (target: 85%
-chance of never going below zero). We then replay what really happened: real
-income dates, real bills, and the user's real day-to-day spending pattern
-rescaled so its average equals the recommendation.
+that, each method recommends a daily budget for the next 30 days (K-Runway
+targets an 85% chance of never going below zero). We then replay what really
+happened: real income dates, real bills, and the user's real day-to-day
+spending pattern rescaled so its average equals the recommendation.
 """
 import numpy as np
 import pandas as pd
 from sklearn.metrics import roc_auc_score
 
 from .data import Dataset
-from .model import DelayModel, SpendModel, StatsBaseline, UserHistory, prior_delays, project_bills
+from .model import DelayModel, SpendModel, UserHistory, prior_delays, project_bills
 from .simulate import Income, direct_plan, even_split, simulate
 
 HORIZON = 30
@@ -25,7 +24,7 @@ ORIGINS = range(TRAIN_END, 240, 7)
 TARGETS = (0.7, 0.8, 0.85, 0.9, 0.95)
 MAIN_TARGET = 0.85
 WARN_BELOW = 0.7  # warn when the chance of lasting at usual spending is below this
-METHODS = ('even', 'direct', 'stats', 'ml')
+METHODS = ('even', 'direct', 'ml')
 
 
 def pending_incomes(history: UserHistory, sampler, rng):
@@ -61,8 +60,7 @@ def what_happened(user_tx: pd.DataFrame, history: UserHistory, horizon=HORIZON) 
 
 def fit_models(data: Dataset, train_end=TRAIN_END):
     histories = [UserHistory(*data.user(uid), train_end) for uid in data.users.user_id]
-    priors = prior_delays(data.invoices, train_end)
-    return SpendModel().fit(histories), DelayModel(priors), StatsBaseline(priors['ALL'])
+    return SpendModel().fit(histories), DelayModel(prior_delays(data.invoices, train_end))
 
 
 def run(data: Dataset, origins=ORIGINS, paths=4000, seed=11):
@@ -72,31 +70,30 @@ def run(data: Dataset, origins=ORIGINS, paths=4000, seed=11):
     lateness  one row per pending income due within a week of a start day, with predicted chance of being late
     """
     rng = np.random.default_rng(seed)
-    spend_model, delay_model, stats = fit_models(data)
+    spend_model, delay_model = fit_models(data)
     rows, lateness = [], []
     for user in data.users.itertuples():
         user_tx, user_inv, opening = data.user(user.user_id)
         for origin in origins:
             history = UserHistory(user_tx, user_inv, opening, origin)
             bills = project_bills(history.bills, origin, HORIZON)
+            incomes = pending_incomes(history, delay_model, rng)
             base = dict(user_id=user.user_id, persona=user.persona, origin=origin,
                         naive_forecast=float(history.spend[-7:].mean() * HORIZON), **what_happened(user_tx, history))
 
-            expected = pending_incomes(history, delay_model, rng)  # dates and amounts only, nothing sampled
-            rows.append(dict(base, method='even', budget=even_split(history.balance, bills, expected)))
-            rows.append(dict(base, method='direct', budget=direct_plan(history.balance, bills, expected)))
+            rows.append(dict(base, method='even', budget=even_split(history.balance, bills, incomes)))
+            rows.append(dict(base, method='direct', budget=direct_plan(history.balance, bills, incomes)))
 
-            for method, forecaster, sampler, block in (('stats', stats, stats, 1), ('ml', spend_model, delay_model, 7)):
-                mean, residuals = forecaster.forecast(history, HORIZON)
-                sim = simulate(rng, history.balance, bills, pending_incomes(history, sampler, rng), mean, residuals,
-                               paths=paths, block=block, level_sigma=history.level_sigma())
-                row = dict(base, method=method, budget=sim.budget_for(MAIN_TARGET),
-                           p_natural=sim.probability(sim.natural_budget), forecast_spend=float(mean.sum()))
-                for t in TARGETS:
-                    row[f'budget_{t}'] = sim.budget_for(t)
-                    # Even spending nothing misses the target: the product should warn instead of budgeting.
-                    row[f'feasible_{t}'] = sim.probability(0.0) >= t
-                rows.append(row)
+            mean, residuals = spend_model.forecast(history, HORIZON)
+            sim = simulate(rng, history.balance, bills, incomes, mean, residuals,
+                           paths=paths, block=7, level_sigma=history.level_sigma())
+            row = dict(base, method='ml', budget=sim.budget_for(MAIN_TARGET),
+                       p_natural=sim.probability(sim.natural_budget), forecast_spend=float(mean.sum()))
+            for t in TARGETS:
+                row[f'budget_{t}'] = sim.budget_for(t)
+                # Even spending nothing misses the target: the product should warn instead of budgeting.
+                row[f'feasible_{t}'] = sim.probability(0.0) >= t
+            rows.append(row)
 
             due = user_inv[(user_inv.known_day <= origin) & (user_inv.expected_day >= origin)
                            & (user_inv.expected_day < origin + 7)]
@@ -131,40 +128,33 @@ def ran_out_by_persona(results: pd.DataFrame) -> pd.DataFrame:
 
 def calibration(results: pd.DataFrame) -> pd.DataFrame:
     """For each target: among cases where the target is reachable, how often the budget really lasted."""
+    ml = results[results.method == 'ml']
     rows = []
-    for method in ('stats', 'ml'):
-        g = results[results.method == method]
-        for t in TARGETS:
-            reachable = g[g[f'feasible_{t}'].astype(bool)]
-            rows.append(dict(method=method, target=t,
-                             realized=float((reachable[f'budget_{t}'] <= reachable.realized_max).mean()),
-                             warned_pct=100 * (1 - len(reachable) / len(g))))
+    for t in TARGETS:
+        reachable = ml[ml[f'feasible_{t}'].astype(bool)]
+        rows.append(dict(target=t, realized=float((reachable[f'budget_{t}'] <= reachable.realized_max).mean()),
+                         warned_pct=100 * (1 - len(reachable) / len(ml))))
     return pd.DataFrame(rows)
 
 
 def model_checks(results: pd.DataFrame, lateness: pd.DataFrame) -> pd.DataFrame:
-    """The individual pieces, ML vs without ML."""
-    ml, stats = (results[results.method == m] for m in ('ml', 'stats'))
+    """The individual pieces of the ML model, next to a simple baseline where one applies."""
+    ml = results[results.method == 'ml']
     clients = lateness[lateness.payer != 'EMPLOYER']
 
     def forecast_error(forecast, actual):
         return 100 * float(np.median(np.abs(forecast - actual) / actual))
 
-    def warnings(g):
-        flagged, ran_out = g.p_natural < WARN_BELOW, ~g.natural_ok
-        caught = (flagged & ran_out).sum()
-        return 100 * caught / ran_out.sum(), 100 * caught / flagged.sum()
-
-    (ml_recall, ml_precision), (st_recall, st_precision) = warnings(ml), warnings(stats)
+    flagged, ran_out = ml.p_natural < WARN_BELOW, ~ml.natural_ok
+    caught = (flagged & ran_out).sum()
     rows = [
-        ('Spend forecast error, 30-day total (median %)',
-         forecast_error(ml.forecast_spend, ml.actual_spend), forecast_error(stats.forecast_spend, stats.actual_spend),
-         forecast_error(ml.naive_forecast, ml.actual_spend)),
-        ('Late-payment AUC, all income',
-         roc_auc_score(lateness.late, lateness.p_payer), roc_auc_score(lateness.late, lateness.p_type), np.nan),
-        ('Late-payment AUC, freelance clients only',
-         roc_auc_score(clients.late, clients.p_payer), roc_auc_score(clients.late, clients.p_type), np.nan),
-        (f'Run-out warning (chance < {WARN_BELOW:.0%}): real run-outs caught %', ml_recall, st_recall, np.nan),
-        (f'Run-out warning (chance < {WARN_BELOW:.0%}): warnings that were right %', ml_precision, st_precision, np.nan),
+        ('Spend forecast error, 30-day total (median %) | baseline: last 7 days average',
+         forecast_error(ml.forecast_spend, ml.actual_spend), forecast_error(ml.naive_forecast, ml.actual_spend)),
+        ('Late-payment AUC, all income | baseline: payer type only',
+         roc_auc_score(lateness.late, lateness.p_payer), roc_auc_score(lateness.late, lateness.p_type)),
+        ('Late-payment AUC, freelance clients only | baseline: payer type only',
+         roc_auc_score(clients.late, clients.p_payer), roc_auc_score(clients.late, clients.p_type)),
+        (f'Run-out warning (chance < {WARN_BELOW:.0%}): real run-outs caught %', 100 * caught / ran_out.sum(), np.nan),
+        (f'Run-out warning (chance < {WARN_BELOW:.0%}): warnings that were right %', 100 * caught / flagged.sum(), np.nan),
     ]
-    return pd.DataFrame(rows, columns=['check', 'ml', 'without_ml', 'last_7_days']).set_index('check')
+    return pd.DataFrame(rows, columns=['check', 'ml', 'baseline']).set_index('check')

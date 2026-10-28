@@ -18,12 +18,11 @@ from krunway.data import generate  # noqa: E402
 from krunway.simulate import Income, even_split, simulate  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent
-GREEN, RED, AMBER, BLUE, GREY = '#00A950', '#DC2626', '#F59E0B', '#2563EB', '#94A3B8'
+GREEN, RED, AMBER, GREY = '#00A950', '#DC2626', '#F59E0B', '#94A3B8'
 METHOD_STYLE = {
     'even': ('Even split', RED),
     'direct': ('Day-by-day plan\n(no uncertainty)', AMBER),
-    'stats': ('Statistics +\nMonte Carlo', BLUE),
-    'ml': ('ML +\nMonte Carlo', GREEN),
+    'ml': ('K-Runway\n(ML + Monte Carlo)', GREEN),
 }
 
 
@@ -86,10 +85,8 @@ def ran_out_chart(summary, path):
 def calibration_chart(cal, path):
     fig, ax = plt.subplots(figsize=(5, 5))
     ax.plot([0.65, 1], [0.65, 1], color=GREY, linestyle='--', label='Perfect calibration')
-    for method in ('ml', 'stats'):
-        g = cal[cal.method == method]
-        label, colour = METHOD_STYLE[method]
-        ax.plot(g.target, g.realized, marker='o', color=colour, label=label.replace('\n', ' '))
+    label, colour = METHOD_STYLE['ml']
+    ax.plot(cal.target, cal.realized, marker='o', color=colour, label=label.replace('\n', ' '))
     ax.set(xlabel='Target chance of staying above 0 THB', ylabel='Share that really stayed above 0 THB',
            title='Calibration on synthetic backtest', xlim=(0.65, 1), ylim=(0.55, 1))
     ax.legend(frameon=False, loc='lower right')
