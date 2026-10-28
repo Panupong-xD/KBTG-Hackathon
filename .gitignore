@@ -47,3 +47,6 @@ scratch/
 # ML prototype
 ml/.venv/
 __pycache__/
+
+# Presentation
+pitch
