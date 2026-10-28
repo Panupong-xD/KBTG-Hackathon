@@ -3,9 +3,11 @@
 import { useEffect, useReducer, useRef, useState } from 'react';
 import Image from 'next/image';
 import { motion, useAnimationControls, useDragControls, useReducedMotion } from 'framer-motion';
-import { Wifi, Bell, Power, ArrowRightLeft, Download, ScanLine, Banknote, Home, ShoppingBasket, User, ChevronRight, CheckCircle2, Info, ArrowUpRight, ArrowDownRight, PiggyBank, Sparkles, X, Navigation, ChartPie, Star, MapPin, SquarePen, Paintbrush } from 'lucide-react';
+import { Wifi, Bell, Power, ArrowRightLeft, Download, ScanLine, Banknote, Home, ShoppingBasket, User, ChevronRight, CheckCircle2, Info, ArrowUpRight, ArrowDownRight, PiggyBank, Sparkles, X, Navigation, ChartPie, Star, MapPin, SquarePen, Paintbrush, History } from 'lucide-react';
 import styles from './BankPhoneMockup.module.css';
 import PocketSelector from './PocketSelector';
+import RoundSummary from './RoundSummary';
+import { previousRoundDemo } from '../data/previousRound';
 import { SCROLLY_STEPS } from '../data/scrollySteps';
 import { pockets, demoFinance, dailyBudget, dailySummary, formatDemoAmount, formatPocketBalance, initialSavingState, pocketSavingReducer, pocketBalance, type SavingPocketId } from '@/lib/pocket-saving';
 
@@ -36,6 +38,7 @@ const slideSpring = { type: 'spring' as const, stiffness: 230, damping: 30, mass
 export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneMockupProps) {
   const [showInfo, setShowInfo] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [showRoundSummary, setShowRoundSummary] = useState(false);
   const [homeScrolled, setHomeScrolled] = useState(false);
   const [savingState, dispatchSaving] = useReducer(pocketSavingReducer, initialSavingState);
   const showPockets = savingState.status === 'choosing';
@@ -43,12 +46,14 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
   const spentToday = demoFinance.spentToday;
   const infoTrigger = useRef<HTMLButtonElement>(null);
   const saveTrigger = useRef<HTMLButtonElement>(null);
+  const roundTrigger = useRef<HTMLButtonElement>(null);
   const reducedMotion = useReducedMotion();
   const carouselRef = useRef<HTMLDivElement>(null);
   const [cardWidth, setCardWidth] = useState(0);
   const slideAnimation = useAnimationControls();
   const dragControls = useDragControls();
   const dragging = useRef(false);
+  const dragged = useRef(false);
   const releaseVelocity = useRef(0);
   const slideGap = 12;
   const lastStepIndex = SCROLLY_STEPS.length - 1;
@@ -82,6 +87,13 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
   const withinBudget = budgetDifference >= 0;
   const showIllustrativeProbability = withinBudget && !saved;
   const destinationPocket = pockets.find(pocket => pocket.id === savingState.pocketId);
+  const hasOverlay = showInfo || showSuccess || showPockets || showRoundSummary;
+
+  const closeRoundSummary = () => {
+    setShowRoundSummary(false);
+    onSelectStep?.(activeStep);
+    requestAnimationFrame(() => roundTrigger.current?.focus({ preventScroll: true }));
+  };
 
   const closeDialog = () => {
     const trigger = showInfo ? infoTrigger : saveTrigger;
@@ -120,11 +132,11 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
                 <Wifi /><span className={styles.battery}>82</span>
               </div>
             </div>
-        {homeScrolled && <div className={styles.scrolledHeader} inert={showInfo || showSuccess || showPockets}>
+        {homeScrolled && <div className={styles.scrolledHeader} inert={hasOverlay}>
           <span className={styles.financePill}><span className={styles.financeGrid}><i/><i/><i/><i/></span>การเงินของฉัน</span>
           <div className={styles.headerIcons}><Bell/><Power/></div>
         </div>}
-        <div className={styles.scrollArea} inert={showInfo || showSuccess || showPockets}
+        <div className={styles.scrollArea} inert={hasOverlay}
           onScroll={event => setHomeScrolled(event.currentTarget.scrollTop > event.currentTarget.clientWidth * .24)}>
           <header className={styles.hero}>
             <div className={styles.statusSpacer} />
@@ -152,6 +164,7 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
                 role="region"
                 aria-roledescription="carousel"
                 aria-label="การ์ดภาพรวมการเงินและออมเงิน"
+                aria-description="ลากหรือปัดซ้ายขวาเพื่อสลับการ์ด"
                 tabIndex={0}
                 onKeyDown={event => {
                   if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
@@ -165,6 +178,7 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
                   animate={slideAnimation}
                   initial={false}
                   drag="x"
+                  dragDirectionLock
                   dragControls={dragControls}
                   dragListener={false}
                   dragConstraints={{ left: -lastStepIndex * (cardWidth + slideGap), right: 0 }}
@@ -172,17 +186,27 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
                   dragMomentum={false}
                   onDragStart={() => {
                     dragging.current = true;
+                    dragged.current = true;
                     slideAnimation.stop();
                     onSelectStep?.(activeStep);
                   }}
                   onPointerDown={event => {
-                    if (event.button === 0 && !(event.target as HTMLElement).closest('button')) {
-                      dragControls.start(event);
+                    if (event.isPrimary && (event.pointerType !== 'mouse' || event.button === 0)) {
+                      dragged.current = false;
+                      dragControls.start(event, { distanceThreshold: 6 });
                     }
                   }}
-                  onDragEnd={(_, info) => {
+                  onClickCapture={event => {
+                    // A swipe that starts on a button must not also activate it.
+                    if (dragged.current && event.detail > 0) {
+                      event.preventDefault();
+                      event.stopPropagation();
+                    }
+                  }}
+                  onDragEnd={(event, info) => {
                     dragging.current = false;
-                    const delta = info.offset.x < -cardWidth * .16 || info.velocity.x < -500 ? 1
+                    const horizontal = event.type !== 'pointercancel' && Math.abs(info.offset.x) > Math.abs(info.offset.y);
+                    const delta = !horizontal ? 0 : info.offset.x < -cardWidth * .16 || info.velocity.x < -500 ? 1
                       : info.offset.x > cardWidth * .16 || info.velocity.x > 500 ? -1 : 0;
                     const nextStep = Math.max(0, Math.min(lastStepIndex, activeStep + delta));
                     releaseVelocity.current = Math.max(-1100, Math.min(1100, info.velocity.x));
@@ -239,6 +263,11 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
               <div className={styles.pagination} aria-label="เลือกขั้นตอนเดโม">
                 {SCROLLY_STEPS.map(({ category: label }, index) => <button key={label} type="button" aria-label={label} aria-pressed={activeStep === index} onClick={() => onSelectStep?.(index)}><span /></button>)}
               </div>
+              <button ref={roundTrigger} type="button" className={styles.roundPreview} onClick={() => { onSelectStep?.(activeStep); setShowRoundSummary(true); }} aria-haspopup="dialog" aria-label="ดูสรุปรอบก่อน">
+                <span className={styles.roundPreviewIcon}><History /></span>
+                <span className={styles.roundPreviewCopy}><strong>สรุปรอบก่อน <span>ดูสรุป</span></strong><span>ใช้ตามแผน {previousRoundDemo.daysWithinPlan} จาก {previousRoundDemo.days} วัน</span></span>
+                <ChevronRight />
+              </button>
             </section>
 
             <div className={styles.services}>
@@ -287,7 +316,7 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
           </main>
         </div>
 
-        <nav className={styles.dock} inert={showInfo || showSuccess || showPockets} aria-label="เมนูหลักในหน้าจอจำลอง">
+        <nav className={styles.dock} inert={hasOverlay} aria-label="เมนูหลักในหน้าจอจำลอง">
           <button type="button" className={activeStep === 0 ? styles.activeNav : ''} onClick={() => onSelectStep?.(0)}><Home fill="currentColor"/><span>หน้าแรก</span></button>
           <div className={styles.navItem}><ShoppingBasket/><span>market</span></div>
           <button type="button" className={`${styles.transactionNav} ${activeStep === 1 ? styles.activeNav : ''}`} onClick={() => onSelectStep?.(1)}><span className={styles.transactionIcon}>฿</span><span>ธุรกรรม</span></button>
@@ -295,6 +324,7 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
           <div className={`${styles.navItem} ${styles.profileNav}`}><span className={styles.profileIcon}><User fill="white"/></span><span>โปรไฟล์</span></div>
         </nav>
         {showPockets && <PocketSelector amount={savingState.amount} spentToday={savingState.spentToday} onCancel={cancelPocketSelection} onConfirm={confirmSaving} />}
+        {showRoundSummary && <RoundSummary onClose={closeRoundSummary} />}
         {(showInfo || showSuccess) && <div className={styles.modalBackdrop} onClick={closeDialog}>
           <div
             role="dialog"

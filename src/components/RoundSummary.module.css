@@ -1,0 +1,61 @@
+.backdrop {
+  position: absolute;
+  z-index: 12;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  background: #051e2a99;
+}
+.sheet {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-height: 91%;
+  border-radius: 25px 25px 0 0;
+  background: #fbfcfc;
+  color: #17373d;
+  box-shadow: 0 -12px 45px #001b2926;
+  animation: enter .24s ease-out;
+}
+.handle { flex-shrink: 0; width: 32px; height: 4px; margin: 10px auto 4px; border-radius: 99px; background: #d9e2e1; }
+.header { display: flex; flex-shrink: 0; align-items: flex-start; justify-content: space-between; gap: 4px; padding: 10px 16px 16px; }
+.header h4 { margin: 0 0 5px; font-size: 20px; font-weight: 600; line-height: 1.4; letter-spacing: -.3px; }
+.header p { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; margin: 0; color: #647a7e; font-size: 11px; line-height: 1.6; }
+.header p span { padding: 1px 6px; border: 1px solid #dce6e4; border-radius: 5px; color: #5f7578; font-size: 10px; }
+.close { display: grid; place-items: center; flex-shrink: 0; width: 44px; height: 44px; margin: -5px -7px 0 0; border: 0; border-radius: 50%; background: transparent; color: #62797d; }
+.close svg { width: 20px; height: 20px; }
+.body { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 16px 4px; scrollbar-width: thin; }
+.plan { padding: 16px; border: 1px solid #dceee8; border-radius: 17px; background: linear-gradient(135deg, #eaf6f0, #f3f9f6); }
+.eyebrow { display: flex; align-items: center; gap: 6px; color: #52756c; font-size: 11px; line-height: 18px; }
+.eyebrow svg { width: 14px; height: 14px; stroke-width: 1.7; }
+.plan h5 { margin: 10px 0 0; font-size: 14px; line-height: 1.6; font-weight: 500; }
+.days { display: flex; align-items: baseline; gap: 9px; margin: 1px 0 13px; }
+.days strong { color: #087c68; font-size: 48px; font-weight: 600; line-height: 1.15; letter-spacing: -1.5px; }
+.days > span { font-size: 13px; color: #657d75; }
+.bar { height: 8px; overflow: hidden; border-radius: 99px; background: #d5dfdc; }
+.bar > span { display: block; height: 100%; border-radius: 99px; background: #20977a; }
+.legend { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 3px 8px; margin-top: 9px; font-size: 11px; color: #56716a; }
+.legend > span { display: flex; align-items: center; gap: 5px; }
+.legend i { width: 6px; height: 6px; border-radius: 50%; background: #20977a; }
+.legend > span:last-child i { background: #aabdb6; }
+.planNote { margin: 11px 0 0; color: #657d75; font-size: 10px; line-height: 1.6; }
+.events { padding: 19px 0 17px; }
+.events h5 { margin: 0 0 13px; font-size: 13px; font-weight: 600; line-height: 1.6; }
+.event { display: flex; align-items: center; gap: 10px; }
+.event + .event { margin-top: 14px; }
+.eventIcon { display: grid; place-items: center; width: 34px; height: 34px; flex-shrink: 0; border: 1px solid #e6ecea; border-radius: 11px; background: #fff; color: #66857d; }
+.eventIcon svg { width: 17px; height: 17px; stroke-width: 1.65; }
+.event p { display: flex; flex-direction: column; gap: 3px; margin: 0; }
+.event strong { font-size: 12px; font-weight: 500; line-height: 1.5; }
+.event p > span { color: #738589; font-size: 11px; line-height: 1.5; }
+.carried { padding: 13px 14px; border: 1px solid #e2e9e7; border-radius: 13px; background: #fff; }
+.carriedHeading { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px 8px; }
+.carriedHeading > span { font-size: 12px; }
+.carriedHeading strong { font-size: 22px; font-weight: 600; line-height: 1.4; letter-spacing: -.4px; }
+.carried p { display: flex; align-items: center; gap: 4px; margin: 6px 0 0; font-size: 10px; line-height: 1.6; color: #6b807b; }
+.carried p svg { width: 13px; height: 13px; color: #25866d; }
+.footer { flex-shrink: 0; padding: 14px 16px 24px; }
+.footer button { display: flex; align-items: center; justify-content: center; gap: 7px; width: 100%; min-height: 44px; padding: 10px; border: 0; border-radius: 12px; background: #143e3d; color: #fff; font-size: 13px; font-weight: 500; }
+.footer button svg { width: 16px; height: 16px; }
+@keyframes enter { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) { .sheet { animation: none; } }
