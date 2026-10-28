@@ -265,7 +265,7 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
               </div>
               <button ref={roundTrigger} type="button" className={styles.roundPreview} onClick={() => { onSelectStep?.(activeStep); setShowRoundSummary(true); }} aria-haspopup="dialog" aria-label="ดูสรุปรอบก่อน">
                 <span className={styles.roundPreviewIcon}><History /></span>
-                <span className={styles.roundPreviewCopy}><strong>สรุปรอบก่อน <span>ดูสรุป</span></strong><span>ใช้ตามแผน {previousRoundDemo.daysWithinPlan} จาก {previousRoundDemo.days} วัน</span></span>
+                <span className={styles.roundPreviewCopy}><strong>สรุปรอบก่อน</strong><span>ใช้ตามแผน {previousRoundDemo.daysWithinPlan} จาก {previousRoundDemo.days} วัน</span></span>
                 <ChevronRight />
               </button>
             </section>
