@@ -1,5 +1,3 @@
-'use client';
-
 import { ArrowDown, ArrowRight, Clock, Bell, Wallet } from 'lucide-react';
 
 export default function Hero() {

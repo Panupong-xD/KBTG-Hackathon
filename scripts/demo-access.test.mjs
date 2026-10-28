@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { randomBytes } from 'node:crypto';
-import { createTeamSession, DEMO_REOPEN_TIMESTAMP, isDemoPaused, passwordMatches, readTeamPassword, sameOriginPost, TEAM_SESSION_SECONDS, teamPassword, validTeamSession } from '../src/lib/demo-access.ts';
+import { createTeamSession, DEMO_REOPEN_LABEL, DEMO_REOPEN_TIMESTAMP, isDemoPaused, passwordMatches, readTeamPassword, sameOriginPost, TEAM_SESSION_SECONDS, teamPassword, validTeamSession } from '../src/lib/demo-access.ts';
 import { teamGateResponse } from '../src/lib/demo-gate.ts';
 
 const password = randomBytes(6).toString('base64url');
@@ -18,6 +18,12 @@ test('the production pause ends at midnight on 7 November in Bangkok', () => {
 test('an invalid clock cannot open the demo', () => {
   assert.equal(isDemoPaused(NaN), true);
   assert.equal(isDemoPaused(Infinity), true);
+});
+
+test('the gate date text follows the same reopening timestamp in Bangkok time', async () => {
+  assert.equal(DEMO_REOPEN_LABEL, '7 พฤศจิกายน 2569');
+  const html = await teamGateResponse({ ready: true }).text();
+  assert.equal(html.split(DEMO_REOPEN_LABEL).length - 1, 3);
 });
 
 test('missing, malformed and short environment passwords fail closed', () => {

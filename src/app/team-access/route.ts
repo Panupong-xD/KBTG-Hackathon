@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createTeamSession, DEMO_REOPEN_TIMESTAMP, isDemoPaused, passwordMatches, readTeamPassword, sameOriginPost, TEAM_COOKIE, TEAM_SESSION_SECONDS, teamPassword, validTeamSession } from '@/lib/demo-access';
 import { PRIVATE_HEADERS, teamGateResponse } from '@/lib/demo-gate';
+import { loginClientKey, loginLimiter } from '@/lib/login-limiter';
 
 export function GET(request: NextRequest) {
   if (!isDemoPaused()) return NextResponse.redirect(new URL('/', request.url), 303);
@@ -17,6 +18,13 @@ export async function POST(request: NextRequest) {
   if (!isDemoPaused()) return NextResponse.redirect(new URL('/', request.url), 303);
   const password = teamPassword();
   if (!password) return teamGateResponse({ ready: false });
+  const client = loginClientKey(request.headers);
+  const limit = loginLimiter.consume(client);
+  if (!limit.allowed) {
+    const response = teamGateResponse({ ready: true, error: true, status: 429 });
+    response.headers.set('Retry-After', String(limit.retryAfter));
+    return response;
+  }
 
   let candidate: string | undefined;
   try {
@@ -27,6 +35,7 @@ export async function POST(request: NextRequest) {
   if (candidate === undefined || !passwordMatches(candidate, password)) {
     return teamGateResponse({ ready: true, error: true, status: 401 });
   }
+  loginLimiter.reset(client);
 
   const now = Date.now();
   const token = createTeamSession(password, now);

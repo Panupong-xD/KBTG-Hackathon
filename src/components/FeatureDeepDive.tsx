@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { ChevronDown, ChevronUp, Cpu } from 'lucide-react';
-import { dailyBudget, demoFinance } from '../lib/pocket-saving';
+import { dailyBudget, demoFinance, demoSavingExample, formatDemoAmount } from '../lib/pocket-saving';
 
 export default function FeatureDeepDive() {
   const [showTechDetails, setShowTechDetails] = useState<boolean>(false);
@@ -138,7 +138,7 @@ export default function FeatureDeepDive() {
                     <circle cx="475" cy="165" r="6" fill="#00A950" stroke="#FFFFFF" strokeWidth="2" />
                     <rect x="405" y="122" width="95" height="26" rx="6" fill="#ECFDF5" stroke="#6EE7B7" strokeWidth="1" />
                     <text x="452" y="139" textAnchor="middle" fill="#065F46" fontSize="10.5" fontWeight="bold">
-                      มอง 30 วัน
+                      มอง {demoFinance.daysIncludingToday} วัน
                     </text>
 
                     {/* Timeline Milestones */}
@@ -152,7 +152,7 @@ export default function FeatureDeepDive() {
                       ถ้าเงินเข้าช้า
                     </text>
                     <text x="500" y="262" textAnchor="end" fill="#008744" fontSize="10" fontWeight="bold">
-                      ครบ 30 วัน
+                      ครบ {demoFinance.daysIncludingToday} วัน
                     </text>
                   </svg>
                 </div>
@@ -192,7 +192,7 @@ export default function FeatureDeepDive() {
                 Pocket Co-pilot · เงินเหลือมีเป้าหมาย
               </h3>
               <p className="text-xs sm:text-sm text-slate-500 mb-6">
-                วันนี้ใช้ ฿250 จากงบ ฿280 เหลือ ฿30 เลือกเก็บเข้า Pocket หรือสะสมไว้ก่อน เงินจะย้ายเมื่อคุณยืนยัน
+                วันนี้ใช้ ฿{demoFinance.spentToday} จากงบ ฿{dailyBudget} เหลือ ฿{demoSavingExample.difference} เลือกเก็บเข้า Pocket หรือสะสมไว้ก่อน เงินจะย้ายเมื่อคุณยืนยัน
               </p>
 
               {/* Stage: Clean Symbolic Vector Infographic (Wallet ➔ Smart Sweep ➔ Locked Vault) */}
@@ -232,19 +232,19 @@ export default function FeatureDeepDive() {
                     {/* Tier 1: Micro-Surplus (Outflow) */}
                     <rect x="30" y="66" width="165" height="48" rx="10" fill="#ECFDF5" stroke="#A7F3D0" strokeWidth="1" />
                     <text x="42" y="86" fill="#065F46" fontSize="10" fontWeight="bold">เงินเหลือวันนี้</text>
-                    <text x="183" y="87" textAnchor="end" fill="#008744" fontSize="13" fontWeight="900">+฿30</text>
-                    <text x="42" y="102" fill="#059669" fontSize="8">เงินเหลือหลังใช้ ฿250</text>
+                    <text x="183" y="87" textAnchor="end" fill="#008744" fontSize="13" fontWeight="900">+฿{demoSavingExample.difference}</text>
+                    <text x="42" y="102" fill="#059669" fontSize="8">เงินเหลือหลังใช้ ฿{demoFinance.spentToday}</text>
 
                     {/* Tier 2: Daily Budget (Operating) */}
                     <rect x="30" y="126" width="165" height="48" rx="10" fill="#F8FAFC" stroke="#E2E8F0" strokeWidth="1" />
                     <text x="42" y="146" fill="#334155" fontSize="10" fontWeight="bold">ยอดใช้ได้วันนี้</text>
-                    <text x="183" y="147" textAnchor="end" fill="#0F172A" fontSize="13" fontWeight="900">฿280</text>
-                    <text x="42" y="162" fill="#64748B" fontSize="8">งบต้นวัน รวมส่วนที่เหลือ ฿30</text>
+                    <text x="183" y="147" textAnchor="end" fill="#0F172A" fontSize="13" fontWeight="900">฿{dailyBudget}</text>
+                    <text x="42" y="162" fill="#64748B" fontSize="8">งบต้นวัน รวมส่วนที่เหลือ ฿{demoSavingExample.difference}</text>
 
                     {/* Tier 3: Hard Floor Shield (Protection) */}
                     <rect x="30" y="186" width="165" height="68" rx="10" fill="#EFF6FF" stroke="#BFDBFE" strokeWidth="1" />
                     <text x="42" y="208" fill="#1E40AF" fontSize="10" fontWeight="bold">เงินสำรองขั้นต่ำ*</text>
-                    <text x="183" y="209" textAnchor="end" fill="#1D4ED8" fontSize="13" fontWeight="900">฿1,000</text>
+                    <text x="183" y="209" textAnchor="end" fill="#1D4ED8" fontSize="13" fontWeight="900">฿{formatDemoAmount(demoFinance.hardFloor)}</text>
                     <text x="42" y="226" fill="#3B82F6" fontSize="8">กันไว้เผื่อค่าใช้จ่ายจำเป็น</text>
                     <text x="42" y="240" fill="#60A5FA" fontSize="7.5">เผื่องบระหว่างรอรับเงินก่อนออม</text>
 
@@ -255,7 +255,7 @@ export default function FeatureDeepDive() {
                     <path d="M 205 90 L 228 90" fill="none" stroke="#00A950" strokeWidth="2" strokeDasharray="3 2" />
                     <rect x="228" y="76" width="104" height="28" rx="14" fill="#00A950" filter="drop-shadow(0 2px 4px rgba(0,169,80,0.22))" />
                     <text x="280" y="90" dominantBaseline="central" textAnchor="middle" fill="#FFFFFF" fontSize="10.5" fontWeight="bold">
-                      ยืนยัน ฿30 ➔
+                      ยืนยัน ฿{demoSavingExample.suggestedAmount} ➔
                     </text>
                     <path d="M 332 90 L 350 90" fill="none" stroke="#00A950" strokeWidth="2" markerEnd="url(#arrowGreen)" />
 
@@ -310,7 +310,7 @@ export default function FeatureDeepDive() {
                       เงินที่จัดสรรจากวันนี้
                     </text>
                     <text x="447.5" y="224" textAnchor="middle" fill="#064E3B" fontSize="14" fontWeight="900">
-                      ฿30 / ครั้งนี้
+                      ฿{demoSavingExample.suggestedAmount} / ครั้งนี้
                     </text>
                     <text x="447.5" y="240" textAnchor="middle" fill="#059669" fontSize="8">
                       ยอดรวมทุก Pocket เท่าเดิม
@@ -338,7 +338,7 @@ export default function FeatureDeepDive() {
               </div>
             </div>
             <div className="mt-2 text-right">
-              <span className="text-[10px] text-slate-400 font-normal">*เงินสำรอง ฿1,000 และกติกาชวนเก็บ 10–20% ของยอดใช้ได้วันนี้ ไม่เกิน ฿150 ต่อครั้ง เป็นค่าทดลองของทีม การยกเลิกใน 24 ชั่วโมงเป็นแนวคิดที่ยังไม่มีในเดโม</span>
+              <span className="text-[10px] text-slate-400 font-normal">*เงินสำรอง ฿{formatDemoAmount(demoFinance.hardFloor)} และกติกาชวนเก็บ {demoFinance.sweepMinRate * 100}–{demoFinance.sweepMaxRate * 100}% ของยอดใช้ได้วันนี้ ไม่เกิน ฿{formatDemoAmount(demoFinance.sweepCap)} ต่อครั้ง เป็นค่าทดลองของทีม การยกเลิกใน 24 ชั่วโมงเป็นแนวคิดที่ยังไม่มีในเดโม</span>
             </div>
           </div>
 
@@ -352,7 +352,7 @@ export default function FeatureDeepDive() {
             type="button"
             onClick={() => setShowTechDetails(!showTechDetails)}
             aria-expanded={showTechDetails}
-            aria-controls="technical-details"
+            aria-controls={showTechDetails ? 'technical-details' : undefined}
             className="w-full bg-white hover:bg-slate-100/80 border border-slate-200/90 rounded-2xl p-4 text-xs sm:text-sm font-bold text-slate-700 flex items-center justify-between shadow-sm transition-all"
           >
             <span className="flex items-center gap-2">
@@ -378,7 +378,7 @@ export default function FeatureDeepDive() {
                 <p className="text-xs text-slate-600 leading-relaxed">
                   แนวคิดระบบใช้ข้อมูล 3 ส่วน: ยอดเงินและธุรกรรม บิลและภาระผ่อน ประวัติรายรับ พร้อมให้เติมเงินรอรับได้ตามสมัครใจ โดยไม่นับเป็นยอดเงินในบัญชี
                 </p>
-                <p className="mt-2 text-xs text-slate-600 leading-relaxed">ML ช่วยพยากรณ์รายจ่าย บิลประจำ และโอกาสเงินเข้าช้า จากนั้น Monte Carlo จำลองเงินเข้า–ออกหลายพันสถานการณ์ใน 30 วัน เพื่อหางบที่สอดคล้องกับระดับความเสี่ยง ทั้งสองส่วนยังต้องทดสอบกับข้อมูลจริง</p>
+                <p className="mt-2 text-xs text-slate-600 leading-relaxed">ML ช่วยพยากรณ์รายจ่าย บิลประจำ และโอกาสเงินเข้าช้า จากนั้น Monte Carlo จำลองเงินเข้า–ออกหลายพันสถานการณ์ใน {demoFinance.daysIncludingToday} วัน เพื่อหางบที่สอดคล้องกับระดับความเสี่ยง ทั้งสองส่วนยังต้องทดสอบกับข้อมูลจริง</p>
               </div>
 
               <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
@@ -389,7 +389,7 @@ export default function FeatureDeepDive() {
                   ออมได้ โดยยังมีเงินพร้อมใช้
                 </h4>
                 <p className="text-xs text-slate-600 leading-relaxed">
-                  เสนอออมจากส่วนที่ใช้ไม่ถึงงบ หลังกันบิล เงินสำรอง และงบระหว่างรอรับเงิน ชวนเก็บ 10–20% ของยอดใช้ได้วันนี้ ไม่เกิน ฿150 ต่อครั้ง และเหลือเงินสำรองอย่างน้อย ฿1,000 ตามค่าทดลองของทีม เลือก Pocket และยืนยันก่อนย้ายทุกครั้ง
+                  เสนอออมจากส่วนที่ใช้ไม่ถึงงบ หลังกันบิล เงินสำรอง และงบระหว่างรอรับเงิน ชวนเก็บ {demoFinance.sweepMinRate * 100}–{demoFinance.sweepMaxRate * 100}% ของยอดใช้ได้วันนี้ ไม่เกิน ฿{formatDemoAmount(demoFinance.sweepCap)} ต่อครั้ง และเหลือเงินสำรองอย่างน้อย ฿{formatDemoAmount(demoFinance.hardFloor)} ตามค่าทดลองของทีม เลือก Pocket และยืนยันก่อนย้ายทุกครั้ง
                 </p>
               </div>
 

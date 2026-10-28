@@ -6,7 +6,8 @@ import { motion, useAnimationControls, useDragControls, useReducedMotion } from 
 import { Wifi, Bell, Power, ArrowRightLeft, Download, ScanLine, Banknote, Home, ShoppingBasket, User, ChevronRight, CheckCircle2, Info, ArrowUpRight, ArrowDownRight, PiggyBank, Sparkles, X, Navigation, ChartPie, Star, MapPin, SquarePen, Paintbrush } from 'lucide-react';
 import styles from './BankPhoneMockup.module.css';
 import PocketSelector from './PocketSelector';
-import { pockets, demoFinance, dailyBudget, dailySummary, formatPocketBalance, initialSavingState, pocketSavingReducer, pocketBalance, type SavingPocketId } from '@/lib/pocket-saving';
+import { SCROLLY_STEPS } from '../data/scrollySteps';
+import { pockets, demoFinance, dailyBudget, dailySummary, formatDemoAmount, formatPocketBalance, initialSavingState, pocketSavingReducer, pocketBalance, type SavingPocketId } from '@/lib/pocket-saving';
 
 interface BankPhoneMockupProps {
   activeStep: number;
@@ -50,6 +51,7 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
   const dragging = useRef(false);
   const releaseVelocity = useRef(0);
   const slideGap = 12;
+  const lastStepIndex = SCROLLY_STEPS.length - 1;
   const slideTransition = reducedMotion
     ? { duration: 0 }
     : slideSpring;
@@ -154,7 +156,7 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
                 onKeyDown={event => {
                   if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
                     event.preventDefault();
-                    onSelectStep?.(event.key === 'ArrowRight' ? 1 : 0);
+                    onSelectStep?.(Math.max(0, Math.min(lastStepIndex, activeStep + (event.key === 'ArrowRight' ? 1 : -1))));
                   }
                 }}
               >
@@ -165,7 +167,7 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
                   drag="x"
                   dragControls={dragControls}
                   dragListener={false}
-                  dragConstraints={{ left: -(cardWidth + slideGap), right: 0 }}
+                  dragConstraints={{ left: -lastStepIndex * (cardWidth + slideGap), right: 0 }}
                   dragElastic={0.08}
                   dragMomentum={false}
                   onDragStart={() => {
@@ -182,7 +184,7 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
                     dragging.current = false;
                     const delta = info.offset.x < -cardWidth * .16 || info.velocity.x < -500 ? 1
                       : info.offset.x > cardWidth * .16 || info.velocity.x > 500 ? -1 : 0;
-                    const nextStep = Math.max(0, Math.min(1, activeStep + delta));
+                    const nextStep = Math.max(0, Math.min(lastStepIndex, activeStep + delta));
                     releaseVelocity.current = Math.max(-1100, Math.min(1100, info.velocity.x));
                     // A changed step animates once in the effect above, from the release position.
                     if (nextStep !== activeStep && onSelectStep) onSelectStep(nextStep);
@@ -192,7 +194,7 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
                     }
                   }}
                 >
-                  <div className={styles.featureCard} role="group" aria-roledescription="slide" aria-label="ภาพรวมการเงิน 1 จาก 2" inert={activeStep !== 0}>
+                  <div className={styles.featureCard} role="group" aria-roledescription="slide" aria-label={`${SCROLLY_STEPS[0].category} 1 จาก ${SCROLLY_STEPS.length}`} inert={activeStep !== 0}>
                     <div className={styles.balanceHeader}>
                       <div className={styles.balanceSummary}>
                         <div className={styles.balanceHeading}>
@@ -215,10 +217,10 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
                     </div>
                     <div className={styles.runway}>
                       <div className={styles.runwayHeading}><strong>โอกาสเงินพอใน {demoFinance.daysIncludingToday} วัน</strong><span><i />{showIllustrativeProbability ? `${demoFinance.illustrativeProbability}%*` : 'รอประเมินใหม่*'}</span></div>
-                      <div className={styles.runwayTrack} role={showIllustrativeProbability ? "meter" : "img"} aria-label={showIllustrativeProbability ? "โอกาสเงินพอใน 30 วัน ข้อมูลจำลอง" : "โอกาสเงินพอ ต้องประเมินใหม่หลังแผนเปลี่ยน"} aria-valuemin={showIllustrativeProbability ? 0 : undefined} aria-valuemax={showIllustrativeProbability ? 100 : undefined} aria-valuenow={showIllustrativeProbability ? demoFinance.illustrativeProbability : undefined}><span style={{ width: showIllustrativeProbability ? `${demoFinance.illustrativeProbability}%` : '0%' }} /></div>
+                      <div className={styles.runwayTrack} role={showIllustrativeProbability ? "meter" : "img"} aria-label={showIllustrativeProbability ? `โอกาสเงินพอใน ${demoFinance.daysIncludingToday} วัน ข้อมูลจำลอง` : "โอกาสเงินพอ ต้องประเมินใหม่หลังแผนเปลี่ยน"} aria-valuemin={showIllustrativeProbability ? 0 : undefined} aria-valuemax={showIllustrativeProbability ? 100 : undefined} aria-valuenow={showIllustrativeProbability ? demoFinance.illustrativeProbability : undefined}><span style={{ width: showIllustrativeProbability ? `${demoFinance.illustrativeProbability}%` : '0%' }} /></div>
                     </div>
                   </div>
-                  <div className={`${styles.featureCard} ${styles.savingsContent}`} role="group" aria-roledescription="slide" aria-label="ออมเงิน 2 จาก 2" inert={activeStep !== 1}>
+                  <div className={`${styles.featureCard} ${styles.savingsContent}`} role="group" aria-roledescription="slide" aria-label={`${SCROLLY_STEPS[1].category} 2 จาก ${SCROLLY_STEPS.length}`} inert={activeStep !== 1}>
                     <div className={styles.savingsHeader}>
                       <span className={styles.featureIcon}><PiggyBank /></span>
                       <div><h4>เก็บเงินให้ถึงเป้าหมาย</h4><p>{withinBudget ? 'ใช้ไม่ถึงงบ แบ่งเก็บไว้ให้อุ่นใจ' : 'วันนี้ใช้เกินงบ พักการออมก่อน'}</p></div>
@@ -235,7 +237,7 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
                 </motion.div>
               </div>
               <div className={styles.pagination} aria-label="เลือกขั้นตอนเดโม">
-                {['ภาพรวมการเงิน', 'ออมเงิน'].map((label, index) => <button key={label} type="button" aria-label={label} aria-pressed={activeStep === index} onClick={() => onSelectStep?.(index)}><span /></button>)}
+                {SCROLLY_STEPS.map(({ category: label }, index) => <button key={label} type="button" aria-label={label} aria-pressed={activeStep === index} onClick={() => onSelectStep?.(index)}><span /></button>)}
               </div>
             </section>
 
@@ -286,9 +288,9 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
         </div>
 
         <nav className={styles.dock} inert={showInfo || showSuccess || showPockets} aria-label="เมนูหลักในหน้าจอจำลอง">
-          <button className={activeStep === 0 ? styles.activeNav : ''} onClick={() => onSelectStep?.(0)}><Home fill="currentColor"/><span>หน้าแรก</span></button>
+          <button type="button" className={activeStep === 0 ? styles.activeNav : ''} onClick={() => onSelectStep?.(0)}><Home fill="currentColor"/><span>หน้าแรก</span></button>
           <div className={styles.navItem}><ShoppingBasket/><span>market</span></div>
-          <button className={`${styles.transactionNav} ${activeStep === 1 ? styles.activeNav : ''}`} onClick={() => onSelectStep?.(1)}><span className={styles.transactionIcon}>฿</span><span>ธุรกรรม</span></button>
+          <button type="button" className={`${styles.transactionNav} ${activeStep === 1 ? styles.activeNav : ''}`} onClick={() => onSelectStep?.(1)}><span className={styles.transactionIcon}>฿</span><span>ธุรกรรม</span></button>
           <div className={styles.navItem}><ScanLine/><span>สแกน/สร้างQR</span></div>
           <div className={`${styles.navItem} ${styles.profileNav}`}><span className={styles.profileIcon}><User fill="white"/></span><span>โปรไฟล์</span></div>
         </nav>
@@ -315,19 +317,19 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
             <button type="button" autoFocus className={styles.closeDialog} aria-label="ปิดหน้าต่าง" onClick={closeDialog}><X /></button>
             {showInfo ? <>
               <h4 id="phone-dialog-title">ค่าใช้จ่ายและยอดใช้ได้วันนี้</h4>
-              <p id="phone-dialog-description">รายได้ไม่แน่นอน · ตัวอย่างช่วง 30 วัน</p>
+              <p id="phone-dialog-description">รายได้ไม่แน่นอน · ตัวอย่างช่วง {demoFinance.daysIncludingToday} วัน</p>
               <dl className={styles.costDetails}>
-                <div><dt>ยอดเงินต้นวัน</dt><dd>฿9,000</dd></div>
-                <div><dt>ค่าห้องที่กันไว้</dt><dd>฿3,500</dd></div>
-                <div><dt>เงินสำรองขั้นต่ำ*</dt><dd>฿1,000</dd></div>
-                <div><dt>ค่าจ้างที่รอเข้า*</dt><dd>฿8,000</dd></div>
-                <div><dt>วันรับเงินที่คาด*</dt><dd>อีก 12 วัน</dd></div>
+                <div><dt>ยอดเงินต้นวัน</dt><dd>฿{formatDemoAmount(demoFinance.openingBalance)}</dd></div>
+                <div><dt>ค่าห้องที่กันไว้</dt><dd>฿{formatDemoAmount(demoFinance.fixedBills)}</dd></div>
+                <div><dt>เงินสำรองขั้นต่ำ*</dt><dd>฿{formatDemoAmount(demoFinance.hardFloor)}</dd></div>
+                <div><dt>ค่าจ้างที่รอเข้า*</dt><dd>฿{formatDemoAmount(demoFinance.pendingIncome)}</dd></div>
+                <div><dt>วันรับเงินที่คาด*</dt><dd>อีก {demoFinance.daysUntilIncome} วัน</dd></div>
                 <div><dt>ยอดใช้ได้วันนี้</dt><dd>฿{dailyBudget}</dd></div>
                 <div><dt>ใช้ไปแล้ววันนี้</dt><dd>฿{spentToday}</dd></div>
-                <div><dt>เงินสะสมเดิม</dt><dd>฿100</dd></div>
+                <div><dt>เงินสะสมเดิม</dt><dd>฿{formatDemoAmount(demoFinance.openingAccumulated)}</dd></div>
                 <div><dt>เงินสะสมคงเหลือ</dt><dd>฿{formatPocketBalance(summary.accumulated)}</dd></div>
               </dl>
-              <p className={styles.comparisonNote}>*เงินรอรับยังไม่รวมในยอดบัญชี · {demoFinance.illustrativeProbability}% เป็นค่าตัวอย่างตลอด {demoFinance.daysIncludingToday} วัน เพื่อเผื่อเงินเข้าช้ากว่าวันที่คาด ไม่ใช่ผลโมเดลจริง · เงินสำรอง ฿1,000 เป็นค่าทดลอง</p>
+              <p className={styles.comparisonNote}>*เงินรอรับยังไม่รวมในยอดบัญชี · {demoFinance.illustrativeProbability}% เป็นค่าตัวอย่างตลอด {demoFinance.daysIncludingToday} วัน เพื่อเผื่อเงินเข้าช้ากว่าวันที่คาด ไม่ใช่ผลโมเดลจริง · เงินสำรอง ฿{formatDemoAmount(demoFinance.hardFloor)} เป็นค่าทดลอง</p>
               <p className={styles.comparisonNote}>เงินสะสมอยู่ในบัญชีหลักและลดตามยอดที่เก็บเข้า Pocket หลังออม ระบบจริงต้องประเมินงบและโอกาสเงินพอใหม่ เดโมจะแสดง “รอประเมินใหม่”</p>
             </> : <>
               <span className={styles.successIcon}><CheckCircle2 /></span>

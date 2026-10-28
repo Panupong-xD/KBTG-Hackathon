@@ -1,5 +1,3 @@
-'use client';
-
 import { Lock, FileCheck, ShieldCheck, RefreshCw, Check } from 'lucide-react';
 
 export default function TrustSecurityBanner() {

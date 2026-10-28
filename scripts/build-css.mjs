@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'node:url';
 import { compile } from 'tailwindcss';
 
 function getAllFiles(dirPath, arrayOfFiles = []) {
@@ -133,6 +134,9 @@ body {
   console.log(`[build-css] Generated globals.css (${finalCss.length} bytes, ${allCandidates.size} candidates)`);
 }
 
-if (process.argv[1] === new URL(import.meta.url).pathname) {
-  generateTailwindCSS().catch(console.error);
+if (process.argv[1] && fs.realpathSync(path.resolve(process.argv[1])) === fileURLToPath(import.meta.url)) {
+  generateTailwindCSS().catch(error => {
+    console.error(error);
+    process.exitCode = 1;
+  });
 }

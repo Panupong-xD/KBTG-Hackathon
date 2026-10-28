@@ -1,8 +1,8 @@
+import { DEMO_REOPEN_TIMESTAMP } from './demo-schedule.mjs';
 import { createHash, createHmac, timingSafeEqual } from 'node:crypto';
 
 // Server-only access gate. Never import this module into a client component.
-export const DEMO_REOPEN_AT = '2026-11-07T00:00:00+07:00';
-export const DEMO_REOPEN_TIMESTAMP = Date.parse(DEMO_REOPEN_AT);
+export { DEMO_REOPEN_AT, DEMO_REOPEN_TIMESTAMP, DEMO_REOPEN_LABEL } from './demo-schedule.mjs';
 export const TEAM_COOKIE = '__Host-runway_team';
 export const TEAM_SESSION_SECONDS = 8 * 60 * 60;
 

@@ -1,4 +1,4 @@
-import { dailyBudget, demoFinance } from '../lib/pocket-saving';
+import { dailyBudget, demoFinance, demoSavingExample, formatDemoAmount } from '../lib/pocket-saving';
 
 export interface ScrollyStep {
   id: number;
@@ -38,18 +38,18 @@ export const SCROLLY_STEPS: ScrollyStep[] = [
     description: 'วันที่ใช้ไม่ถึงงบ เงินส่วนที่เหลือช่วยเติมเงินสำรองได้ เลือก Pocket แล้วยืนยันเก็บด้วยตัวเอง',
     detailGroups: [
       { title: 'ชวนเก็บถูกจังหวะ ไม่เบียดค่าใช้ชีวิต', details: [
-        'กันบิล เงินสำรอง และค่าใช้จ่ายระหว่างรอรับเงินก่อนชวนออม วันนี้ใช้ ฿250 จากงบ ฿280 เหลือ ฿30 รวมเงินสะสมเดิม ฿100 เป็น ฿130',
-        'เลือก Pocket → ยืนยันเก็บ ฿30 → ดูผล เงินสะสมเหลือ ฿100 ยอดรวมทุกกระเป๋าเท่าเดิม ไม่ได้นับเงินออมซ้ำเป็นเงินพร้อมใช้',
+        `กันบิล เงินสำรอง และค่าใช้จ่ายระหว่างรอรับเงินก่อนชวนออม วันนี้ใช้ ฿${demoFinance.spentToday} จากงบ ฿${dailyBudget} เหลือ ฿${demoSavingExample.difference} รวมเงินสะสมเดิม ฿${demoFinance.openingAccumulated} เป็น ฿${demoSavingExample.accumulated}`,
+        `เลือก Pocket → ยืนยันเก็บ ฿${demoSavingExample.suggestedAmount} → ดูผล เงินสะสมเหลือ ฿${demoSavingExample.accumulatedAfterSaving} ยอดรวมทุกกระเป๋าเท่าเดิม ไม่ได้นับเงินออมซ้ำเป็นเงินพร้อมใช้`,
       ] },
       { title: 'ยังไม่ออมวันนี้ เงินเหลือก็มีแผน', details: [
         'เงินสะสมยังอยู่บัญชีหลัก ช่วยรองรับวันที่ใช้เกินงบก่อนเกลี่ยส่วนที่ขาดไปวันถัด ๆ ไป',
         'เมื่อถึงรอบรับเงิน แนวคิดต่อยอดคือให้เลือกเก็บเงินสะสมเข้า Pocket หรือยกยอดไปรอบถัดไป โดยคุณเป็นคนตัดสินใจ',
       ] },
     ],
-    benchmarkNote: '*เดโมไม่โอนเงินจริง ชวนเก็บ 10–20% ของยอดใช้ได้วันนี้ ไม่เกิน ฿150 ต่อครั้ง และเงินสำรอง ฿1,000 เป็นค่าตัวอย่าง การเลือกสิ้นรอบเป็นแนวคิดต่อยอด',
+    benchmarkNote: `*เดโมไม่โอนเงินจริง ชวนเก็บ ${demoFinance.sweepMinRate * 100}–${demoFinance.sweepMaxRate * 100}% ของยอดใช้ได้วันนี้ ไม่เกิน ฿${formatDemoAmount(demoFinance.sweepCap)} ต่อครั้ง และเงินสำรอง ฿${formatDemoAmount(demoFinance.hardFloor)} เป็นค่าตัวอย่าง การเลือกสิ้นรอบเป็นแนวคิดต่อยอด`,
     metrics: [
-      { label: 'ชวนเก็บวันนี้', value: '฿30' },
-      { label: 'เงินสะสมก่อนออม', value: '฿130' },
+      { label: 'ชวนเก็บวันนี้', value: `฿${demoSavingExample.suggestedAmount}` },
+      { label: 'เงินสะสมก่อนออม', value: `฿${demoSavingExample.accumulated}` },
       { label: 'Pocket เป้าหมาย', value: 'สำรองฉุกเฉิน' },
     ],
   },

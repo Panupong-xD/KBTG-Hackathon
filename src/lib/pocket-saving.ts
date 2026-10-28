@@ -8,14 +8,16 @@ export const demoFinance = {
 } as const;
 export const dailyBudget = 280;
 export const pockets = [
-  { id: 'main', name: 'กระเป๋าหลัก', kind: 'spending', tone: 'green', balance: 5500 },
-  { id: 'bills', name: 'ค่าใช้จ่ายประจำเดือน', kind: 'spending', tone: 'mint', balance: 3500 },
+  { id: 'main', name: 'กระเป๋าหลัก', kind: 'spending', tone: 'green', balance: demoFinance.openingBalance - demoFinance.fixedBills },
+  { id: 'bills', name: 'ค่าใช้จ่ายประจำเดือน', kind: 'spending', tone: 'mint', balance: demoFinance.fixedBills },
   { id: 'travel', name: 'ค่าท่องเที่ยว', kind: 'spending', tone: 'blue', balance: 0 },
   { id: 'emergency', name: 'เงินสำรองฉุกเฉิน', kind: 'saving', tone: 'gold', balance: 0 },
   { id: 'savings', name: 'เงินเก็บ', kind: 'saving', tone: 'gold', balance: 0 },
 ] as const;
 export type PocketId = typeof pockets[number]['id'];
 export type SavingPocketId = Exclude<PocketId, 'main'>;
+const mainPocket = pockets.find(pocket => pocket.id === 'main')!;
+export const formatDemoAmount = (amount: number) => amount.toLocaleString('en-US');
 export const formatPocketBalance = (amount: number) => amount.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
 
 export function dailySummary(spentToday: number, allocated = 0) {
@@ -27,7 +29,7 @@ export function dailySummary(spentToday: number, allocated = 0) {
   const shortfall = Math.max(0, -difference - demoFinance.openingAccumulated);
   const futureBudget = Math.max(0, dailyBudget - shortfall / futureDays);
   const protectedFutureBudget = dailyBudget * (demoFinance.daysUntilIncome - 1);
-  const liquidLimit = pockets[0].balance - spentToday - allocated - demoFinance.hardFloor - protectedFutureBudget;
+  const liquidLimit = mainPocket.balance - spentToday - allocated - demoFinance.hardFloor - protectedFutureBudget;
   const validSpending = Number.isFinite(spentToday) && spentToday >= 0;
   const minimumSuggestion = dailyBudget * demoFinance.sweepMinRate;
   const availableSuggestion = Math.min(dailyBudget * demoFinance.sweepMaxRate, demoFinance.sweepCap, difference, accumulated, liquidLimit);
@@ -55,3 +57,9 @@ export function pocketBalance(pocketId: PocketId, state: SavingState, spentToday
   if (state.status !== 'saved') return opening;
   return opening + (pocketId === state.pocketId ? state.amount : pocketId === 'main' ? -state.amount : 0);
 }
+
+const initialDemoSummary = dailySummary(demoFinance.spentToday);
+export const demoSavingExample = {
+  ...initialDemoSummary,
+  accumulatedAfterSaving: dailySummary(demoFinance.spentToday, initialDemoSummary.suggestedAmount).accumulated,
+};

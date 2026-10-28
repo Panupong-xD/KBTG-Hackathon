@@ -7,7 +7,7 @@ import BankPhoneMockup from './BankPhoneMockup';
 import styles from './Scrollytelling.module.css';
 
 export default function Scrollytelling() {
-  const [stepIndex, setActiveStep] = useState(0);
+  const [stepIndex, setStepIndex] = useState(0);
   const activeStep = Math.min(stepIndex, SCROLLY_STEPS.length - 1);
   const sectionRef = useRef<HTMLElement>(null);
   const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -30,7 +30,7 @@ export default function Scrollytelling() {
         const currentDistance = Math.abs(rect.top + rect.height * .45 - focalY);
         if (currentDistance < distance) { distance = currentDistance; nearest = index; }
       });
-      setActiveStep(previous => previous === nearest ? previous : nearest);
+      setStepIndex(previous => previous === nearest ? previous : nearest);
     };
     const scheduleUpdate = () => { if (!frame) frame = requestAnimationFrame(updateStep); };
     // Keep a manually chosen phone screen while it is being used. Focus scrolling
@@ -60,7 +60,7 @@ export default function Scrollytelling() {
 
   const selectPhoneStep = (index: number) => {
     manualSelection.current = true;
-    setActiveStep(index);
+    setStepIndex(index);
   };
 
   const selectWalkthroughStep = (index: number) => {
