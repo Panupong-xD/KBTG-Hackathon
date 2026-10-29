@@ -43,3 +43,12 @@ next-env.d.ts
 # Project cache & temporary data
 .npm-cache/
 scratch/
+
+# ML prototype
+ml/.venv/
+__pycache__/
+
+# Presentation
+pitch
+# ML quick runs
+ml/output/quick/
