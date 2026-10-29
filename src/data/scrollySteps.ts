@@ -1,8 +1,10 @@
 import { dailyBudget, demoFinance, demoSavingExample, formatDemoAmount } from '../lib/pocket-saving';
+import { previousRoundDemo } from './previousRound';
 
 export interface ScrollyStep {
   id: number;
   stepNumber: string;
+  kind?: 'summary';
   category: string;
   title: string;
   description: string;
@@ -54,3 +56,27 @@ export const SCROLLY_STEPS: ScrollyStep[] = [
     ],
   },
 ];
+
+export const SUMMARY_VIEW: ScrollyStep = {
+  id: 3, stepNumber: 'Summary', kind: 'summary', category: 'สรุปรอบเดือน',
+  title: 'ทบทวนรอบเดือน ในการเงินของฉัน',
+  description: 'เปิดการเงินของฉัน เพื่อดูภาพรวมบัญชีและสรุปรอบเดือนที่ผ่านมา เทียบแผนกับสิ่งที่เกิดขึ้นจริงในที่เดียว',
+  detailGroups: [
+    { title: 'เห็นทั้งแผนและจังหวะที่เปลี่ยนไป', details: [
+      `ตัวอย่างเดือน${previousRoundDemo.month} ใช้ไม่เกินยอดที่วางแผนไว้ ${previousRoundDemo.daysWithinPlan} จาก ${previousRoundDemo.days} วัน โดยเทียบกับยอดใช้ได้ที่ปรับในแต่ละวัน`,
+      `ค่าจ้างเข้าช้า ${previousRoundDemo.incomeDelayDays} วัน ระบบจึงปรับยอดใช้ได้ลง ${previousRoundDemo.adjustedPlanDays} วันระหว่างรอเงินเข้า`,
+    ] },
+    { title: 'เงินสะสมเชื่อมต่อกับรอบปัจจุบัน', details: [
+      `เงินสะสม ฿${previousRoundDemo.carriedAmount} ที่ยกมารวมอยู่ในเงินสะสมเดิมของรอบนี้แล้ว ไม่เพิ่มยอดบัญชีหรือชวนย้ายเงินซ้ำ`,
+      'เปิดดูสรุปได้จากหน้าการเงินของฉัน โดยไม่ต้องผ่านขั้นตอนออมเงินก่อน',
+    ] },
+  ],
+  metrics: [
+    { label: 'ใช้ตามแผน', value: `${previousRoundDemo.daysWithinPlan}/${previousRoundDemo.days} วัน` },
+    { label: 'ปรับแผนระหว่างรอเงิน', value: `${previousRoundDemo.adjustedPlanDays} วัน` },
+    { label: 'เงินสะสมยกมา', value: `฿${previousRoundDemo.carriedAmount}` },
+  ],
+  benchmarkNote: '*Summary เป็นการทบทวนข้อมูลจำลองของรอบที่ผ่านมา ไม่ใช่ขั้นตอนที่ต้องทำต่อจากการออม และยังไม่ใช่ผลทดสอบโมเดลจริง',
+};
+
+export const DEMO_VIEWS = [...SCROLLY_STEPS, SUMMARY_VIEW];

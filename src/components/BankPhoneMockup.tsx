@@ -3,11 +3,10 @@
 import { useEffect, useReducer, useRef, useState } from 'react';
 import Image from 'next/image';
 import { motion, useAnimationControls, useDragControls, useReducedMotion } from 'framer-motion';
-import { Wifi, Bell, Power, ArrowRightLeft, Download, ScanLine, Banknote, Home, ShoppingBasket, User, ChevronRight, CheckCircle2, Info, ArrowUpRight, ArrowDownRight, PiggyBank, Sparkles, X, Navigation, ChartPie, Star, MapPin, SquarePen, Paintbrush, History } from 'lucide-react';
+import { Wifi, Bell, Power, ArrowRightLeft, Download, ScanLine, Banknote, Home, ShoppingBasket, User, ChevronRight, CheckCircle2, Info, ArrowUpRight, ArrowDownRight, PiggyBank, Sparkles, X, Navigation, ChartPie, Star, MapPin, SquarePen, Paintbrush } from 'lucide-react';
 import styles from './BankPhoneMockup.module.css';
 import PocketSelector from './PocketSelector';
-import RoundSummary from './RoundSummary';
-import { previousRoundDemo } from '../data/previousRound';
+import MyFinance from './MyFinance';
 import { SCROLLY_STEPS } from '../data/scrollySteps';
 import { pockets, demoFinance, dailyBudget, dailySummary, formatDemoAmount, formatPocketBalance, initialSavingState, pocketSavingReducer, pocketBalance, type SavingPocketId } from '@/lib/pocket-saving';
 
@@ -38,7 +37,6 @@ const slideSpring = { type: 'spring' as const, stiffness: 230, damping: 30, mass
 export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneMockupProps) {
   const [showInfo, setShowInfo] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [showRoundSummary, setShowRoundSummary] = useState(false);
   const [homeScrolled, setHomeScrolled] = useState(false);
   const [savingState, dispatchSaving] = useReducer(pocketSavingReducer, initialSavingState);
   const showPockets = savingState.status === 'choosing';
@@ -46,7 +44,9 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
   const spentToday = demoFinance.spentToday;
   const infoTrigger = useRef<HTMLButtonElement>(null);
   const saveTrigger = useRef<HTMLButtonElement>(null);
-  const roundTrigger = useRef<HTMLButtonElement>(null);
+  const financeTrigger = useRef<HTMLButtonElement>(null);
+  const stickyFinanceTrigger = useRef<HTMLButtonElement>(null);
+  const lastHomeStep = useRef(0);
   const reducedMotion = useReducedMotion();
   const carouselRef = useRef<HTMLDivElement>(null);
   const [cardWidth, setCardWidth] = useState(0);
@@ -57,6 +57,8 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
   const releaseVelocity = useRef(0);
   const slideGap = 12;
   const lastStepIndex = SCROLLY_STEPS.length - 1;
+  const isFinanceView = activeStep === SCROLLY_STEPS.length;
+  const carouselStep = Math.min(activeStep, lastStepIndex);
   const slideTransition = reducedMotion
     ? { duration: 0 }
     : slideSpring;
@@ -72,13 +74,25 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
   }, []);
 
   useEffect(() => {
+    if (!isFinanceView) lastHomeStep.current = activeStep;
+  }, [activeStep, isFinanceView]);
+
+  useEffect(() => {
+    if (!isFinanceView) return;
+    setShowInfo(false);
+    setShowSuccess(false);
+    // Leaving an unfinished selection never transfers money.
+    dispatchSaving({ type: 'cancel' });
+  }, [isFinanceView]);
+
+  useEffect(() => {
     if (dragging.current) return;
     slideAnimation.start({
-      x: -activeStep * (cardWidth + slideGap),
+      x: -carouselStep * (cardWidth + slideGap),
       transition: reducedMotion ? { duration: 0 } : { ...slideSpring, velocity: releaseVelocity.current },
     });
     releaseVelocity.current = 0;
-  }, [activeStep, cardWidth, reducedMotion, slideAnimation]);
+  }, [carouselStep, cardWidth, reducedMotion, slideAnimation]);
 
   const allocated = saved ? savingState.amount : 0;
   const summary = dailySummary(spentToday, allocated);
@@ -87,12 +101,12 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
   const withinBudget = budgetDifference >= 0;
   const showIllustrativeProbability = withinBudget && !saved;
   const destinationPocket = pockets.find(pocket => pocket.id === savingState.pocketId);
-  const hasOverlay = showInfo || showSuccess || showPockets || showRoundSummary;
+  const hasOverlay = showInfo || showSuccess || showPockets;
 
-  const closeRoundSummary = () => {
-    setShowRoundSummary(false);
-    onSelectStep?.(activeStep);
-    requestAnimationFrame(() => roundTrigger.current?.focus({ preventScroll: true }));
+  const openFinance = () => onSelectStep?.(SCROLLY_STEPS.length);
+  const closeFinance = () => {
+    onSelectStep?.(lastHomeStep.current);
+    requestAnimationFrame(() => (homeScrolled ? stickyFinanceTrigger : financeTrigger).current?.focus({ preventScroll: true }));
   };
 
   const closeDialog = () => {
@@ -123,25 +137,25 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
   return (
     <div className={styles.phone} data-phone-mockup aria-label="หน้าจอแอปธนาคารจำลอง">
       <div className={styles.volumeOne} /><div className={styles.volumeTwo} /><div className={styles.powerButton} />
-      <div className={styles.screen}>
+      <div className={`${styles.screen} ${isFinanceView ? styles.financeTheme : ''}`}>
         <div className={styles.island} />
-            <div className={`${styles.statusBar} ${showPockets || homeScrolled ? styles.pocketStatus : ''}`}>
+            <div className={`${styles.statusBar} ${showPockets || homeScrolled || isFinanceView ? styles.pocketStatus : ''}`}>
               <span className={styles.clock}>20:30 <Navigation fill="currentColor" /></span>
               <div className={styles.statusIcons}>
                 <span className={styles.signal}><i/><i/><i/><i/></span>
                 <Wifi /><span className={styles.battery}>82</span>
               </div>
             </div>
-        {homeScrolled && <div className={styles.scrolledHeader} inert={hasOverlay}>
-          <span className={styles.financePill}><span className={styles.financeGrid}><i/><i/><i/><i/></span>การเงินของฉัน</span>
+        {homeScrolled && !isFinanceView && <div className={styles.scrolledHeader} inert={hasOverlay}>
+          <button ref={stickyFinanceTrigger} type="button" className={`${styles.financePill} ${styles.financeEntry}`} onClick={openFinance}><span className={styles.financeGrid} aria-hidden="true"><i/><i/><i/><i/></span>การเงินของฉัน <ChevronRight /></button>
           <div className={styles.headerIcons}><Bell/><Power/></div>
         </div>}
-        <div className={styles.scrollArea} inert={hasOverlay}
+        <div className={styles.scrollArea} hidden={isFinanceView} inert={hasOverlay}
           onScroll={event => setHomeScrolled(event.currentTarget.scrollTop > event.currentTarget.clientWidth * .24)}>
           <header className={styles.hero}>
             <div className={styles.statusSpacer} />
             <div className={styles.appHeader}>
-              <span className={styles.financePill}><span className={styles.financeGrid}><i/><i/><i/><i/></span>การเงินของฉัน</span>
+              <button ref={financeTrigger} type="button" className={`${styles.financePill} ${styles.financeEntry}`} onClick={openFinance}><span className={styles.financeGrid} aria-hidden="true"><i/><i/><i/><i/></span>การเงินของฉัน <ChevronRight /></button>
               <div className={styles.headerIcons}><Bell/><Power/></div>
             </div>
             <div className={styles.heroCopy}>
@@ -263,11 +277,6 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
               <div className={styles.pagination} aria-label="เลือกขั้นตอนเดโม">
                 {SCROLLY_STEPS.map(({ category: label }, index) => <button key={label} type="button" aria-label={label} aria-pressed={activeStep === index} onClick={() => onSelectStep?.(index)}><span /></button>)}
               </div>
-              <button ref={roundTrigger} type="button" className={styles.roundPreview} onClick={() => { onSelectStep?.(activeStep); setShowRoundSummary(true); }} aria-haspopup="dialog" aria-label="ดูสรุปรอบก่อน">
-                <span className={styles.roundPreviewIcon}><History /></span>
-                <span className={styles.roundPreviewCopy}><strong>สรุปรอบก่อน</strong><span>ใช้ตามแผน {previousRoundDemo.daysWithinPlan} จาก {previousRoundDemo.days} วัน</span></span>
-                <ChevronRight />
-              </button>
             </section>
 
             <div className={styles.services}>
@@ -316,7 +325,8 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
           </main>
         </div>
 
-        <nav className={styles.dock} inert={hasOverlay} aria-label="เมนูหลักในหน้าจอจำลอง">
+        {isFinanceView && <MyFinance accountBalance={accountBalance} pocketSnapshots={pockets.map(pocket => ({ id: pocket.id, name: pocket.name, balance: pocketBalance(pocket.id, savingState, spentToday) }))} onClose={closeFinance} />}
+        <nav className={styles.dock} hidden={isFinanceView} inert={hasOverlay} aria-label="เมนูหลักในหน้าจอจำลอง">
           <button type="button" className={activeStep === 0 ? styles.activeNav : ''} onClick={() => onSelectStep?.(0)}><Home fill="currentColor"/><span>หน้าแรก</span></button>
           <div className={styles.navItem}><ShoppingBasket/><span>market</span></div>
           <button type="button" className={`${styles.transactionNav} ${activeStep === 1 ? styles.activeNav : ''}`} onClick={() => onSelectStep?.(1)}><span className={styles.transactionIcon}>฿</span><span>ธุรกรรม</span></button>
@@ -324,7 +334,6 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
           <div className={`${styles.navItem} ${styles.profileNav}`}><span className={styles.profileIcon}><User fill="white"/></span><span>โปรไฟล์</span></div>
         </nav>
         {showPockets && <PocketSelector amount={savingState.amount} spentToday={savingState.spentToday} onCancel={cancelPocketSelection} onConfirm={confirmSaving} />}
-        {showRoundSummary && <RoundSummary onClose={closeRoundSummary} />}
         {(showInfo || showSuccess) && <div className={styles.modalBackdrop} onClick={closeDialog}>
           <div
             role="dialog"

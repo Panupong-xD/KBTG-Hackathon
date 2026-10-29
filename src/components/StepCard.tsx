@@ -42,7 +42,7 @@ export default function StepCard({ step, isActive, onActivate }: StepCardProps) 
               : 'bg-slate-100 text-slate-600 group-hover:bg-slate-200'
           }`}
         >
-          Step {step.stepNumber}
+          {step.kind === 'summary' ? 'Summary' : `Step ${step.stepNumber}`}
         </span>
       </div>
 

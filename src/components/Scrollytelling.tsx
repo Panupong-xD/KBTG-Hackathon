@@ -1,14 +1,14 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { SCROLLY_STEPS } from '../data/scrollySteps';
+import { DEMO_VIEWS } from '../data/scrollySteps';
 import StepCard from './StepCard';
 import BankPhoneMockup from './BankPhoneMockup';
 import styles from './Scrollytelling.module.css';
 
 export default function Scrollytelling() {
   const [stepIndex, setStepIndex] = useState(0);
-  const activeStep = Math.min(stepIndex, SCROLLY_STEPS.length - 1);
+  const activeStep = Math.min(stepIndex, DEMO_VIEWS.length - 1);
   const sectionRef = useRef<HTMLElement>(null);
   const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
   const manualSelection = useRef(false);
@@ -78,18 +78,18 @@ export default function Scrollytelling() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-14">
           <span className="inline-block text-xs font-bold text-[#00A950] bg-[#00A950]/10 px-3 py-1 rounded-full mb-3">TRY THE DEMO</span>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">คุมยอดใช้ได้วันนี้ ต่อยอดเงินเก็บ ใน 2 ขั้นตอน</h2>
-          <p className="mt-3 text-slate-600 text-sm sm:text-base leading-relaxed">ดูยอดใช้ได้วันนี้และโอกาสเงินพอ แล้วเลือกเก็บเงินเข้า Pocket ด้วยตัวเอง</p>
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">ดูเงินและออมใน 2 ขั้นตอน พร้อมสรุปรอบเดือน</h2>
+          <p className="mt-3 text-slate-600 text-sm sm:text-base leading-relaxed">ดูยอดใช้ได้วันนี้ เลือกเก็บเข้า Pocket และเปิด Summary ในการเงินของฉันเพื่อทบทวนรอบที่ผ่านมา</p>
           <div className="flex flex-wrap items-center justify-center gap-2 mt-6">
-            {SCROLLY_STEPS.map((step, index) => <button key={step.id} type="button" onClick={() => selectWalkthroughStep(index)} aria-pressed={activeStep === index}
+            {DEMO_VIEWS.map((step, index) => <button key={step.id} type="button" onClick={() => selectWalkthroughStep(index)} aria-pressed={activeStep === index}
               className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all ${activeStep === index ? 'bg-[#00A950] text-white shadow-sm' : 'bg-white text-slate-600 hover:text-slate-900 border border-slate-200'}`}>
-              {step.stepNumber} {step.category}
+              {step.kind === 'summary' ? 'Summary' : `${step.stepNumber} ${step.category}`}
             </button>)}
           </div>
         </div>
         <div className={styles.walkthroughGrid}>
           <div className="space-y-8">
-            {SCROLLY_STEPS.map((step, index) => <div key={step.id} ref={element => { stepRefs.current[index] = element; }} data-step-index={index} className="scroll-mt-32">
+            {DEMO_VIEWS.map((step, index) => <div key={step.id} ref={element => { stepRefs.current[index] = element; }} data-step-index={index} className="scroll-mt-32">
               <StepCard step={step} isActive={activeStep === index} onActivate={() => selectWalkthroughStep(index)} />
             </div>)}
           </div>

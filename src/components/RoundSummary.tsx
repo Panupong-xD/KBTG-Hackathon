@@ -38,10 +38,10 @@ export default function RoundSummary({ onClose }: { onClose: () => void }) {
         <div className={styles.handle} aria-hidden="true" />
         <header className={styles.header}>
           <div>
-            <h4 id={titleId}>สรุปรอบก่อน</h4>
+            <h4 id={titleId}>สรุปรอบเดือน</h4>
             <p id={descriptionId}>{round.period} <span>ข้อมูลจำลอง</span></p>
           </div>
-          <button ref={closeButton} type="button" className={styles.close} onClick={onClose} aria-label="ปิดสรุปรอบก่อน"><X /></button>
+          <button ref={closeButton} type="button" className={styles.close} onClick={onClose} aria-label="ปิดสรุปรอบเดือน"><X /></button>
         </header>
 
         <div className={styles.body}>
@@ -73,7 +73,7 @@ export default function RoundSummary({ onClose }: { onClose: () => void }) {
         </div>
 
         <footer className={styles.footer}>
-          <button type="button" onClick={onClose}>กลับไปดูรอบนี้ <ArrowRight /></button>
+          <button type="button" onClick={onClose}>กลับไปการเงินของฉัน <ArrowRight /></button>
         </footer>
       </section>
     </div>
