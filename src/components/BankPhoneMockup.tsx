@@ -9,7 +9,7 @@ import PocketSelector from './PocketSelector';
 import MyFinance from './MyFinance';
 import Mascot, { type MascotPose } from './Mascot';
 import { SCROLLY_STEPS } from '../data/scrollySteps';
-import { pockets, demoFinance, dailyBudget, dailySummary, formatDemoAmount, formatPocketBalance, initialSavingState, pocketSavingReducer, pocketBalance, type SavingPocketId } from '@/lib/pocket-saving';
+import { pockets, demoFinance, dailyBudget, dailySummary, formatDemoAmount, formatPocketBalance, initialSavingState, pocketSavingReducer, pocketBalance, savedAmount, savingOffer, type SavingPocketId } from '@/lib/pocket-saving';
 
 interface BankPhoneMockupProps {
   activeStep: number;
@@ -38,7 +38,7 @@ const slideSpring = { type: 'spring' as const, stiffness: 230, damping: 30, mass
 // The home banner advertises KaTang inside the bank app, like an in-app promotion.
 const promoSlides: { tag: string; title: React.ReactNode; tagline: string; cta: string; pose: MascotPose }[] = [
   { tag: 'ใหม่', title: <>กะเงินรายวัน<br/>ให้พอถึงเงินเข้า</>, tagline: 'กะให้เป๊ะ ใช้ให้พอ เหลือก็เก็บ', cta: 'ดูยอดใช้ได้วันนี้', pose: 'hello' },
-  { tag: 'Pocket', title: <>เงินเหลือ<br/>เก็บเข้า Pocket ที่เลือกเอง</>, tagline: 'ยืนยันเองทุกครั้ง ไม่หักอัตโนมัติ', cta: 'เริ่มเก็บเลย', pose: 'save' },
+  { tag: 'Pocket', title: <>ออมก่อนใช้<br/>เลือก Pocket ได้เอง</>, tagline: 'ยืนยันเองทุกครั้ง ไม่หักอัตโนมัติ', cta: 'เริ่มออมเลย', pose: 'save' },
 ];
 
 function PromoBanner() {
@@ -76,11 +76,10 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
   const [showInfo, setShowInfo] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [homeScrolled, setHomeScrolled] = useState(false);
-  // Choosing not to save moves no money: today's surplus simply stays spendable in the main Pocket.
-  const [carried, setCarried] = useState(false);
   const [savingState, dispatchSaving] = useReducer(pocketSavingReducer, initialSavingState);
   const showPockets = savingState.status === 'choosing';
   const saved = savingState.status === 'saved';
+  const skipped = savingState.status === 'skipped';
   const spentToday = demoFinance.spentToday;
   const infoTrigger = useRef<HTMLButtonElement>(null);
   const saveTrigger = useRef<HTMLButtonElement>(null);
@@ -134,7 +133,7 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
     releaseVelocity.current = 0;
   }, [carouselStep, cardWidth, reducedMotion, slideAnimation]);
 
-  const allocated = saved ? savingState.amount : 0;
+  const allocated = savedAmount(savingState);
   const summary = dailySummary(spentToday, allocated);
   const budgetDifference = summary.difference;
   const accountBalance = pockets.reduce((total, pocket) => total + pocketBalance(pocket.id, savingState, spentToday), 0);
@@ -158,8 +157,8 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
   };
 
   const openPockets = () => {
-    if (saved || summary.suggestedAmount <= 0) return;
-    dispatchSaving({ type: 'open', spentToday });
+    if (saved || savingOffer <= 0) return;
+    dispatchSaving({ type: 'open' });
   };
 
   const cancelPocketSelection = () => {
@@ -288,7 +287,7 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
                       </div>
                     </div>
                     <div className={styles.budgetGrid}>
-                      <div><span>ยอดใช้ได้วันนี้</span><strong>฿{dailyBudget} <small>/ วัน</small></strong></div>
+                      <div><span>ยอดใช้ได้วันนี้</span><strong>฿{summary.budget} <small>/ วัน</small></strong></div>
                       <div><span>คาดว่าเงินเข้าใน</span><strong>{demoFinance.daysUntilIncome} <small>วัน</small></strong></div>
                     </div>
                     <div className={styles.runway}>
@@ -299,24 +298,23 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
                   <div className={`${styles.featureCard} ${styles.savingsContent}`} role="group" aria-roledescription="slide" aria-label={`${SCROLLY_STEPS[1].category} 2 จาก ${SCROLLY_STEPS.length}`} inert={activeStep !== 1}>
                     <div className={styles.savingsHeader}>
                       <span className={`${styles.featureIcon} ${styles.mascotIcon}`}><Mascot pose="save" width={40} /></span>
-                      <div><h4>เงินเหลือวันนี้ ทำอะไรดี?</h4><p>{!withinBudget ? 'วันนี้ใช้เกินงบ พักการออมก่อน' : saved ? 'เก็บเข้าเงินออมแล้ว' : carried ? 'ทบไว้เป็นเงินใช้ต่อแล้ว' : 'ออมเก็บไว้ หรือทบไปใช้ต่อ เลือกได้เอง'}</p></div>
+                      <div><h4>ออมก่อนใช้ วันนี้เอาไหม?</h4><p>{saved ? `ออมแล้ว วันนี้ใช้ได้ ฿${summary.budget}` : skipped ? `ไม่ออมวันนี้ ใช้ได้เต็ม ฿${dailyBudget}` : savingOffer > 0 ? `ใช้แค่ ฿${dailyBudget - savingOffer} ก็ออมได้ ฿${savingOffer}` : 'วันนี้ยังไม่ชวนออม เก็บไว้ใช้ก่อน'}</p></div>
                     </div>
                     <dl className={styles.savingsBreakdown}>
-                      <div><dt>{withinBudget ? 'เหลือจากงบวันนี้' : 'ใช้เกินงบวันนี้'}</dt><dd className={withinBudget ? styles.plusAmount : styles.minusAmount}>{withinBudget ? '+' : '−'}฿{formatPocketBalance(Math.abs(budgetDifference))}</dd></div>
-                      <div><dt>สะสมจากวันก่อน</dt><dd>฿{formatPocketBalance(demoFinance.openingAccumulated)}</dd></div>
-                      {saved && <div><dt>เก็บเข้า {destinationPocket?.name} แล้ว</dt><dd className={styles.minusAmount}>−฿{formatPocketBalance(allocated)}</dd></div>}
-                      <div className={styles.breakdownTotal}><dt>{carried ? 'พร้อมใช้ต่อในบัญชีหลัก' : 'เงินสะสมในบัญชีหลัก'}</dt><dd>฿{formatPocketBalance(summary.accumulated)}</dd></div>
+                      <div><dt>ยอดใช้ได้วันนี้</dt><dd>฿{formatPocketBalance(dailyBudget)}</dd></div>
+                      <div><dt>{saved ? `ออมเข้า ${destinationPocket?.name} แล้ว` : 'ออมตอนนี้'}</dt><dd className={skipped ? undefined : styles.plusAmount}>฿{formatPocketBalance(skipped ? 0 : savingOffer)}</dd></div>
+                      <div className={styles.breakdownTotal}><dt>{saved ? 'ใช้ได้วันนี้หลังออม' : skipped ? 'ใช้ได้วันนี้' : 'ถ้าออม ใช้ได้วันนี้'}</dt><dd>฿{formatPocketBalance(skipped ? dailyBudget : dailyBudget - savingOffer)}</dd></div>
                     </dl>
-                    {saved || summary.suggestedAmount <= 0 ? <button ref={saveTrigger} type="button" className={styles.saveButton} disabled aria-disabled>
-                      {saved ? <><CheckCircle2 /> ออมเรียบร้อย</> : <>พักออมวันนี้</>}
-                    </button> : carried ? <div className={styles.carriedStatus}>
-                      <span><CheckCircle2 /> ทบ ฿{formatPocketBalance(budgetDifference)} ไปใช้ต่อแล้ว</span>
-                      <button type="button" onClick={() => setCarried(false)}>เปลี่ยนใจ</button>
-                    </div> : <div className={styles.savingChoices} role="group" aria-label={`เลือกว่าจะออม ฿${summary.suggestedAmount} หรือทบไปใช้ต่อ`}>
-                      <button ref={saveTrigger} type="button" className={styles.saveButton} onClick={openPockets} aria-haspopup="dialog">ออม ฿{summary.suggestedAmount} <ChevronRight /></button>
-                      <button type="button" className={styles.carryButton} onClick={() => setCarried(true)}>ไม่ออม ทบไปใช้ต่อ</button>
+                    {saved || savingOffer <= 0 ? <button ref={saveTrigger} type="button" className={styles.saveButton} disabled aria-disabled>
+                      {saved ? <><CheckCircle2 /> ออมแล้ว ฿{allocated}</> : <>พักออมวันนี้</>}
+                    </button> : skipped ? <div className={styles.carriedStatus}>
+                      <span><CheckCircle2 /> ใช้เต็ม ฿{dailyBudget} วันนี้</span>
+                      <button ref={saveTrigger} type="button" onClick={openPockets} aria-haspopup="dialog">เปลี่ยนใจ ออม ฿{savingOffer}</button>
+                    </div> : <div className={styles.savingChoices} role="group" aria-label={`เลือกว่าจะออม ฿${savingOffer} ตอนนี้ หรือไม่ออม`}>
+                      <button ref={saveTrigger} type="button" className={styles.saveButton} onClick={openPockets} aria-haspopup="dialog">ออม ฿{savingOffer} เลย <ChevronRight /></button>
+                      <button type="button" className={styles.carryButton} onClick={() => dispatchSaving({ type: 'skip' })}>ไม่ออม ใช้เต็ม</button>
                     </div>}
-                    <span className={styles.consentNote}>{saved ? 'เงินสะสมที่เหลือยังอยู่ในบัญชีหลัก' : carried ? 'ไม่มีการย้ายเงิน เงินยังอยู่ในบัญชีหลัก' : summary.suggestedAmount <= 0 ? 'เงินสะสมยังอยู่ในบัญชีหลัก ใช้ได้เมื่อจำเป็น' : 'ออมเข้า Pocket ที่เลือก · ย้ายเงินเมื่อคุณยืนยันเท่านั้น'}</span>
+                    <span className={styles.consentNote}>{saved ? 'ย้ายเงินแล้ว ยอดใช้ได้วันนี้ลดตามที่ออม' : skipped ? 'ไม่มีการย้ายเงิน ยอดใช้ได้เท่าเดิม' : savingOffer <= 0 ? 'ยอดนี้ยังต้องใช้ถึงวันเงินเข้า' : 'ย้ายเข้า Pocket เมื่อคุณยืนยันเท่านั้น · ไม่หักอัตโนมัติ'}</span>
                   </div>
                 </motion.div>
               </div>
@@ -359,7 +357,7 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
                 </article>
                 <article className={`${styles.recommendationCard} ${styles.moneyCard}`}>
                   <span className={styles.recommendedBadge}>แนะนำ</span>
-                  <h4>กะตังค์</h4><p>กะยอดใช้ได้รายวัน เงินเหลือเก็บเข้า Pocket</p>
+                  <h4>กะตังค์</h4><p>กะยอดใช้ได้รายวัน ชวนออมก่อนใช้</p>
                   <Mascot pose="enough" width={64} className={styles.moneyMascot} />
                 </article>
               </div>
@@ -379,7 +377,7 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
           <div className={styles.navItem}><ScanLine/><span>สแกน/สร้างQR</span></div>
           <div className={`${styles.navItem} ${styles.profileNav}`}><span className={styles.profileIcon}><User fill="white"/></span><span>โปรไฟล์</span></div>
         </nav>
-        {showPockets && <PocketSelector amount={savingState.amount} spentToday={savingState.spentToday} onCancel={cancelPocketSelection} onConfirm={confirmSaving} />}
+        {showPockets && <PocketSelector amount={savingState.amount} spentToday={spentToday} onCancel={cancelPocketSelection} onConfirm={confirmSaving} />}
         {(showInfo || showSuccess) && <div className={styles.modalBackdrop} onClick={closeDialog}>
           <div
             role="dialog"
@@ -409,13 +407,14 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
                 <div><dt>เงินสำรองขั้นต่ำ*</dt><dd>฿{formatDemoAmount(demoFinance.hardFloor)}</dd></div>
                 <div><dt>ค่าจ้างที่รอเข้า*</dt><dd>฿{formatDemoAmount(demoFinance.pendingIncome)}</dd></div>
                 <div><dt>วันรับเงินที่คาด*</dt><dd>อีก {demoFinance.daysUntilIncome} วัน</dd></div>
-                <div><dt>ยอดใช้ได้วันนี้</dt><dd>฿{dailyBudget}</dd></div>
+                <div><dt>ยอดใช้ได้วันนี้</dt><dd>฿{summary.budget}</dd></div>
+                {saved && <div><dt>ออมก่อนใช้วันนี้</dt><dd>฿{allocated}</dd></div>}
                 <div><dt>ใช้ไปแล้ววันนี้</dt><dd>฿{spentToday}</dd></div>
                 <div><dt>เงินสะสมเดิม</dt><dd>฿{formatDemoAmount(demoFinance.openingAccumulated)}</dd></div>
                 <div><dt>เงินสะสมคงเหลือ</dt><dd>฿{formatPocketBalance(summary.accumulated)}</dd></div>
               </dl>
               <p className={styles.comparisonNote}>*เงินรอรับยังไม่รวมในยอดบัญชี · {demoFinance.illustrativeProbability}% เป็นค่าตัวอย่างตลอด {demoFinance.daysIncludingToday} วัน เพื่อเผื่อเงินเข้าช้ากว่าวันที่คาด ไม่ใช่ผลโมเดลจริง · เงินสำรอง ฿{formatDemoAmount(demoFinance.hardFloor)} เป็นค่าทดลอง</p>
-              <p className={styles.comparisonNote}>เงินสะสมอยู่ในบัญชีหลักและลดตามยอดที่เก็บเข้า Pocket หลังออม ระบบจริงต้องประเมินงบและโอกาสเงินพอใหม่ เดโมจะแสดง “รอประเมินใหม่”</p>
+              <p className={styles.comparisonNote}>ออมก่อนใช้จะย้ายเงินเข้า Pocket และลดยอดใช้ได้วันนี้ตามยอดที่ออม หลังออม ระบบจริงต้องประเมินงบและโอกาสเงินพอใหม่ เดโมจะแสดง “รอประเมินใหม่”</p>
             </> : <>
               <span className={styles.successIcon}><CheckCircle2 /></span>
               <h4 id="phone-dialog-title">ออมสำเร็จในเดโม</h4>

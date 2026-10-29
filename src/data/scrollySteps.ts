@@ -36,23 +36,23 @@ export const SCROLLY_STEPS: ScrollyStep[] = [
   },
   {
     id: 2, stepNumber: '02', category: 'ออมเงิน',
-    title: 'เปลี่ยนเงินเหลือ ให้เป็นเงินเก็บ',
-    description: 'วันที่ใช้ไม่ถึงงบ เงินส่วนที่เหลือช่วยเติมเงินสำรองได้ เลือก Pocket แล้วยืนยันเก็บด้วยตัวเอง',
+    title: 'ออมก่อนใช้ เลือกได้ตั้งแต่ต้นวัน',
+    description: 'ระบบบอกยอดใช้ได้วันนี้ พร้อมชวนว่าถ้าใช้น้อยลงอีกนิดจะออมได้เท่าไหร่ แล้วให้คุณเลือกเองว่าจะออมตอนนี้เลย หรือไม่ออม',
     detailGroups: [
-      { title: 'ชวนเก็บถูกจังหวะ ไม่เบียดค่าใช้ชีวิต', details: [
-        `กันบิล เงินสำรอง และค่าใช้จ่ายระหว่างรอรับเงินก่อนชวนออม วันนี้ใช้ ฿${demoFinance.spentToday} จากงบ ฿${dailyBudget} เหลือ ฿${demoSavingExample.difference} รวมเงินสะสมเดิม ฿${demoFinance.openingAccumulated} เป็น ฿${demoSavingExample.accumulated}`,
-        `เลือก Pocket → ยืนยันเก็บ ฿${demoSavingExample.suggestedAmount} → ดูผล เงินสะสมเหลือ ฿${demoSavingExample.accumulatedAfterSaving} ยอดรวมทุกกระเป๋าเท่าเดิม ไม่ได้นับเงินออมซ้ำเป็นเงินพร้อมใช้`,
+      { title: 'ชวนออมตั้งแต่แรก ไม่ต้องรอให้เงินเหลือ', details: [
+        `วันนี้ใช้ได้ ฿${dailyBudget} ถ้าตั้งใจใช้แค่ ฿${demoSavingExample.budgetAfterSaving} จะออมได้ ฿${demoSavingExample.offer} ทันที`,
+        `กดออม ฿${demoSavingExample.offer} → เลือก Pocket → ยืนยัน เงินย้ายเข้า Pocket ทันที และยอดใช้ได้วันนี้ปรับเป็น ฿${demoSavingExample.budgetAfterSaving}`,
       ] },
-      { title: 'ยังไม่ออมวันนี้ เงินเหลือก็มีแผน', details: [
-        'เงินสะสมยังอยู่บัญชีหลัก ช่วยรองรับวันที่ใช้เกินงบก่อนเกลี่ยส่วนที่ขาดไปวันถัด ๆ ไป',
-        'เมื่อถึงรอบรับเงิน แนวคิดต่อยอดคือให้เลือกเก็บเงินสะสมเข้า Pocket หรือยกยอดไปรอบถัดไป โดยคุณเป็นคนตัดสินใจ',
+      { title: 'ยอดชวนออมไม่เบียดค่าใช้ชีวิต', details: [
+        'คิดหลังกันบิล เงินสำรอง และยอดใช้ได้จนถึงวันเงินเข้าแล้ว จึงไม่ชวนออมจนเงินไม่พอใช้',
+        `ไม่ออมวันนี้ก็ได้ ยอดใช้ได้เท่าเดิม ฿${dailyBudget} ไม่มีการย้ายเงิน และเปลี่ยนใจกลับมาออมได้ภายในวัน`,
       ] },
     ],
-    benchmarkNote: `*เดโมไม่โอนเงินจริง ชวนเก็บ ${demoFinance.sweepMinRate * 100}–${demoFinance.sweepMaxRate * 100}% ของยอดใช้ได้วันนี้ ไม่เกิน ฿${formatDemoAmount(demoFinance.sweepCap)} ต่อครั้ง และเงินสำรอง ฿${formatDemoAmount(demoFinance.hardFloor)} เป็นค่าตัวอย่าง การเลือกสิ้นรอบเป็นแนวคิดต่อยอด`,
+    benchmarkNote: `*เดโมไม่โอนเงินจริง ชวนออม ${demoFinance.sweepMinRate * 100}–${demoFinance.sweepMaxRate * 100}% ของยอดใช้ได้วันนี้ ปัดขึ้นเป็นหลักสิบ ไม่เกิน ฿${formatDemoAmount(demoFinance.sweepCap)} ต่อวัน และเงินสำรอง ฿${formatDemoAmount(demoFinance.hardFloor)} เป็นค่าตัวอย่าง`,
     metrics: [
-      { label: 'ชวนเก็บวันนี้', value: `฿${demoSavingExample.suggestedAmount}` },
-      { label: 'เงินสะสมก่อนออม', value: `฿${demoSavingExample.accumulated}` },
-      { label: 'Pocket เป้าหมาย', value: 'สำรองฉุกเฉิน' },
+      { label: 'ยอดใช้ได้วันนี้', value: `฿${dailyBudget}` },
+      { label: `ใช้แค่ ฿${demoSavingExample.budgetAfterSaving} ออมได้`, value: `฿${demoSavingExample.offer}` },
+      { label: 'ออมตอนนี้หรือไม่', value: 'คุณเลือกเอง' },
     ],
   },
 ];

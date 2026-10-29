@@ -184,10 +184,10 @@ export default function FeatureDeepDive() {
               </div>
 
               <h3 className="text-xl sm:text-2xl font-black text-kt-ink tracking-tight mb-1">
-                Pocket Co-pilot · เงินเหลือมีเป้าหมาย
+                Pocket Co-pilot · ออมก่อนใช้
               </h3>
               <p className="text-xs sm:text-sm text-kt-muted mb-6">
-                วันนี้ใช้ ฿{demoFinance.spentToday} จากงบ ฿{dailyBudget} เหลือ ฿{demoSavingExample.difference} เลือกเก็บเข้า Pocket หรือสะสมไว้ก่อน เงินจะย้ายเมื่อคุณยืนยัน
+                วันนี้ใช้ได้ ฿{dailyBudget} ถ้าใช้แค่ ฿{demoSavingExample.budgetAfterSaving} ออมได้ ฿{demoSavingExample.offer} เลือกเองว่าจะออมตอนนี้หรือไม่ เงินจะย้ายเมื่อคุณยืนยัน
               </p>
 
               {/* Stage: Clean Symbolic Vector Infographic (Wallet ➔ Smart Sweep ➔ Locked Vault) */}
@@ -226,15 +226,15 @@ export default function FeatureDeepDive() {
 
                     {/* Tier 1: Micro-Surplus (Outflow) */}
                     <rect x="30" y="66" width="165" height="48" rx="10" fill="#EEF3E2" stroke="#CFE3B8" strokeWidth="1" />
-                    <text x="42" y="86" fill="#3E5A2E" fontSize="10" fontWeight="bold">เงินเหลือวันนี้</text>
-                    <text x="183" y="87" textAnchor="end" fill="#3F7A3F" fontSize="13" fontWeight="900">+฿{demoSavingExample.difference}</text>
-                    <text x="42" y="102" fill="#4F8B48" fontSize="8">เงินเหลือหลังใช้ ฿{demoFinance.spentToday}</text>
+                    <text x="42" y="86" fill="#3E5A2E" fontSize="10" fontWeight="bold">ออมก่อนใช้</text>
+                    <text x="183" y="87" textAnchor="end" fill="#3F7A3F" fontSize="13" fontWeight="900">฿{demoSavingExample.offer}</text>
+                    <text x="42" y="102" fill="#4F8B48" fontSize="8">ชวนออมตั้งแต่ต้นวัน</text>
 
                     {/* Tier 2: Daily Budget (Operating) */}
                     <rect x="30" y="126" width="165" height="48" rx="10" fill="#FBF8F0" stroke="#E6DCC8" strokeWidth="1" />
                     <text x="42" y="146" fill="#3D4A35" fontSize="10" fontWeight="bold">ยอดใช้ได้วันนี้</text>
-                    <text x="183" y="147" textAnchor="end" fill="#263321" fontSize="13" fontWeight="900">฿{dailyBudget}</text>
-                    <text x="42" y="162" fill="#66705A" fontSize="8">งบต้นวัน รวมส่วนที่เหลือ ฿{demoSavingExample.difference}</text>
+                    <text x="183" y="147" textAnchor="end" fill="#263321" fontSize="13" fontWeight="900">฿{demoSavingExample.budgetAfterSaving}</text>
+                    <text x="42" y="162" fill="#66705A" fontSize="8">หลังออม จากเดิม ฿{dailyBudget}</text>
 
                     {/* Tier 3: Hard Floor Shield (Protection) */}
                     <rect x="30" y="186" width="165" height="68" rx="10" fill="#FDF6E3" stroke="#F2DDA6" strokeWidth="1" />
@@ -250,7 +250,7 @@ export default function FeatureDeepDive() {
                     <path d="M 205 90 L 228 90" fill="none" stroke="#5FA057" strokeWidth="2" strokeDasharray="3 2" />
                     <rect x="228" y="76" width="104" height="28" rx="14" fill="#5FA057" filter="drop-shadow(0 2px 4px rgba(0,169,80,0.22))" />
                     <text x="280" y="90" dominantBaseline="central" textAnchor="middle" fill="#FFFFFF" fontSize="10.5" fontWeight="bold">
-                      ยืนยัน ฿{demoSavingExample.suggestedAmount} ➔
+                      ยืนยัน ฿{demoSavingExample.offer} ➔
                     </text>
                     <path d="M 332 90 L 350 90" fill="none" stroke="#5FA057" strokeWidth="2" markerEnd="url(#arrowGreen)" />
 
@@ -305,7 +305,7 @@ export default function FeatureDeepDive() {
                       เงินที่จัดสรรจากวันนี้
                     </text>
                     <text x="447.5" y="224" textAnchor="middle" fill="#2F4A23" fontSize="14" fontWeight="900">
-                      ฿{demoSavingExample.suggestedAmount} / ครั้งนี้
+                      ฿{demoSavingExample.offer} / ครั้งนี้
                     </text>
                     <text x="447.5" y="240" textAnchor="middle" fill="#4F8B48" fontSize="8">
                       ยอดรวมทุก Pocket เท่าเดิม

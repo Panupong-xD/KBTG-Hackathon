@@ -20,46 +20,54 @@ const mainPocket = pockets.find(pocket => pocket.id === 'main')!;
 export const formatDemoAmount = (amount: number) => amount.toLocaleString('en-US');
 export const formatPocketBalance = (amount: number) => amount.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
 
-export function dailySummary(spentToday: number, allocated = 0) {
+// Save first: at the start of the day, offer to move part of today's budget into a Pocket.
+// The offer is 10–20% of the budget, rounded up to ฿10, at most ฿150, and only if bills, the
+// safety floor and the budget until the next income are still covered.
+export function suggestSaving(budget: number = dailyBudget, mainBalance: number = mainPocket.balance) {
+  if (!Number.isFinite(budget) || budget <= 0 || !Number.isFinite(mainBalance)) return 0;
+  const liquidLimit = mainBalance - demoFinance.hardFloor - budget * demoFinance.daysUntilIncome;
+  const amount = Math.min(Math.ceil(budget * demoFinance.sweepMinRate / 10) * 10, budget * demoFinance.sweepMaxRate, demoFinance.sweepCap, liquidLimit);
+  return amount >= budget * demoFinance.sweepMinRate ? amount : 0;
+}
+export const savingOffer = suggestSaving();
+
+export function dailySummary(spentToday: number, saved = 0) {
   const futureDays = demoFinance.daysIncludingToday - 1;
-  const difference = dailyBudget - spentToday;
-  const accumulatedBeforeSaving = Math.max(0, demoFinance.openingAccumulated + difference);
-  const accumulated = Math.max(0, accumulatedBeforeSaving - allocated);
+  const budget = dailyBudget - saved;
+  const difference = budget - spentToday;
+  const accumulated = Math.max(0, demoFinance.openingAccumulated + difference);
   const overspendCovered = Math.min(demoFinance.openingAccumulated, Math.max(0, -difference));
   const shortfall = Math.max(0, -difference - demoFinance.openingAccumulated);
   const futureBudget = Math.max(0, dailyBudget - shortfall / futureDays);
-  const protectedFutureBudget = dailyBudget * (demoFinance.daysUntilIncome - 1);
-  const liquidLimit = mainPocket.balance - spentToday - allocated - demoFinance.hardFloor - protectedFutureBudget;
-  const validSpending = Number.isFinite(spentToday) && spentToday >= 0;
-  const minimumSuggestion = dailyBudget * demoFinance.sweepMinRate;
-  const availableSuggestion = Math.min(dailyBudget * demoFinance.sweepMaxRate, demoFinance.sweepCap, difference, accumulated, liquidLimit);
-  const suggestedAmount = validSpending && availableSuggestion >= minimumSuggestion ? availableSuggestion : 0;
-  return {difference, accumulated, overspendCovered, futureDays, futureBudget, suggestedAmount};
+  return {budget, difference, accumulated, overspendCovered, futureDays, futureBudget};
 }
 
-type SavingState = {status:'idle'; pocketId:null} | {status:'choosing'; pocketId:null; amount:number; spentToday:number} | {status:'saved'; pocketId:SavingPocketId; amount:number; spentToday:number};
-type SavingAction = {type:'open'; spentToday:number} | {type:'cancel'} | {type:'confirm'; pocketId:SavingPocketId};
+type SavingState = {status:'idle'; pocketId:null} | {status:'skipped'; pocketId:null} | {status:'choosing'; pocketId:null; amount:number} | {status:'saved'; pocketId:SavingPocketId; amount:number};
+type SavingAction = {type:'open'} | {type:'cancel'} | {type:'skip'} | {type:'undoSkip'} | {type:'confirm'; pocketId:SavingPocketId};
 export const initialSavingState: SavingState = {status:'idle', pocketId:null};
 export function pocketSavingReducer(state: SavingState, action: SavingAction): SavingState {
-  if (action.type === 'open' && state.status === 'idle') {
-    const {suggestedAmount} = dailySummary(action.spentToday);
-    if (suggestedAmount > 0) return {status:'choosing', pocketId:null, amount:suggestedAmount, spentToday:action.spentToday};
+  if (action.type === 'open' && (state.status === 'idle' || state.status === 'skipped') && savingOffer > 0) {
+    return {status:'choosing', pocketId:null, amount:savingOffer};
   }
   if (action.type === 'cancel' && state.status === 'choosing') return initialSavingState;
+  // Not saving moves no money: the whole budget stays spendable in the main Pocket.
+  if (action.type === 'skip' && state.status === 'idle') return {status:'skipped', pocketId:null};
+  if (action.type === 'undoSkip' && state.status === 'skipped') return initialSavingState;
   if (action.type === 'confirm' && state.status === 'choosing' && pockets.some(pocket => pocket.id !== 'main' && pocket.id === action.pocketId)) {
-    return {status:'saved', pocketId:action.pocketId, amount:state.amount, spentToday:state.spentToday};
+    return {status:'saved', pocketId:action.pocketId, amount:state.amount};
   }
   return state;
 }
+export const savedAmount = (state: SavingState) => state.status === 'saved' ? state.amount : 0;
 export function pocketBalance(pocketId: PocketId, state: SavingState, spentToday: number = demoFinance.spentToday): number {
-  const spending = state.status === 'idle' ? spentToday : state.spentToday;
-  const opening = pockets.find(pocket => pocket.id === pocketId)!.balance - (pocketId === 'main' ? spending : 0);
+  const opening = pockets.find(pocket => pocket.id === pocketId)!.balance - (pocketId === 'main' ? spentToday : 0);
   if (state.status !== 'saved') return opening;
   return opening + (pocketId === state.pocketId ? state.amount : pocketId === 'main' ? -state.amount : 0);
 }
 
-const initialDemoSummary = dailySummary(demoFinance.spentToday);
 export const demoSavingExample = {
-  ...initialDemoSummary,
-  accumulatedAfterSaving: dailySummary(demoFinance.spentToday, initialDemoSummary.suggestedAmount).accumulated,
+  offer: savingOffer,
+  budgetAfterSaving: dailyBudget - savingOffer,
+  withoutSaving: dailySummary(demoFinance.spentToday),
+  withSaving: dailySummary(demoFinance.spentToday, savingOffer),
 };
