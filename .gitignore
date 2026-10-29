@@ -50,5 +50,5 @@ __pycache__/
 
 # Presentation
 pitch
-# ML quick runs
-ml/output/quick/
+# ML outputs (regenerate with: cd ml && .venv/bin/python run.py)
+ml/output/
