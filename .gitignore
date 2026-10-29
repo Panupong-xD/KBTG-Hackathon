@@ -50,3 +50,5 @@ __pycache__/
 
 # Presentation
 pitch
+# ML quick runs
+ml/output/quick/

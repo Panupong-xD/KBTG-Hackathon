@@ -144,6 +144,8 @@ class DelayModel:
         return 'EMPLOYER' if payer == 'EMPLOYER' else 'CLIENT'
 
     def _own(self, history, payer):
+        if not np.isfinite(self.k):  # prior only: never look at this payer's history, even for overdue income
+            return np.array([], dtype=int)
         return history.delays.get(payer, np.array([], dtype=int))
 
     def sample(self, rng, history, payer, size, min_delay=0):

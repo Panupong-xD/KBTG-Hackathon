@@ -101,6 +101,13 @@ class DataAndModelTest(unittest.TestCase):
         self.assertAlmostEqual(model.p_late(history, 'NEW'), 0.5)
         self.assertAlmostEqual(model.p_late(history, 'EMPLOYER'), 0.0)
 
+    def test_prior_only_model_ignores_payer_history(self):
+        model = DelayModel({'CLIENT': np.array([0, 5]), 'EMPLOYER': np.array([0])}, k=np.inf)
+        history = SimpleNamespace(delays={'SLOW': np.array([40, 40, 40])})
+        self.assertAlmostEqual(model.p_late(history, 'SLOW'), 0.5)
+        draws = model.sample(np.random.default_rng(0), history, 'SLOW', 500, min_delay=3)
+        self.assertTrue(set(draws) <= {5, 10_000})  # overdue: only prior delays >= 3, never the payer's own 40
+
 
 class BacktestTest(unittest.TestCase):
     def test_k_runway_never_suggests_spending_above_usual(self):
