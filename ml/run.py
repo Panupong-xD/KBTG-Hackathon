@@ -20,9 +20,12 @@ from krunway.simulate import Income, even_split, simulate  # noqa: E402
 ROOT = Path(__file__).resolve().parent
 GREEN, RED, AMBER, GREY = '#00A950', '#DC2626', '#F59E0B', '#94A3B8'
 METHOD_STYLE = {
+    'usual': ('Spend as usual\n(no app)', GREY),
     'even': ('Even split', RED),
     'direct': ('Day-by-day plan\n(no uncertainty)', AMBER),
-    'ml': ('K-Runway\n(ML + Monte Carlo)', GREEN),
+    'mc_noml': ('Monte Carlo\nwithout ML', '#64748B'),
+    'ml_uncapped': ('ML + MC\nuncapped', '#86EFAC'),
+    'ml': ('K-Runway\n(ML + MC, capped)', GREEN),
 }
 
 
@@ -71,8 +74,9 @@ def fan_chart(sim, budget, path):
 
 def ran_out_chart(summary, path):
     labels, colours = zip(*(METHOD_STYLE[m] for m in summary.index))
-    fig, ax = plt.subplots(figsize=(7, 4))
+    fig, ax = plt.subplots(figsize=(10, 4.5))
     bars = ax.bar(labels, summary.ran_out_pct, color=colours)
+    ax.tick_params(axis='x', labelsize=8)
     ax.bar_label(bars, fmt='%.0f%%', padding=3)
     ax.set(ylabel='Ran out of money (%)', ylim=(0, 100),
            title="Following each method's daily budget for 30 days (synthetic backtest)")
@@ -109,10 +113,12 @@ def main(quick=False):
     results, lateness = backtest.run(data, paths=2000 if quick else 4000)
     summary = backtest.summary(results)
     by_persona = backtest.ran_out_by_persona(results)
+    by_risk = backtest.ran_out_by_risk(results)
     cal = backtest.calibration(results)
     checks = backtest.model_checks(results, lateness)
     summary.to_csv(out / 'backtest_summary.csv')
     by_persona.to_csv(out / 'backtest_by_persona.csv')
+    by_risk.to_csv(out / 'backtest_by_risk.csv')
     cal.to_csv(out / 'calibration.csv', index=False)
     checks.to_csv(out / 'model_checks.csv')
     ran_out_chart(summary, out / 'ran_out_by_method.png')
@@ -125,6 +131,8 @@ def main(quick=False):
     print(summary.round(3).to_string())
     print('\nRan out of money when following the recommendation (%), by persona:')
     print(by_persona.round(1).to_string())
+    print(f'\nRan out (%), split by whether K-Runway saw a chance below {backtest.MAIN_TARGET:.0%} at usual spending:')
+    print(by_risk.round(1).to_string())
     print('\nCalibration (cases where the target is reachable; the rest get a warning):')
     print(cal.round(3).to_string(index=False))
     print('\nModel checks:')

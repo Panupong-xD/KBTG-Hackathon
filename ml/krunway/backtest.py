@@ -1,14 +1,18 @@
-"""Rolling-origin backtest: three ways to set "safe to spend today", checked against what really happened.
+"""Rolling-origin backtest: ways to set "safe to spend today", checked against what really happened.
 
-(a) even    (balance + expected income - bills) / days
-(b) direct  day-by-day cash flow with every income on its expected date: timing, but no uncertainty
-(c) ml      K-Runway: gradient-boosting spend model + per-payer delays + Monte Carlo
+usual        status quo: the user keeps spending as they usually do (no app)
+even         (balance + expected income - bills) / days
+direct       day-by-day cash flow with every income on its expected date: timing, but no uncertainty
+mc_noml      Monte Carlo without ML: flat spending level, raw spending noise, payer-type delays only (capped like ml)
+ml_uncapped  ML + Monte Carlo budget at the target chance, even when it is above usual spending
+ml           K-Runway: the same budget, but never above the user's usual spending,
+             so it only cuts spending when the user is at risk (the rest is a saving opportunity)
 
 Models are trained on the first 180 days. For every user and start day after
 that, each method recommends a daily budget for the next 30 days (K-Runway
 targets an 85% chance of never going below zero). We then replay what really
 happened: real income dates, real bills, and the user's real day-to-day
-spending pattern rescaled so its average equals the recommendation.
+spending pattern, rescaled by budget / usual spending.
 """
 import numpy as np
 import pandas as pd
@@ -24,7 +28,7 @@ ORIGINS = range(TRAIN_END, 240, 7)
 TARGETS = (0.7, 0.8, 0.85, 0.9, 0.95)
 MAIN_TARGET = 0.85
 WARN_BELOW = 0.7  # warn when the chance of lasting at usual spending is below this
-METHODS = ('even', 'direct', 'ml')
+METHODS = ('usual', 'even', 'direct', 'mc_noml', 'ml_uncapped', 'ml')
 
 
 def pending_incomes(history: UserHistory, sampler, rng):
@@ -63,6 +67,12 @@ def fit_models(data: Dataset, train_end=TRAIN_END):
     return SpendModel().fit(histories), DelayModel(prior_delays(data.invoices, train_end))
 
 
+def recent_noise(history: UserHistory, window=90) -> np.ndarray:
+    """Day-to-day spending relative to the recent average (mean 1), with no model."""
+    recent = history.spend[-window:]
+    return recent / recent.mean() if recent.mean() > 0 else np.ones(1)
+
+
 def run(data: Dataset, origins=ORIGINS, paths=4000, seed=11):
     """Returns (results, lateness).
 
@@ -70,7 +80,9 @@ def run(data: Dataset, origins=ORIGINS, paths=4000, seed=11):
     lateness  one row per pending income due within a week of a start day, with predicted chance of being late
     """
     rng = np.random.default_rng(seed)
+    noml_rng = np.random.default_rng(seed + 1)  # separate draws, so the ML results do not depend on the ablation
     spend_model, delay_model = fit_models(data)
+    type_only = DelayModel(delay_model.prior, k=np.inf)  # ignores each payer's own history
     rows, lateness = [], []
     for user in data.users.itertuples():
         user_tx, user_inv, opening = data.user(user.user_id)
@@ -81,13 +93,22 @@ def run(data: Dataset, origins=ORIGINS, paths=4000, seed=11):
             base = dict(user_id=user.user_id, persona=user.persona, origin=origin,
                         naive_forecast=float(history.spend[-7:].mean() * HORIZON), **what_happened(user_tx, history))
 
+            rows.append(dict(base, method='usual', budget=base['usual_spend']))
             rows.append(dict(base, method='even', budget=even_split(history.balance, bills, incomes)))
             rows.append(dict(base, method='direct', budget=direct_plan(history.balance, bills, incomes)))
+
+            noml = simulate(noml_rng, history.balance, bills, pending_incomes(history, type_only, noml_rng),
+                            np.full(HORIZON, history.level()), recent_noise(history),
+                            paths=paths, block=7, level_sigma=history.level_sigma())
+            rows.append(dict(base, method='mc_noml', budget=min(noml.budget_for(MAIN_TARGET), noml.natural_budget),
+                             p_natural=noml.probability(noml.natural_budget)))
 
             mean, residuals = spend_model.forecast(history, HORIZON)
             sim = simulate(rng, history.balance, bills, incomes, mean, residuals,
                            paths=paths, block=7, level_sigma=history.level_sigma())
-            row = dict(base, method='ml', budget=sim.budget_for(MAIN_TARGET),
+            safe = sim.budget_for(MAIN_TARGET)
+            rows.append(dict(base, method='ml_uncapped', budget=safe))
+            row = dict(base, method='ml', budget=min(safe, sim.natural_budget), natural_budget=sim.natural_budget,
                        p_natural=sim.probability(sim.natural_budget), forecast_spend=float(mean.sum()))
             for t in TARGETS:
                 row[f'budget_{t}'] = sim.budget_for(t)
@@ -124,6 +145,17 @@ def summary(results: pd.DataFrame) -> pd.DataFrame:
 def ran_out_by_persona(results: pd.DataFrame) -> pd.DataFrame:
     table = results.pivot_table(index='persona', columns='method', values='ran_out', aggfunc='mean')
     return 100 * table[list(METHODS)]
+
+
+def ran_out_by_risk(results: pd.DataFrame) -> pd.DataFrame:
+    """Split by what K-Runway knew in advance: chance of lasting at usual spending below the target or not."""
+    ml = results[results.method == 'ml'].set_index(['user_id', 'origin'])
+    at_risk = (ml.p_natural < MAIN_TARGET).rename('at_risk')
+    joined = results.join(at_risk, on=['user_id', 'origin'])
+    table = 100 * joined.pivot_table(index='at_risk', columns='method', values='ran_out', aggfunc='mean')[list(METHODS)]
+    table.index = table.index.map({True: 'at risk', False: 'not at risk'})
+    table.insert(0, 'share_of_cases_pct', 100 * at_risk.value_counts(normalize=True).rename(index={True: 'at risk', False: 'not at risk'}))
+    return table
 
 
 def calibration(results: pd.DataFrame) -> pd.DataFrame:

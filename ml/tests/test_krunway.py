@@ -102,5 +102,20 @@ class DataAndModelTest(unittest.TestCase):
         self.assertAlmostEqual(model.p_late(history, 'EMPLOYER'), 0.0)
 
 
+class BacktestTest(unittest.TestCase):
+    def test_k_runway_never_suggests_spending_above_usual(self):
+        from krunway import backtest
+        data = generate(n_users=6, seed=5)
+        results, _ = backtest.run(data, origins=[180], paths=200)
+        self.assertEqual(set(results.method), set(backtest.METHODS))
+        ml = results[results.method == 'ml'].set_index('user_id')
+        uncapped = results[results.method == 'ml_uncapped'].set_index('user_id')
+        self.assertTrue((ml.budget <= ml.natural_budget + 1e-9).all())
+        self.assertTrue((ml.budget <= uncapped.budget + 1e-9).all())
+        # The status quo row replays exactly what the user really spent.
+        usual = results[results.method == 'usual']
+        self.assertTrue((usual.ran_out == ~usual.natural_ok).all())
+
+
 if __name__ == '__main__':
     unittest.main()
