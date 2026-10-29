@@ -118,7 +118,7 @@ def run(data: Dataset, origins=ORIGINS, paths=4000, seed=11):
 
             due = user_inv[(user_inv.known_day <= origin) & (user_inv.expected_day >= origin)
                            & (user_inv.expected_day < origin + 7)]
-            lateness += [dict(payer=i.payer, late=i.actual_day > i.expected_day,
+            lateness += [dict(persona=user.persona, payer=i.payer, late=i.actual_day > i.expected_day,
                               p_payer=delay_model.p_late(history, i.payer), p_type=delay_model.prior_late(i.payer))
                          for i in due.itertuples()]
 
@@ -155,6 +155,42 @@ def ran_out_by_risk(results: pd.DataFrame) -> pd.DataFrame:
     table = 100 * joined.pivot_table(index='at_risk', columns='method', values='ran_out', aggfunc='mean')[list(METHODS)]
     table.index = table.index.map({True: 'at risk', False: 'not at risk'})
     table.insert(0, 'share_of_cases_pct', 100 * at_risk.value_counts(normalize=True).rename(index={True: 'at risk', False: 'not at risk'}))
+    return table
+
+
+def stat_vs_ml(results: pd.DataFrame, lateness: pd.DataFrame) -> pd.DataFrame:
+    """Statistics only (mc_noml) against K-Runway (ml), per persona, on everything the two can be compared on.
+
+    Both use the same Monte Carlo and the same cap; only the inputs differ. Statistics only uses a flat
+    spending level, raw recent noise and payer-type delays; K-Runway uses the spending model and each payer's history.
+    """
+    rows = []
+    for persona in ['all', *sorted(results.persona.unique())]:
+        cases = results if persona == 'all' else results[results.persona == persona]
+        late = lateness if persona == 'all' else lateness[lateness.persona == persona]
+        clients = late[late.payer != 'EMPLOYER']
+        row = {}
+        for method, name in (('mc_noml', 'stat'), ('ml', 'ml')):
+            g = cases[cases.method == method]
+            ran_out, flagged = ~g.natural_ok, g.p_natural < WARN_BELOW
+            caught = (flagged & ran_out).sum()
+            at_risk = g.p_natural < MAIN_TARGET
+            row[name] = {
+                'ran_out_pct': 100 * g.ran_out.mean(),
+                'budget_vs_usual_pct': 100 * (g.budget / g.usual_spend).mean(),
+                'brier': ((g.p_natural - g.natural_ok.astype(float)) ** 2).mean(),
+                'risk_auc': roc_auc_score(ran_out, -g.p_natural) if ran_out.any() and not ran_out.all() else np.nan,
+                'warning_caught_pct': 100 * caught / ran_out.sum() if ran_out.any() else np.nan,
+                'warning_right_pct': 100 * caught / flagged.sum() if flagged.any() else np.nan,
+                'flagged_at_risk_pct': 100 * at_risk.mean(),
+            }
+        for column, name in (('p_type', 'stat'), ('p_payer', 'ml')):
+            row[name]['client_late_auc'] = (roc_auc_score(clients.late, clients[column])
+                                            if clients.late.nunique() == 2 else np.nan)
+        for metric in row['ml']:
+            rows.append(dict(persona=persona, metric=metric, stat=row['stat'][metric], ml=row['ml'][metric]))
+    table = pd.DataFrame(rows).set_index(['persona', 'metric'])
+    table['ml_minus_stat'] = table.ml - table.stat
     return table
 
 
