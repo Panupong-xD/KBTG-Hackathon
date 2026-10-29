@@ -3,7 +3,7 @@
 import { useEffect, useReducer, useRef, useState } from 'react';
 import Image from 'next/image';
 import { motion, useAnimationControls, useDragControls, useReducedMotion } from 'framer-motion';
-import { Wifi, Bell, Power, ArrowRightLeft, Download, ScanLine, Banknote, Home, ShoppingBasket, User, ChevronRight, CheckCircle2, Info, ArrowUpRight, ArrowDownRight, PiggyBank, Sparkles, X, Navigation, ChartPie, Star, MapPin, SquarePen, Paintbrush } from 'lucide-react';
+import { Wifi, Bell, Power, ArrowRightLeft, Download, ScanLine, Banknote, Home, ShoppingBasket, User, ChevronRight, CheckCircle2, Info, ArrowUpRight, ArrowDownRight,  X, Navigation, ChartPie, Star, MapPin, SquarePen, Paintbrush } from 'lucide-react';
 import styles from './BankPhoneMockup.module.css';
 import PocketSelector from './PocketSelector';
 import MyFinance from './MyFinance';
@@ -76,6 +76,8 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
   const [showInfo, setShowInfo] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [homeScrolled, setHomeScrolled] = useState(false);
+  // Choosing not to save moves no money: today's surplus simply stays spendable in the main Pocket.
+  const [carried, setCarried] = useState(false);
   const [savingState, dispatchSaving] = useReducer(pocketSavingReducer, initialSavingState);
   const showPockets = savingState.status === 'choosing';
   const saved = savingState.status === 'saved';
@@ -296,17 +298,25 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
                   </div>
                   <div className={`${styles.featureCard} ${styles.savingsContent}`} role="group" aria-roledescription="slide" aria-label={`${SCROLLY_STEPS[1].category} 2 จาก ${SCROLLY_STEPS.length}`} inert={activeStep !== 1}>
                     <div className={styles.savingsHeader}>
-                      <span className={styles.featureIcon}><PiggyBank /></span>
-                      <div><h4>เก็บเงินให้ถึงเป้าหมาย</h4><p>{withinBudget ? 'ใช้ไม่ถึงงบ แบ่งเก็บไว้ให้อุ่นใจ' : 'วันนี้ใช้เกินงบ พักการออมก่อน'}</p></div>
+                      <span className={`${styles.featureIcon} ${styles.mascotIcon}`}><Mascot pose="save" width={40} /></span>
+                      <div><h4>เงินเหลือวันนี้ ทำอะไรดี?</h4><p>{!withinBudget ? 'วันนี้ใช้เกินงบ พักการออมก่อน' : saved ? 'เก็บเข้าเงินออมแล้ว' : carried ? 'ทบไว้เป็นเงินใช้ต่อแล้ว' : 'ออมเก็บไว้ หรือทบไปใช้ต่อ เลือกได้เอง'}</p></div>
                     </div>
-                    <div className={styles.savingsSuggestion}>
-                      <div className={styles.suggestionCopy}><Sparkles /><p><strong>เงินสำรองฉุกเฉิน</strong><span>เก็บทีละนิด ให้เงินเหลือมีเป้าหมาย</span></p></div>
-                      <div className={styles.goalProgress}><span>เงินสะสมของรอบนี้</span><strong>฿{formatPocketBalance(summary.accumulated)}</strong></div>
-                    </div>
-                    <button ref={saveTrigger} type="button" className={styles.saveButton} onClick={openPockets} aria-haspopup="dialog" disabled={saved || summary.suggestedAmount <= 0} aria-disabled={saved || summary.suggestedAmount <= 0}>
-                      {saved ? <><CheckCircle2 /> ออมเรียบร้อย</> : summary.suggestedAmount > 0 ? <>เลือก Pocket ฿{summary.suggestedAmount} <ChevronRight /></> : <>พักออมวันนี้</>}
-                    </button>
-                    <span className={styles.consentNote}>ย้ายเงินเมื่อคุณยืนยันเท่านั้น</span>
+                    <dl className={styles.savingsBreakdown}>
+                      <div><dt>{withinBudget ? 'เหลือจากงบวันนี้' : 'ใช้เกินงบวันนี้'}</dt><dd className={withinBudget ? styles.plusAmount : styles.minusAmount}>{withinBudget ? '+' : '−'}฿{formatPocketBalance(Math.abs(budgetDifference))}</dd></div>
+                      <div><dt>สะสมจากวันก่อน</dt><dd>฿{formatPocketBalance(demoFinance.openingAccumulated)}</dd></div>
+                      {saved && <div><dt>เก็บเข้า {destinationPocket?.name} แล้ว</dt><dd className={styles.minusAmount}>−฿{formatPocketBalance(allocated)}</dd></div>}
+                      <div className={styles.breakdownTotal}><dt>{carried ? 'พร้อมใช้ต่อในบัญชีหลัก' : 'เงินสะสมในบัญชีหลัก'}</dt><dd>฿{formatPocketBalance(summary.accumulated)}</dd></div>
+                    </dl>
+                    {saved || summary.suggestedAmount <= 0 ? <button ref={saveTrigger} type="button" className={styles.saveButton} disabled aria-disabled>
+                      {saved ? <><CheckCircle2 /> ออมเรียบร้อย</> : <>พักออมวันนี้</>}
+                    </button> : carried ? <div className={styles.carriedStatus}>
+                      <span><CheckCircle2 /> ทบ ฿{formatPocketBalance(budgetDifference)} ไปใช้ต่อแล้ว</span>
+                      <button type="button" onClick={() => setCarried(false)}>เปลี่ยนใจ</button>
+                    </div> : <div className={styles.savingChoices} role="group" aria-label={`เลือกว่าจะออม ฿${summary.suggestedAmount} หรือทบไปใช้ต่อ`}>
+                      <button ref={saveTrigger} type="button" className={styles.saveButton} onClick={openPockets} aria-haspopup="dialog">ออม ฿{summary.suggestedAmount} <ChevronRight /></button>
+                      <button type="button" className={styles.carryButton} onClick={() => setCarried(true)}>ไม่ออม ทบไปใช้ต่อ</button>
+                    </div>}
+                    <span className={styles.consentNote}>{saved ? 'เงินสะสมที่เหลือยังอยู่ในบัญชีหลัก' : carried ? 'ไม่มีการย้ายเงิน เงินยังอยู่ในบัญชีหลัก' : summary.suggestedAmount <= 0 ? 'เงินสะสมยังอยู่ในบัญชีหลัก ใช้ได้เมื่อจำเป็น' : 'ออมเข้า Pocket ที่เลือก · ย้ายเงินเมื่อคุณยืนยันเท่านั้น'}</span>
                   </div>
                 </motion.div>
               </div>

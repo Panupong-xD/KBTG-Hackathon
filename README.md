@@ -23,7 +23,7 @@ Environment files and private-key formats are ignored by Git. Production browser
 1. Financial overview: balance, today’s spending limit, budget difference, estimated time to the next income, and illustrative 30-day probability. Pending income and bills are disclosed through the existing information button.
 2. Saving: a goal card, a quiet accumulated-balance row, and the original choose-Pocket → confirm → success flow.
 
-The two cards retain the original equal sizing, swipe, pagination, keyboard controls, phone frame and colors. There is no third card, scenario toolbar, round-settings screen, carry-forward button or undo flow. End-of-round saving/carrying and risk alerts remain conceptual explanations, rather than additional demo interactions.
+The two cards retain the original equal sizing, swipe, pagination, keyboard controls, phone frame and colors. There is no third card, scenario toolbar or round-settings screen. The saving card offers a choice: save today's surplus into a chosen Pocket, or skip saving and carry it forward as spendable money in the main Pocket (no money moves, and the choice can be changed). End-of-round handling and risk alerts remain conceptual explanations, rather than additional demo interactions.
 
 ## Shared example
 

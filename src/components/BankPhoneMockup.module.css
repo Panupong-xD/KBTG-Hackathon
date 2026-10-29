@@ -172,19 +172,26 @@
 .savingsHeader { display: flex; align-items: center; gap: 8px; }
 .savingsHeader h4 { margin: 0; font-size: 15px; line-height: 20px; font-weight: 600; }
 .savingsHeader p { margin: 1px 0 0; color: #657980; font-size: 11px; line-height: 16px; }
-.savingsSuggestion { padding: 6px 8px; border: 1px solid #e0efea; border-radius: 11px; background: #ffffffd4; }
-.suggestionCopy { display: flex; align-items: flex-start; gap: 6px; }
-.suggestionCopy > svg { flex-shrink: 0; width: 17px; height: 17px; margin-top: 2px; color: #008780; stroke-width: 1.7; }
-.suggestionCopy p { display: flex; flex-direction: column; margin: 0; }
-.suggestionCopy strong { font-size: 12px; font-weight: 600; line-height: 18px; }
-.suggestionCopy span { color: #657980; font-size: 11px; line-height: 15px; }
-.suggestionCopy b { color: #00a950; font-weight: 600; }
-.goalProgress { display: flex; align-items: center; justify-content: space-between; gap: 4px; margin-top: 3px; padding-top: 3px; border-top: 1px solid #e4efeb; font-size: 11px; line-height: 16px; }
-.goalProgress span { color: #657980; }
-.goalProgress strong { color: #00a950; font-weight: 600; white-space: nowrap; }
+.mascotIcon { overflow: hidden; align-items: end; background: linear-gradient(160deg, #f6efe2, #e3efd3); box-shadow: 0 4px 10px #057c7d20, inset 0 1px 1px #ffffff; }
+.mascotIcon img { width: 34px; height: auto; margin-bottom: -4px; }
+.savingsBreakdown { margin: 0; padding: 5px 9px; border: 1px solid #e0efea; border-radius: 11px; background: #ffffffd4; font-size: 11px; line-height: 16px; }
+.savingsBreakdown div { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+.savingsBreakdown dt { color: #657980; }
+.savingsBreakdown dd { margin: 0; color: #22303a; font-weight: 500; white-space: nowrap; }
+.savingsBreakdown .plusAmount { color: #008f5a; }
+.savingsBreakdown .minusAmount { color: #b4462f; }
+.savingsBreakdown .breakdownTotal { margin-top: 2px; padding-top: 3px; border-top: 1px solid #e4efeb; }
+.breakdownTotal dt { color: #22303a; font-weight: 600; }
+.breakdownTotal dd { color: #008f5a; font-weight: 700; font-size: 12px; }
 .saveButton { display: flex; align-items: center; justify-content: center; gap: 5px; width: 100%; min-height: 38px; padding: 8px; margin: 0; border: 0; border-radius: 10px; background: var(--phone-cta); color: #fff; font-size: 14px !important; font-weight: 500 !important; line-height: 20px; box-shadow: 0 3px 8px #008f6920; }
 .saveButton svg { width: 17px; height: 17px; }
 .saveButton[aria-disabled='true'] { background: #e2f4eb; color: #008744; box-shadow: none; cursor: default; }
+.savingChoices { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.carryButton { display: flex; align-items: center; justify-content: center; min-height: 38px; padding: 8px 6px; border: 1.5px solid #00877c; border-radius: 10px; background: #fff; color: #00655f; font-size: 13px !important; font-weight: 500 !important; line-height: 18px; }
+.carriedStatus { display: flex; align-items: center; justify-content: space-between; gap: 6px; min-height: 38px; padding: 6px 6px 6px 10px; border-radius: 10px; background: #e6f4ef; color: #00655f; font-size: 13px; font-weight: 500; }
+.carriedStatus span { display: flex; align-items: center; gap: 5px; }
+.carriedStatus svg { width: 16px; height: 16px; }
+.carriedStatus button { padding: 4px 10px; border: 1px solid #00877c55; border-radius: 99px; background: #fff; color: #00655f; font-size: 12px !important; }
 .consentNote { text-align: center; font-size: 11px; line-height: 14px; color: #657980; }
 .modalBackdrop { position: absolute; z-index: 10; inset: 0; display: grid; place-items: center; padding: 5cqw; background: #061c2baa; }
 .modal { position: relative; width: 100%; max-height: 85%; overflow-y: auto; padding: 6cqw 4.5cqw; border-radius: 4cqw; background: #fff; color: #17212a; text-align: center; box-shadow: 0 12px 40px #0003; }
