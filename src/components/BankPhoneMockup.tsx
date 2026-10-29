@@ -200,10 +200,13 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
           </header>
 
           <main className={styles.main}>
-            <section aria-label="เรื่องสำคัญวันนี้">
-              <div className={styles.sectionHeading}>
-                <h3>เรื่องสำคัญวันนี้</h3>
-                <span className={styles.poweredBy}><Image src="/brand/katang-mark.svg" alt="" width={18} height={18} />by กะตังค์</span>
+            <section aria-label="กะตังค์ ยอดใช้ได้วันนี้และการออม">
+              <div className={`${styles.sectionHeading} ${styles.brandRow}`}>
+                <h3 className={styles.brandHeading}>
+                  <Image src="/brand/katang-mark.svg" alt="" width={24} height={24} />
+                  <Image src="/brand/katang-logo-reversed.svg" alt="KaTang กะตังค์" width={70} height={24} />
+                </h3>
+                <span className={styles.brandTagline}>กะให้เป๊ะ ใช้ให้พอ เหลือก็เก็บ</span>
               </div>
               <div
                 ref={carouselRef}
@@ -279,7 +282,7 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
                           {withinBudget ? <ArrowUpRight /> : <ArrowDownRight />}
                           {budgetDifference > 0 ? '+' : ''}{budgetDifference}
                         </span>
-                        <span>{withinBudget ? 'ต่ำกว่ายอดใช้ได้วันนี้' : 'เกินยอดใช้ได้วันนี้'}</span>
+                        <span>{withinBudget ? 'ยอดเงินสะสม' : 'ยอดเงินใช้เกิน'}</span>
                       </div>
                     </div>
                     <div className={styles.budgetGrid}>
