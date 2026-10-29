@@ -7,6 +7,7 @@ import { Wifi, Bell, Power, ArrowRightLeft, Download, ScanLine, Banknote, Home, 
 import styles from './BankPhoneMockup.module.css';
 import PocketSelector from './PocketSelector';
 import MyFinance from './MyFinance';
+import Mascot, { type MascotPose } from './Mascot';
 import { SCROLLY_STEPS } from '../data/scrollySteps';
 import { pockets, demoFinance, dailyBudget, dailySummary, formatDemoAmount, formatPocketBalance, initialSavingState, pocketSavingReducer, pocketBalance, type SavingPocketId } from '@/lib/pocket-saving';
 
@@ -33,6 +34,43 @@ const quickActions = [
 ];
 
 const slideSpring = { type: 'spring' as const, stiffness: 230, damping: 30, mass: 1.05, restDelta: 0.2, restSpeed: 0.2 };
+
+// The home banner advertises KaTang inside the bank app, like an in-app promotion.
+const promoSlides: { tag: string; title: React.ReactNode; tagline: string; cta: string; pose: MascotPose }[] = [
+  { tag: 'ใหม่', title: <>กะเงินรายวัน<br/>ให้พอถึงเงินเข้า</>, tagline: 'กะให้เป๊ะ ใช้ให้พอ เหลือก็เก็บ', cta: 'ดูยอดใช้ได้วันนี้', pose: 'hello' },
+  { tag: 'Pocket', title: <>เงินเหลือ<br/>เก็บเข้า Pocket ที่เลือกเอง</>, tagline: 'ยืนยันเองทุกครั้ง ไม่หักอัตโนมัติ', cta: 'เริ่มเก็บเลย', pose: 'save' },
+];
+
+function PromoBanner() {
+  const [slide, setSlide] = useState(0);
+  const reducedMotion = useReducedMotion();
+
+  useEffect(() => {
+    if (reducedMotion) return;
+    const timer = window.setInterval(() => setSlide(current => (current + 1) % promoSlides.length), 5000);
+    return () => window.clearInterval(timer);
+  }, [reducedMotion, slide]);
+
+  return <div className={styles.promo} role="region" aria-roledescription="carousel" aria-label="โฆษณากะตังค์">
+    {promoSlides.map((item, index) => <div key={item.cta} className={styles.promoSlide} data-active={slide === index}
+      role="group" aria-roledescription="slide" aria-label={`${index + 1} จาก ${promoSlides.length}`} aria-hidden={slide !== index}>
+      <div className={styles.promoCopy}>
+        <div className={styles.promoBrand}>
+          <Image src="/brand/katang-logo.svg" alt="KaTang" width={46} height={16} />
+          <span className={styles.promoTag}>{item.tag}</span>
+        </div>
+        <strong>{item.title}</strong>
+        <p>{item.tagline}</p>
+        <span className={styles.promoCta}>{item.cta} <ChevronRight /></span>
+      </div>
+      <Mascot pose={item.pose} width={120} className={styles.promoMascot} />
+    </div>)}
+    <span className={styles.starOne}>✦</span><span className={styles.starTwo}>✦</span>
+    <div className={styles.bannerDots}>
+      {promoSlides.map((item, index) => <button key={item.cta} type="button" aria-label={`โฆษณาที่ ${index + 1}`} aria-pressed={slide === index} onClick={() => setSlide(index)} />)}
+    </div>
+  </div>;
+}
 
 export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneMockupProps) {
   const [showInfo, setShowInfo] = useState(false);
@@ -158,19 +196,14 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
               <button ref={financeTrigger} type="button" className={`${styles.financePill} ${styles.financeEntry}`} onClick={openFinance}><span className={styles.financeGrid} aria-hidden="true"><i/><i/><i/><i/></span>การเงินของฉัน <ChevronRight /></button>
               <div className={styles.headerIcons}><Bell/><Power/></div>
             </div>
-            <div className={styles.heroCopy}>
-              <strong>รู้ก่อนเงินตึง<br/>เงินเหลือมีเป้าหมาย</strong>
-              <p>ดูยอดใช้ได้วันนี้<br/>พร้อมเลือกเก็บเข้า Pocket</p>
-            </div>
-            <Image src="/images/banking-lifestyle.png" alt="กลุ่มเพื่อนกับแอปจัดการเงิน" width={1536} height={1024} sizes="130px" className={styles.lifestyle} />
-            <span className={styles.starOne}>✦</span><span className={styles.starTwo}>✦</span><span className={styles.starThree}>✦</span>
-            <div className={styles.bannerDots}><i/><i/></div>
+            <PromoBanner />
           </header>
 
           <main className={styles.main}>
             <section aria-label="เรื่องสำคัญวันนี้">
               <div className={styles.sectionHeading}>
                 <h3>เรื่องสำคัญวันนี้</h3>
+                <span className={styles.poweredBy}><Image src="/brand/katang-mark.svg" alt="" width={18} height={18} />by กะตังค์</span>
               </div>
               <div
                 ref={carouselRef}
@@ -313,8 +346,8 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
                 </article>
                 <article className={`${styles.recommendationCard} ${styles.moneyCard}`}>
                   <span className={styles.recommendedBadge}>แนะนำ</span>
-                  <h4>จัดการเงิน</h4><p>ดูรายรับรายจ่าย ตั้งงบประมาณ และบริหารเงินได้ง่ายขึ้น</p>
-                  <span className={styles.moneyArt} aria-hidden="true" />
+                  <h4>กะตังค์</h4><p>กะยอดใช้ได้รายวัน เงินเหลือเก็บเข้า Pocket</p>
+                  <Mascot pose="enough" width={64} className={styles.moneyMascot} />
                 </article>
               </div>
             </section>

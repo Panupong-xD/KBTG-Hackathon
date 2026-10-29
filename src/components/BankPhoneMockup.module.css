@@ -80,14 +80,29 @@
 .headerIcons { display: flex; gap: 6.5cqw; color: #515351; }.headerIcons svg { width: 4.8cqw; height: 4.8cqw; stroke-width: 1.9; }
 .scrolledHeader { position: absolute; z-index: 5; inset: 13cqw 0 auto; display: flex; align-items: center; justify-content: space-between; height: 11cqw; padding-inline: 4.7cqw 6.7cqw; background: var(--phone-content-top); border-bottom: 1px solid #ffffff18; }
 .scrolledHeader .headerIcons { color: #fff; }
-.heroCopy { max-width: 63cqw; position: absolute; z-index: 2; left: 3.7cqw; top: 29cqw; line-height: 1.5; }
-.heroCopy strong { font-size: clamp(13px, 4cqw, 15px); font-weight: 600; }.heroCopy p { font-size: clamp(11.5px, 3.6cqw, 14px); margin: .5cqw 0 0; line-height: 1.65; }
-.lifestyle { position: absolute; z-index: 1; bottom: -1cqw; right: -1cqw; width: 36cqw; height: auto; }
-.starOne, .starTwo, .starThree { position: absolute; z-index: 2; font-size: 4.5cqw; color: #fff; line-height: 1; }.starOne { right: 3cqw; top: 22.5cqw; color: #b79b64; font-size: 3.5cqw; }.starTwo { right: 4cqw; top: 29cqw; }.starThree { right: 31cqw; bottom: 15cqw; }
-.bannerDots { position: absolute; bottom: 4.7cqw; right: 7cqw; display: flex; gap: 1.1cqw; z-index: 3; }.bannerDots i { width: 1.8cqw; height: 1.8cqw; border-radius: 50%; background: #fff; }.bannerDots i:last-child { background: #ffffff55; }
+/* KaTang promotion in the home banner slot */
+.promo { position: absolute; z-index: 2; inset: 24cqw 0 0; }
+.promoSlide { position: absolute; inset: 0; opacity: 0; transition: opacity .6s ease; pointer-events: none; }
+.promoSlide[data-active="true"] { opacity: 1; pointer-events: auto; }
+.promoCopy { position: absolute; z-index: 2; left: 4.7cqw; top: 1.2cqw; max-width: 58cqw; line-height: 1.4; }
+.promoBrand { display: flex; align-items: center; gap: 1.6cqw; margin-bottom: 1.2cqw; }
+.promoBrand img { width: auto; height: 5.2cqw; }
+.promoTag { padding: .2cqw 1.8cqw; border-radius: 99px; background: #3f7a3f; color: #fff; font-size: clamp(9px, 2.7cqw, 11px); font-weight: 600; line-height: 1.6; }
+.promoCopy strong { display: block; font-size: clamp(13px, 4.2cqw, 16px); font-weight: 600; line-height: 1.38; }
+.promoCopy p { margin: .8cqw 0 0; color: #3f7a3f; font-family: 'Itim', -apple-system, sans-serif; font-size: clamp(11.5px, 3.6cqw, 14px); line-height: 1.4; }
+.promoCta { display: inline-flex; align-items: center; gap: .4cqw; margin-top: 1.8cqw; padding: .7cqw 1.4cqw .7cqw 2.6cqw; border-radius: 99px; background: #171919; color: #fff; font-size: clamp(10px, 3cqw, 12px); white-space: nowrap; }
+.promoCta svg { width: 3.4cqw; height: 3.4cqw; }
+.promoMascot { position: absolute; z-index: 1; right: 3cqw; bottom: .5cqw; width: 28cqw; height: auto; }
+.starOne, .starTwo { position: absolute; z-index: 2; font-size: 4.5cqw; color: #fff; line-height: 1; }.starOne { right: 3cqw; top: -1.5cqw; color: #b79b64; font-size: 3.5cqw; }.starTwo { right: 38cqw; top: 2cqw; }
+.bannerDots { position: absolute; bottom: 2.4cqw; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 1.1cqw; z-index: 3; }
+.bannerDots button { width: 1.8cqw; height: 1.8cqw; padding: 0; border: 0; border-radius: 99px; background: #17191940; transition: width .3s ease, background-color .3s ease; }
+.bannerDots button[aria-pressed="true"] { width: 4.2cqw; background: #171919; }
+@media (prefers-reduced-motion: reduce) { .promoSlide, .bannerDots button { transition: none; } }
 .main { min-width: 0; padding: 4cqw 3.7cqw 28cqw; min-height: 0; background: var(--phone-content); }
 .sectionHeading { display:flex; align-items:center; justify-content:space-between; gap: 1cqw; min-height: 5cqw; margin-bottom: 2cqw; }
 .sectionHeading h3 { margin: 0; color: #fff; font-size: clamp(15px, 4.5cqw, 18px); font-weight: 500; line-height: 1.5; }
+.poweredBy { display: inline-flex; align-items: center; gap: 1.2cqw; padding: .6cqw 2.2cqw .6cqw .8cqw; border-radius: 99px; background: #ffffff1f; color: var(--phone-muted); font-size: clamp(10px, 3.1cqw, 12px); white-space: nowrap; }
+.poweredBy img { width: 5.2cqw; height: 5.2cqw; border-radius: 1.4cqw; }
 .sectionLink { display:flex; align-items:center; gap:1cqw; font-size:clamp(12px,3.6cqw,14px); white-space: nowrap; }.sectionLink svg { width: 3.8cqw; height: 3.8cqw; border-radius:50%; background: #062a32; padding:.25cqw; }
 .carouselViewport {
   width: 100%;
@@ -191,13 +206,13 @@
 .recommendationCard { position: relative; flex: 0 0 37cqw; min-height: 42cqw; padding: 3.5cqw 2.5cqw 12cqw; overflow: hidden; border-radius: 2.5cqw; background: var(--phone-surface); scroll-snap-align: start; }
 .recommendationCard h4 { margin: 0 0 1.5cqw; font-size: clamp(13px,4cqw,15px); line-height: 1.5; font-weight: 600; }
 .recommendationCard p { position: relative; z-index: 1; margin: 0; color: var(--phone-muted); font-size: clamp(11px,3.5cqw,13px); line-height: 1.6; }
-.benefitsCard h4 { color: #85d94a; }.travelCard h4 { color: #ec879d; }.moneyCard h4 { color: var(--phone-accent); }
+.benefitsCard h4 { color: #85d94a; }.travelCard h4 { color: #ec879d; }.moneyCard h4 { color: #a7c957; }
 .benefitArt { position: absolute; right: 3cqw; bottom: -3cqw; display: grid; place-items: center; width: 14cqw; height: 14cqw; border: 1cqw solid #93ec6f66; border-radius: 50%; background: linear-gradient(135deg,#75cf5a,#00a950); transform: rotate(-15deg); }
 .benefitArt svg { width: 10cqw; height: 10cqw; color: #d7ffc3; stroke-width: 1.3; }
 .travelArt { position: absolute; right: 2cqw; bottom: -2cqw; width: 19cqw; height: 12cqw; }
 .travelArt::before { content: ''; position: absolute; inset: auto 0 0; height: 6cqw; border-radius: 2cqw 2cqw 0 0; background: #e6838d; transform: perspective(30px) rotateX(15deg); }
 .travelArt svg { position: absolute; width: 13cqw; height: 13cqw; right: 3cqw; top: -3cqw; fill: #bf737e; color: #edabb1; stroke-width: 1.2; }
-.moneyArt { position: absolute; right: -1cqw; bottom: -5cqw; width: 17cqw; height: 17cqw; border: 4cqw solid var(--phone-accent); border-radius: 50%; box-shadow: -2cqw -1cqw 0 #ffffff38; transform: rotate(-20deg); }
+.moneyMascot { position: absolute; right: 1cqw; bottom: -3cqw; width: 17cqw; height: auto; transform: rotate(-6deg); }
 .recommendedBadge { position: absolute; top: 0; right: 0; padding: .8cqw 2cqw; border-radius: 0 0 0 2cqw; background: #d65b76; color: #fff; font-size: 2.8cqw; }
 .homeCustomization { display: grid; grid-template-columns: 1.2fr 1fr; gap: 3cqw; margin-inline: -3.7cqw; padding: 4.5cqw 5cqw; background: var(--phone-surface); color: var(--phone-accent); font-size: clamp(12px,3.7cqw,14px); font-weight: 500; }
 .homeCustomization > span { display: flex; align-items: center; justify-content: center; gap: 1.8cqw; white-space: nowrap; }
