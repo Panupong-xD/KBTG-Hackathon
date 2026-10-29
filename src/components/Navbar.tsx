@@ -4,6 +4,14 @@ import { useState, useEffect } from 'react';
 import { Menu, X, ArrowUpRight } from 'lucide-react';
 import BrandMark from './BrandMark';
 
+const links = [
+  { href: '#problem', label: 'ทำไมต้องกะตังค์' },
+  { href: '#how-it-works', label: 'เดโม 2 ขั้นตอน' },
+  { href: '#features', label: 'เบื้องหลัง AI' },
+  { href: '#security', label: 'ความปลอดภัย' },
+  { href: '#concept', label: 'เป้าหมาย' },
+];
+
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -19,122 +27,59 @@ export default function Navbar() {
   return (
     <header
       className={`sticky top-0 z-50 transition-all duration-200 ${
-        scrolled
-          ? 'bg-white/95 backdrop-blur-md border-b border-emerald-100 shadow-sm'
-          : 'bg-white border-b border-slate-100'
+        scrolled || mobileMenuOpen
+          ? 'bg-kt-paper/95 backdrop-blur-md border-b border-kt-line shadow-sm'
+          : 'bg-kt-cream border-b border-transparent'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-          
-          {/* Brand Logo with Custom K-Runway Concept Mark (custom prototype logo) */}
-          <div className="flex items-center gap-3 shrink-0">
-            <a href="#" className="flex items-center gap-3 group">
-              <BrandMark className="group-hover:scale-105 transition-transform" />
-              <div className="flex flex-col justify-center">
-                <div className="font-extrabold text-slate-900 text-base sm:text-lg tracking-tight leading-none flex items-center gap-1.5">
-                  <span>K-Runway</span>
-                </div>
-                <span className="text-[10px] font-bold text-[#00A950] tracking-wider uppercase leading-none mt-1">
-                  Innovation Prototype · Concept Demo
-                </span>
-              </div>
-            </a>
-          </div>
+        <div className="flex items-center justify-between h-[72px]">
+          <a href="#" aria-label="กะตังค์ KaTang กลับด้านบน" className="shrink-0 rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-kt-leaf-strong">
+            <BrandMark tagline />
+          </a>
 
-          {/* Desktop Navigation Links (Spacious, elegant, non-cramped) */}
-          <nav className="hidden lg:flex items-center gap-7 xl:gap-9 text-sm font-medium text-slate-600">
-            <a href="#problem" className="hover:text-[#00A950] transition-colors">
-              ทำไมต้อง K-Runway
-            </a>
-            <a href="#how-it-works" className="hover:text-[#00A950] transition-colors">
-              เดโม 2 ขั้นตอน
-            </a>
-            <a href="#features" className="hover:text-[#00A950] transition-colors">
-              เบื้องหลัง AI
-            </a>
-            <a href="#security" className="hover:text-[#00A950] transition-colors">
-              ความปลอดภัย
-            </a>
-            <a href="#concept" className="hover:text-[#00A950] transition-colors">
-              แนวคิดและเป้าหมาย
-            </a>
+          <nav aria-label="เมนูหลัก" className="hidden lg:flex items-center gap-1 text-sm font-medium text-kt-muted">
+            {links.map(link => <a key={link.href} href={link.href}
+              className="px-3.5 py-2 rounded-full hover:bg-kt-sage hover:text-kt-leaf-strong transition-colors focus-visible:outline-2 focus-visible:outline-kt-leaf-strong">
+              {link.label}
+            </a>)}
           </nav>
 
-          {/* Right Action CTA Button */}
-          <div className="hidden sm:flex items-center gap-3 shrink-0">
-            <a
-              href="#how-it-works"
-              className="demo-btn px-4 py-2 text-xs font-bold rounded-xl shadow-sm hover:brightness-105 flex items-center gap-1.5 transition-all"
-            >
+          <div className="hidden sm:flex items-center shrink-0">
+            <a href="#how-it-works" className="kt-btn px-5 py-2.5 text-sm font-semibold rounded-full flex items-center gap-1.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-kt-leaf-strong">
               <span>ลองใช้เดโม</span>
-              <ArrowUpRight className="w-3.5 h-3.5" />
+              <ArrowUpRight className="w-4 h-4" />
             </a>
           </div>
 
-          {/* Mobile Menu Button */}
-          <div className="flex lg:hidden">
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label={mobileMenuOpen ? 'ปิดเมนู' : 'เปิดเมนู'}
-              aria-expanded={mobileMenuOpen}
-              className="p-2 rounded-lg text-slate-700 hover:text-[#00A950]"
-            >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
-
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label={mobileMenuOpen ? 'ปิดเมนู' : 'เปิดเมนู'}
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-menu"
+            className="lg:hidden p-2.5 rounded-full text-kt-ink hover:bg-kt-sage focus-visible:outline-2 focus-visible:outline-kt-leaf-strong"
+          >
+            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
         </div>
       </div>
 
-      {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-white border-b border-emerald-100 px-4 pt-2 pb-6 space-y-3">
-          <a
-            href="#problem"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block px-3 py-2 text-sm font-semibold text-slate-700 hover:text-[#00A950]"
-          >
-            ทำไมต้อง K-Runway
+        <nav id="mobile-menu" aria-label="เมนูหลัก" className="lg:hidden border-t border-kt-line px-4 pt-3 pb-6">
+          <ul className="space-y-1">
+            {links.map(link => <li key={link.href}>
+              <a href={link.href} onClick={() => setMobileMenuOpen(false)}
+                className="block px-4 py-3 rounded-2xl text-base font-medium text-kt-ink hover:bg-kt-sage">
+                {link.label}
+              </a>
+            </li>)}
+          </ul>
+          <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)}
+            className="kt-btn mt-4 w-full text-center py-3 rounded-full text-sm font-semibold block">
+            ลองใช้เดโม
           </a>
-          <a
-            href="#how-it-works"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block px-3 py-2 text-sm font-semibold text-slate-700 hover:text-[#00A950]"
-          >
-            เดโม 2 ขั้นตอน
-          </a>
-          <a
-            href="#features"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block px-3 py-2 text-sm font-semibold text-slate-700 hover:text-[#00A950]"
-          >
-            เบื้องหลัง AI
-          </a>
-          <a
-            href="#security"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block px-3 py-2 text-sm font-semibold text-slate-700 hover:text-[#00A950]"
-          >
-            ความปลอดภัย
-          </a>
-          <a
-            href="#concept"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block px-3 py-2 text-sm font-semibold text-slate-700 hover:text-[#00A950]"
-          >
-            แนวคิดและเป้าหมาย
-          </a>
-          <div className="pt-2">
-            <a
-              href="#how-it-works"
-              onClick={() => setMobileMenuOpen(false)}
-              className="w-full text-center py-2.5 rounded-xl demo-btn text-xs font-bold block"
-            >
-              ลองใช้เดโม
-            </a>
-          </div>
-        </div>
+        </nav>
       )}
     </header>
   );

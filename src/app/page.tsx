@@ -9,14 +9,14 @@ import Footer from '../components/Footer';
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-white text-slate-900 selection:bg-[#00A950] selection:text-white font-sans">
-      {/* 1. Navigation with the custom K-Runway mark */}
+    <div className="min-h-screen bg-kt-cream text-kt-ink selection:bg-kt-leaf selection:text-white font-sans">
+      {/* 1. Navigation with the KaTang mark */}
       <Navbar />
 
       {/* 2. Hero Section - Data Science Track for First Jobbers */}
       <Hero />
 
-      {/* 3. Problems K-Runway aims to address */}
+      {/* 3. Problems KaTang aims to address */}
       <ProblemGrid />
 
       {/* 4. How It Works: Split-Screen Scrollytelling Walkthrough with Phone Mockup */}

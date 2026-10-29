@@ -1,4 +1,5 @@
-import { Check, Info } from 'lucide-react';
+import { ArrowDown, Check, Info } from 'lucide-react';
+import SectionHeading from './SectionHeading';
 import { demoFinance } from '../lib/pocket-saving';
 
 export default function ProblemGrid() {
@@ -22,74 +23,55 @@ export default function ProblemGrid() {
   ];
 
   return (
-    <section id="problem" className="py-20 bg-emerald-50/30 border-b border-emerald-100/60">
+    <section id="problem" className="py-20 sm:py-24 bg-kt-paper border-y border-kt-line">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-14">
-          <span className="inline-block text-xs font-bold text-[#00A950] bg-[#00A950]/10 px-3.5 py-1 rounded-full mb-3 border border-[#00A950]/20">
-            FIRST JOBBER PAIN POINTS
-          </span>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
-            ยอดเงินยังเหลือ <span className="text-[#00A950]">ทำไมถึงไปต่อไม่ไหว?</span>
-          </h2>
-          <p className="mt-3 text-slate-600 text-sm sm:text-base leading-relaxed">
-            4 ปัญหาที่ K-Runway ตั้งใจช่วยแก้ให้คนเริ่มทำงานที่รายได้ไม่แน่นอน ทั้งเรื่องเงินพอใช้และเงินเก็บ
-          </p>
-        </div>
+        <SectionHeading
+          eyebrow="First Jobber pain points"
+          mascot="surprised"
+          title={<>ยอดเงินยังเหลือ <span className="text-kt-leaf-strong">ทำไมถึงไปต่อไม่ไหว?</span></>}
+          intro="4 ปัญหาที่กะตังค์ตั้งใจช่วยแก้ให้คนเริ่มทำงานที่รายได้ไม่แน่นอน ทั้งเรื่องเงินพอใช้และเงินเก็บ"
+        />
 
-        {/* 4 Cards Grid with Bold green Accents */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
           {problems.map((item) => (
-            <div
-              key={item.id}
-              className="bg-white border-2 border-emerald-100 hover:border-[#00A950] rounded-2xl p-5 sm:p-6 shadow-sm hover:shadow-md transition-all flex flex-col gap-4 group"
-            >
+            <article key={item.id} className="bg-kt-cream rounded-[24px] p-5 sm:p-7 flex flex-col gap-5">
               <div>
-                {/* Top Row: Green Number */}
-                <div className="mb-3">
-                  <span className="font-mono text-3xl sm:text-4xl font-black text-[#00A950] group-hover:scale-105 transition-transform inline-block">
-                    {item.id}
+                <div className="flex items-center gap-3 mb-3">
+                  <span className="font-brand text-4xl text-kt-leaf-strong leading-none">{item.id}</span>
+                  <span className="text-[11px] font-semibold text-kt-muted uppercase tracking-wider">{item.title}</span>
+                </div>
+                <h3 className="text-lg sm:text-xl font-semibold text-kt-ink mb-2 leading-snug">{item.thaiTitle}</h3>
+                <p className="text-sm text-kt-muted leading-relaxed">{item.description}</p>
+              </div>
+
+              <div className="mt-auto text-sm">
+                <div className="flex items-start gap-3 bg-kt-paper p-3.5 rounded-2xl border border-kt-line">
+                  <span className="w-6 h-6 rounded-full bg-kt-line text-kt-muted flex items-center justify-center shrink-0">
+                    <Info className="w-3.5 h-3.5" aria-hidden="true" />
+                  </span>
+                  <div className="text-kt-muted">
+                    <span className="font-semibold text-kt-ink block mb-0.5">ปัญหาที่เจอ</span>
+                    {item.painPoint}
+                  </div>
+                </div>
+                <div className="flex justify-center -my-1.5 relative z-10" aria-hidden="true">
+                  <span className="w-7 h-7 rounded-full bg-kt-paper border border-kt-line flex items-center justify-center">
+                    <ArrowDown className="w-3.5 h-3.5 text-kt-leaf-strong" />
                   </span>
                 </div>
-
-                <div className="text-xs font-bold text-[#00A950] uppercase tracking-wider mb-1">
-                  {item.title}
-                </div>
-                <h3 className="text-lg sm:text-xl font-bold text-slate-900 mb-2">
-                  {item.thaiTitle}
-                </h3>
-
-                <p className="text-sm text-slate-600 leading-relaxed">
-                  {item.description}
-                </p>
-              </div>
-
-              {/* Comparison Box with Enhanced Contrast and Icons */}
-              <div className="space-y-2 pt-3 border-t border-slate-100 text-xs">
-                <div className="flex items-start gap-2.5 text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-200">
-                  <div className="w-5 h-5 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center shrink-0 mt-0.5">
-                    <Info className="w-3.5 h-3.5" />
-                  </div>
-                  <div>
-                    <span className="font-bold text-slate-700 block mb-0.5">ปัญหาที่เจอ</span>
-                    <span>{item.painPoint}</span>
-                  </div>
-                </div>
-                <div className="flex items-start gap-2.5 text-slate-800 bg-emerald-50/80 p-3 rounded-xl border border-emerald-200">
-                  <div className="w-5 h-5 rounded-full bg-[#00A950] text-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
-                    <Check className="w-3.5 h-3.5" />
-                  </div>
-                  <div>
-                    <span className="font-bold text-[#008744] block mb-0.5">K-Runway ช่วยอย่างไร</span>
-                    <span>{item.aiSolution}</span>
+                <div className="flex items-start gap-3 bg-kt-sage p-3.5 rounded-2xl border border-kt-tint">
+                  <span className="w-6 h-6 rounded-full bg-kt-leaf-strong text-white flex items-center justify-center shrink-0">
+                    <Check className="w-3.5 h-3.5" aria-hidden="true" />
+                  </span>
+                  <div className="text-kt-ink">
+                    <span className="font-semibold text-kt-leaf-strong block mb-0.5">กะตังค์ช่วยอย่างไร</span>
+                    {item.aiSolution}
                   </div>
                 </div>
               </div>
-            </div>
+            </article>
           ))}
         </div>
-
       </div>
     </section>
   );

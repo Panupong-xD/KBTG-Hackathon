@@ -1,4 +1,5 @@
-import { Lock, FileCheck, ShieldCheck, RefreshCw, Check } from 'lucide-react';
+import { Lock, FileCheck, ShieldCheck, RefreshCw } from 'lucide-react';
+import SectionHeading from './SectionHeading';
 
 export default function TrustSecurityBanner() {
   const trustPillars = [
@@ -13,55 +14,30 @@ export default function TrustSecurityBanner() {
   ];
 
   return (
-    <section id="security" className="py-20 bg-white border-t border-slate-200">
+    <section id="security" className="py-20 sm:py-24 bg-kt-paper border-y border-kt-line">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Header */}
-        <div className="text-center max-w-2xl mx-auto mb-14">
-          <span className="inline-block text-xs font-bold text-[#00A950] bg-[#00A950]/10 px-3 py-1 rounded-full mb-3">
-            TRUST BY DESIGN
-          </span>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
-            AI ช่วยคิด คุณคุมเงิน
-          </h2>
-          <p className="mt-3 text-slate-600 text-sm sm:text-base leading-relaxed">
-            ความยินยอมและสิทธิ์ตัดสินใจ คือหลักการที่เราใช้ตั้งแต่ต้นในการออกแบบ K-Runway
-          </p>
-        </div>
+        <SectionHeading
+          eyebrow="Trust by design"
+          mascot="thanks"
+          title="AI ช่วยคิด คุณคุมเงิน"
+          intro="ความยินยอมและสิทธิ์ตัดสินใจ คือหลักการที่เราใช้ตั้งแต่ต้นในการออกแบบกะตังค์"
+        />
 
-        {/* 4 Pillars Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {trustPillars.map((item, idx) => {
+        <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+          {trustPillars.map((item) => {
             const Icon = item.icon;
             return (
-              <div
-                key={idx}
-                className="bg-slate-50 border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col justify-between"
-              >
-                <div>
-                  <div className="w-10 h-10 rounded-xl bg-emerald-100 text-[#00A950] flex items-center justify-center mb-4">
-                    <Icon className="w-5 h-5" />
-                  </div>
-                  <div className="text-xs font-bold text-[#00A950] uppercase tracking-wider mb-1">
-                    {item.title}
-                  </div>
-                  <h4 className="text-base font-bold text-slate-900 mb-2 leading-snug">
-                    {item.subtitle}
-                  </h4>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    {item.description}
-                  </p>
-                </div>
-
-                <div className="mt-5 pt-3 border-t border-slate-200 flex items-center gap-1.5 text-xs text-[#00A950] font-semibold">
-                  <Check className="w-3.5 h-3.5" />
-                  <span>หลักการออกแบบ</span>
-                </div>
-              </div>
+              <li key={item.title} className="bg-kt-cream rounded-[24px] p-6 flex flex-col">
+                <span className="w-12 h-12 rounded-2xl bg-kt-paper border border-kt-tint text-kt-leaf-strong flex items-center justify-center mb-5">
+                  <Icon className="w-6 h-6" aria-hidden="true" />
+                </span>
+                <span className="text-[11px] font-semibold text-kt-muted uppercase tracking-wider mb-1">{item.title}</span>
+                <h3 className="font-brand text-xl text-kt-ink mb-2 leading-snug">{item.subtitle}</h3>
+                <p className="text-sm text-kt-muted leading-relaxed">{item.description}</p>
+              </li>
             );
           })}
-        </div>
-
+        </ul>
       </div>
     </section>
   );

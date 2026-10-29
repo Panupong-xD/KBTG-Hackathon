@@ -82,7 +82,28 @@ export async function generateTailwindCSS() {
   ];
   for (const b of baseDefaults) allCandidates.add(b);
 
-  const compiler = await compile('@import "tailwindcss";', {
+  // KaTang brand tokens (kt-*), mirrored from the KaTang design system.
+  // The phone mockup keeps its own CSS modules and does not use these.
+  const katangTheme = `@theme {
+  --color-kt-cream: #FAF5EA;
+  --color-kt-paper: #FFFDF8;
+  --color-kt-sage: #EEF3E2;
+  --color-kt-tint: #DCE8C8;
+  --color-kt-line: #E6DCC8;
+  --color-kt-ink: #263321;
+  --color-kt-muted: #66705A;
+  --color-kt-leaf: #5FA057;
+  --color-kt-leaf-strong: #3F7A3F;
+  --color-kt-deep: #3E5A2E;
+  --color-kt-fresh: #A7C957;
+  --color-kt-blush: #F4A39A;
+  --color-kt-coin: #F6C344;
+  --color-kt-warn: #A44A06;
+  --color-kt-danger: #C0262D;
+  --font-brand: "Itim", "Prompt", system-ui, sans-serif;
+}`;
+
+  const compiler = await compile(`@import "tailwindcss";\n${katangTheme}`, {
     base: process.cwd(),
     loadStylesheet: async (id, base) => {
       let resolved = id === 'tailwindcss' 
@@ -103,29 +124,45 @@ body {
   font-family: 'Prompt', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-.demo-btn {
-  background-color: #00A950;
+/* KaTang primary button: brand-strong fill, white text (5.2:1) */
+.kt-btn {
+  background-color: #3F7A3F;
   color: #ffffff;
-  transition: all 0.2s ease-in-out;
+  transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
 }
 
-.demo-btn:hover {
-  background-color: #008744;
+.kt-btn:hover {
+  background-color: #34663A;
 }
 
-/* Custom modern light scrollbar */
+.kt-btn:active {
+  transform: translateY(1px);
+}
+
+/* Custom warm scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #F8FAFC;
+  background: #FAF5EA;
 }
 ::-webkit-scrollbar-thumb {
-  background: #CBD5E1;
+  background: #E6DCC8;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #00A950;
+  background: #5FA057;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .kt-float {
+    animation: kt-float 4s ease-in-out infinite;
+  }
+}
+
+@keyframes kt-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
 }
 `;
 
