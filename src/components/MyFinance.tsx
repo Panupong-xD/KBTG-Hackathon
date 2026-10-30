@@ -111,7 +111,7 @@ export default function MyFinance({ accountBalance, pocketSnapshots, plan, planE
         <div className={styles.cards}>
         <section className={planStyles.todayCard} aria-labelledby={`${id}-today-title`}>
           <div className={planStyles.cardHeading}><h4 id={`${id}-today-title`}>ยอดใช้ได้วันนี้</h4><span className={`${planStyles.sourceChip} ${planEdited ? planStyles.edited : ''}`}>{planEdited ? 'ปรับตามข้อมูลที่คุณแก้' : 'ระบบพยากรณ์ให้'}</span></div>
-          <p className={planStyles.todayAmount}>฿{formatDemoAmount(budgetToday)}<small>/ วัน</small></p>
+          <p className={planStyles.todayAmount}>฿{formatDemoAmount(budgetToday)}<small>/ วัน · โดยประมาณ</small></p>
           <p className={planStyles.todayMeta}>{savedToday > 0 ? `ออมก่อนใช้แล้ว ฿${savedToday} จาก ฿${formatDemoAmount(forecast.budget)} · ` : ''}ค่าจ้างคาดเข้า {formatDemoDay(plan.incomeDay)} (อีก {forecast.daysUntilIncome} วัน)</p>
           <div className={planStyles.probability}>
             <div className={planStyles.probabilityHeading}><span>โอกาสเงินพอ {demoFinance.daysIncludingToday} วัน</span>{showProbability ? <strong>{demoFinance.illustrativeProbability}%*</strong> : <em>รอประเมินใหม่*</em>}</div>

@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 const title = 'กะตังค์ KaTang | กะให้เป๊ะ ใช้ให้พอ เหลือก็เก็บ · Concept Demo';
-const description = 'กะตังค์ (KaTang) แนวคิดผู้ช่วยการเงิน AI ในแอปธนาคาร สำหรับ First Jobber ที่รายได้ไม่แน่นอน แนะนำยอดใช้ได้วันนี้และโอกาสเงินพอ คิดเผื่อบิลและเงินเข้าช้า พร้อมชวนออมเข้ากระเป๋าเงินเก็บ (Pocket) ที่คุณเลือกเอง';
+const description = 'กะตังค์ (KaTang) แนวคิดผู้ช่วยการเงิน AI ในแอปธนาคาร สำหรับ First Jobber ที่รายได้ไม่แน่นอน แสดงยอดใช้ได้วันนี้โดยประมาณและโอกาสเงินพอ คิดเผื่อบิลและเงินเข้าช้า พร้อมชวนออมเข้ากระเป๋าเงินเก็บ (Pocket) ที่คุณเลือกเอง';
 
 export const metadata: Metadata = {
   title,

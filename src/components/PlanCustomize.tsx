@@ -107,7 +107,7 @@ export default function PlanCustomize({ plan, featuredPockets, focus, onCancel, 
       <h5 id="plan-goal-title">เป้าเก็บเงิน <span className={styles.newTag}>ใหม่</span></h5>
       <div className={styles.row}>
         <Choice label="เป้าเก็บเงิน" options={savingGoals} value={draft.goal} onChange={goal => setDraft(previous => ({ ...previous, goal }))} />
-        <p className={styles.rowNote}>ชวนเก็บราว {goal.rate * 100}% ของยอดใช้ได้ (฿{nextOffer}/วัน) → Pocket “{emergencyPocket.name}” ไม่เกิน ฿{demoFinance.sweepCap} ต่อครั้ง และคุณยืนยันเองทุกครั้ง</p>
+        <p className={styles.rowNote}>ชวนเก็บราว {goal.rate * 100}% ของยอดใช้ได้ (฿{nextOffer}/วัน) → Pocket “{emergencyPocket.name}” คุณยืนยันเองทุกครั้ง</p>
       </div>
     </section>
 

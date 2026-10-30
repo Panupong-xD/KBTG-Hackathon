@@ -302,7 +302,7 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
                       </div>
                     </div>
                     <div className={styles.budgetGrid}>
-                      <div><span>ยอดใช้ได้วันนี้</span><strong>฿{summary.budget} <small>/ วัน</small></strong></div>
+                      <div><span>ยอดใช้ได้วันนี้</span><strong>฿{summary.budget} <small>/ วัน</small></strong><small className={styles.estimateNote}>โดยประมาณ</small></div>
                       <div><span>คาดว่าเงินเข้าใน</span><strong>{forecast.daysUntilIncome} <small>วัน</small></strong></div>
                     </div>
                     <div className={styles.runway}>

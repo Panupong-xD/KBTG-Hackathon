@@ -9,7 +9,7 @@ export default function TrustSecurityBanner() {
       description: 'เลือก Pocket ตรวจยอด แล้วยืนยันทุกครั้ง หากยังไม่ออม เงินสะสมก็ยังอยู่บัญชีหลัก ไม่มีหักอัตโนมัติ' },
     { icon: ShieldCheck, title: 'LIFE BEFORE SAVING', subtitle: 'ค่าใช้ชีวิตต้องมาก่อน',
       description: 'ตรวจเงินที่มี กันบิล เงินสำรอง และค่าใช้จ่ายระหว่างรอรับเงินก่อนชวนออม เพื่อให้ยังมีเงินพอสำหรับชีวิตประจำวัน' },
-    { icon: RefreshCw, title: 'CLEAR ABOUT UNCERTAINTY', subtitle: 'เห็นโอกาส เข้าใจความเสี่ยง',
+    { icon: RefreshCw, title: 'CLEAR ABOUT UNCERTAINTY', subtitle: 'เห็นโอกาส เข้าใจความไม่แน่นอน',
       description: 'เปอร์เซ็นต์เป็นการประเมินตามข้อมูลและช่วงเวลาที่ระบุ ไม่ใช่คำรับประกัน หากใช้เงินหลายบัญชีหรือมีภาระจากช่องทางอื่น แผนต้องอาศัยข้อมูลเพิ่มเติม' },
   ];
 

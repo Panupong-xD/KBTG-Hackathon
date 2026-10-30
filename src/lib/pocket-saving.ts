@@ -4,7 +4,7 @@ export const demoFinance = {
   openingAccumulated: 100, pendingIncome: 8000, daysUntilIncome: 12,
   daysIncludingToday: 30, spentToday: 250,
   sweepMinRate: 0.1, sweepMaxRate: 0.2,
-  sweepCap: 150, illustrativeProbability: 86,
+  illustrativeProbability: 86,
   incomeDelayBuffer: 4,
 } as const;
 export const pockets = [
@@ -86,15 +86,15 @@ export type PlanForecast = ReturnType<typeof forecastPlan>;
 export const dailyBudget = forecastPlan(defaultPlan).budget;
 
 // Save first: at the start of the day, offer to move part of today's budget into a Pocket.
-// The offer is the goal's share of the budget (10–20%) in ฿10 steps, at most ฿150, and only if
-// bills, the safety floor and the budget until the next income are still covered.
+// The offer is the goal's share of the budget (10–20%) in ฿10 steps, with no per-transfer cap, and
+// only if bills, the safety floor and the budget until the next income are still covered.
 export function suggestSaving(budget: number = dailyBudget, mainBalance: number = mainPocket.balance, { rate = demoFinance.sweepMinRate, daysUntilIncome = demoFinance.daysUntilIncome }: { rate?: number; daysUntilIncome?: number } = {}) {
   if (!Number.isFinite(budget) || budget <= 0 || !Number.isFinite(mainBalance)) return 0;
   const liquidLimit = mainBalance - demoFinance.hardFloor - budget * daysUntilIncome;
   const least = Math.ceil(budget * demoFinance.sweepMinRate / 10) * 10;
   const most = Math.max(least, Math.floor(budget * demoFinance.sweepMaxRate / 10) * 10);
   const target = Math.max(least, Math.round(budget * Math.min(rate, demoFinance.sweepMaxRate) / 10) * 10);
-  const amount = Math.min(target, most, budget * demoFinance.sweepMaxRate, demoFinance.sweepCap, liquidLimit);
+  const amount = Math.min(target, most, budget * demoFinance.sweepMaxRate, liquidLimit);
   return amount >= budget * demoFinance.sweepMinRate ? amount : 0;
 }
 export const savingOffer = suggestSaving();

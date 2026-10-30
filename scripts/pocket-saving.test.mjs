@@ -41,11 +41,11 @@ test('not saving or cancelling never transfers money, and the user can change th
   assert.equal(open(skipped).status,'choosing');
   assert.deepEqual(pocketSavingReducer(skipped,{type:'undoSkip'}),initialSavingState);
 });
-test('the 10–20% rule, per-day cap and liquidity buffer limit the offer',()=>{
+test('the 10–20% rule and liquidity buffer limit the offer, with no fixed cap',()=>{
   assert.equal(suggestSaving(280),30);
   assert.equal(suggestSaving(500,1e6),50);
   assert.equal(suggestSaving(1500,1e6),150);
-  assert.equal(suggestSaving(1600,1e6),0); // the ฿150 cap is below 10% of the budget
+  assert.equal(suggestSaving(1600,1e6),160); // no per-transfer cap: always about 10% of the budget
   assert.equal(suggestSaving(280,1000+12*280),0); // nothing left after the floor and the budget until income
   assert.equal(suggestSaving(280,1000+12*280+30),30);
   const saved=pocketSavingReducer(open(),{type:'confirm',pocketId:'emergency'});

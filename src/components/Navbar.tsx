@@ -8,7 +8,7 @@ const links = [
   { href: '#problem', label: 'ทำไมต้องกะตังค์' },
   { href: '#how-it-works', label: 'เดโม 2 ขั้นตอน' },
   { href: '#features', label: 'เบื้องหลัง AI' },
-  { href: '#security', label: 'ความปลอดภัย' },
+  { href: '#security', label: 'ความยินยอมและข้อมูล' },
   { href: '#concept', label: 'เป้าหมาย' },
 ];
 

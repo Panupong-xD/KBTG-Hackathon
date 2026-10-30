@@ -24,12 +24,12 @@ export const SCROLLY_STEPS: ScrollyStep[] = [
       ] },
       { title: 'รู้วันนี้ เพื่อปรับตัวทันพรุ่งนี้', details: [
         `ตัวอย่างงบ ฿${dailyBudget}/วัน คู่กับโอกาสเงินพอตลอด ${demoFinance.daysIncludingToday} วัน ${demoFinance.illustrativeProbability}%* โดยมองเผื่อวันรับเงินที่อาจเลื่อน (กด i เพื่อดูรายละเอียด)`,
-        'แนวคิดระบบจริงจะปรับงบตามข้อมูลล่าสุด และเตือนเฉพาะเมื่อความเสี่ยงเพิ่มขึ้นชัดเจน',
+        'แนวคิดระบบจริงจะปรับงบตามข้อมูลล่าสุด และเตือนเมื่อโอกาสเงินพอลดลงชัดเจน',
       ] },
     ],
     benchmarkNote: '*ข้อมูลและเปอร์เซ็นต์เป็นตัวอย่างสำหรับเดโม ยังไม่ใช่ผลโมเดลที่ทดสอบกับข้อมูลจริง การแจ้งเตือนยังไม่อยู่ในเดโม',
     metrics: [
-      { label: 'วันนี้ใช้ได้', value: `฿${dailyBudget} / วัน` },
+      { label: 'วันนี้ใช้ได้โดยประมาณ', value: `฿${dailyBudget} / วัน` },
       { label: `โอกาสเงินพอใน ${demoFinance.daysIncludingToday} วัน`, value: `${demoFinance.illustrativeProbability}%`, sublabel: 'ตัวอย่างจำลอง' },
       { label: 'คาดว่าเงินเข้าใน', value: `${demoFinance.daysUntilIncome} วัน`, sublabel: 'วันรับเงินอาจเลื่อน' },
     ],
@@ -48,7 +48,7 @@ export const SCROLLY_STEPS: ScrollyStep[] = [
         `ไม่ออมวันนี้ก็ได้ ยอดใช้ได้เท่าเดิม ฿${dailyBudget} ไม่มีการย้ายเงิน และเปลี่ยนใจกลับมาออมได้ภายในวัน`,
       ] },
     ],
-    benchmarkNote: `*เดโมไม่โอนเงินจริง ชวนออม ${demoFinance.sweepMinRate * 100}–${demoFinance.sweepMaxRate * 100}% ของยอดใช้ได้วันนี้ ปัดขึ้นเป็นหลักสิบ ไม่เกิน ฿${formatDemoAmount(demoFinance.sweepCap)} ต่อวัน และเงินสำรอง ฿${formatDemoAmount(demoFinance.hardFloor)} เป็นค่าตัวอย่าง`,
+    benchmarkNote: `*เดโมไม่โอนเงินจริง ชวนออม ${demoFinance.sweepMinRate * 100}–${demoFinance.sweepMaxRate * 100}% ของยอดใช้ได้วันนี้ ปัดขึ้นเป็นหลักสิบ และเงินสำรอง ฿${formatDemoAmount(demoFinance.hardFloor)} เป็นค่าตัวอย่าง`,
     metrics: [
       { label: 'ยอดใช้ได้วันนี้', value: `฿${dailyBudget}` },
       { label: `ใช้แค่ ฿${demoSavingExample.budgetAfterSaving} ออมได้`, value: `฿${demoSavingExample.offer}` },

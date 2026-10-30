@@ -157,6 +157,7 @@
 .budgetGrid span { font-size: calc(30 * var(--reference-scale)); line-height: 17px; color: #657980; white-space: nowrap; }
 .budgetGrid strong { font-size: calc(52 * var(--reference-scale)); line-height: 27px; font-weight: 600; white-space: nowrap; }
 .budgetGrid small { font-size: calc(26 * var(--reference-scale)); font-weight: 400; color: #657980; }
+.budgetGrid .estimateNote { margin-top: -2px; font-size: calc(22 * var(--reference-scale)); line-height: 1.2; color: #7b8d93; }
 .runway { padding: 6px 8px; border: 1px solid #e5f1ed; border-radius: 11px; background: #ffffffd4; }
 .runwayHeading { display: flex; align-items: center; justify-content: space-between; gap: 4px; font-size: calc(26 * var(--reference-scale)); line-height: 18px; }
 .runwayHeading strong { display: flex; align-items: center; gap: 4px; font-weight: 550; white-space: nowrap; }

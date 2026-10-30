@@ -1,7 +1,7 @@
 import { ArrowRight } from 'lucide-react';
 import Mascot from './Mascot';
 
-const outcomes = ['ยอดใช้ได้วันนี้ + โอกาสเงินพอ', 'เตือนเมื่อความเสี่ยงเพิ่ม', 'ออมเข้า Pocket', 'ทุกการออม คุณยืนยันเอง'];
+const outcomes = ['ยอดใช้ได้วันนี้ + โอกาสเงินพอ', 'เตือนเมื่อโอกาสเงินพอลดลง', 'ออมเข้า Pocket', 'ทุกการออม คุณยืนยันเอง'];
 
 export default function InnovationConcept() {
   return (

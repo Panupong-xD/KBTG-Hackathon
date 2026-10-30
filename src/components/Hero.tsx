@@ -4,7 +4,7 @@ import { dailyBudget, demoFinance } from '../lib/pocket-saving';
 
 const promises: { word: string; pose: MascotPose; title: string; body: string }[] = [
   { word: 'กะ', pose: 'think', title: 'รู้ก่อนเงินตึง', body: 'เห็นยอดใช้ได้วันนี้ คิดเผื่อวันที่เงินเข้าช้า' },
-  { word: 'พอ', pose: 'enough', title: 'เตือนถูกจังหวะ', body: 'เตือนเมื่อเสี่ยงขึ้น พร้อมงบที่ปรับตามสถานการณ์' },
+  { word: 'พอ', pose: 'enough', title: 'เตือนถูกจังหวะ', body: 'เตือนเมื่อโอกาสเงินพอลดลง พร้อมงบที่ปรับตามสถานการณ์' },
   { word: 'เก็บ', pose: 'save', title: 'เงินเหลือมีเป้าหมาย', body: 'เก็บเข้า Pocket หรือสะสมไว้ คุณเลือกเอง' },
 ];
 
@@ -34,7 +34,7 @@ export default function Hero() {
 
             <p className="mt-6 text-base sm:text-lg text-kt-muted max-w-2xl mx-auto lg:mx-0 leading-relaxed">
               <strong className="text-kt-ink font-semibold">กะตังค์</strong> แนวคิดผู้ช่วยการเงิน AI ในแอปธนาคาร สำหรับคนเริ่มทำงานที่รายได้ไม่แน่นอน
-              แนะนำ<strong className="text-kt-ink font-semibold">ยอดใช้ได้วันนี้และโอกาสเงินพอ</strong> คิดเผื่อบิลและเงินเข้าช้า
+              แสดง<strong className="text-kt-ink font-semibold">ยอดใช้ได้วันนี้โดยประมาณและโอกาสเงินพอ</strong> คิดเผื่อบิลและเงินเข้าช้า
               แล้วชวนเก็บเงินที่ใช้ไม่ถึงงบเข้า <span className="whitespace-nowrap">Pocket</span> ที่คุณเลือก
             </p>
 

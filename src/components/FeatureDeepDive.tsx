@@ -16,7 +16,7 @@ export default function FeatureDeepDive() {
           eyebrow="The idea behind KaTang"
           mascot="think"
           title="คิดเผื่อเงินตึง เปิดทางให้เงินเก็บ"
-          intro="ต่อยอดแนวคิดการตั้งงบรายหมวด ด้วยคำแนะนำจากข้อมูลเงินเข้า–ออก สำหรับคนที่รายได้ไม่แน่นอน พร้อมเชื่อมการออมเข้า Pocket"
+          intro="ต่อยอดแนวคิดการตั้งงบรายหมวด ด้วยการประเมินจากข้อมูลเงินเข้า–ออก สำหรับคนที่รายได้ไม่แน่นอน พร้อมเชื่อมการออมเข้า Pocket"
         />
 
         {/* 2 Architecture Cards with Meaningful Visual Shapes */}
@@ -39,7 +39,7 @@ export default function FeatureDeepDive() {
                 Runway Intelligence · เห็นก่อน ปรับทัน
               </h3>
               <p className="text-xs sm:text-sm text-kt-muted mb-6">
-                AI ที่คิดเผื่อค่าจ้างเข้าช้า แปลงเงินเข้า–ออกเป็นงบรายวันและโอกาสเงินพอ พร้อมเตือนเมื่อความเสี่ยงเพิ่ม
+                AI ที่คิดเผื่อค่าจ้างเข้าช้า แปลงเงินเข้า–ออกเป็นงบรายวันและโอกาสเงินพอ พร้อมเตือนเมื่อโอกาสเงินพอลดลง
               </p>
 
               {/* Aeronautical Glide-Slope SVG Stage (Frameless) */}
@@ -333,7 +333,7 @@ export default function FeatureDeepDive() {
               </div>
             </div>
             <div className="mt-2 text-right">
-              <span className="text-[10px] text-kt-muted font-normal">*เงินสำรอง ฿{formatDemoAmount(demoFinance.hardFloor)} และกติกาชวนเก็บ {demoFinance.sweepMinRate * 100}–{demoFinance.sweepMaxRate * 100}% ของยอดใช้ได้วันนี้ ไม่เกิน ฿{formatDemoAmount(demoFinance.sweepCap)} ต่อครั้ง เป็นค่าทดลองของทีม การยกเลิกใน 24 ชั่วโมงเป็นแนวคิดที่ยังไม่มีในเดโม</span>
+              <span className="text-[10px] text-kt-muted font-normal">*เงินสำรอง ฿{formatDemoAmount(demoFinance.hardFloor)} และกติกาชวนเก็บ {demoFinance.sweepMinRate * 100}–{demoFinance.sweepMaxRate * 100}% ของยอดใช้ได้วันนี้ เป็นค่าทดลองของทีม การยกเลิกใน 24 ชั่วโมงเป็นแนวคิดที่ยังไม่มีในเดโม</span>
             </div>
           </div>
 
@@ -368,12 +368,12 @@ export default function FeatureDeepDive() {
                   1. Data & Model
                 </div>
                 <h4 className="text-sm font-bold text-kt-ink mb-1">
-                  ML พยากรณ์ · Monte Carlo ประเมินความเสี่ยง
+                  ML พยากรณ์ · Monte Carlo ประเมินโอกาสเงินพอ
                 </h4>
                 <p className="text-xs text-kt-muted leading-relaxed">
                   แนวคิดระบบใช้ข้อมูล 3 ส่วน: ยอดเงินและธุรกรรม บิลและภาระผ่อน ประวัติรายรับ พร้อมให้เติมเงินรอรับได้ตามสมัครใจ โดยไม่นับเป็นยอดเงินในบัญชี
                 </p>
-                <p className="mt-2 text-xs text-kt-muted leading-relaxed">ML ช่วยพยากรณ์รายจ่าย บิลประจำ และโอกาสเงินเข้าช้า จากนั้น Monte Carlo จำลองเงินเข้า–ออกหลายพันสถานการณ์ใน {demoFinance.daysIncludingToday} วัน เพื่อหางบที่สอดคล้องกับระดับความเสี่ยง ทั้งสองส่วนยังต้องทดสอบกับข้อมูลจริง</p>
+                <p className="mt-2 text-xs text-kt-muted leading-relaxed">ML ช่วยพยากรณ์รายจ่าย บิลประจำ และโอกาสเงินเข้าช้า จากนั้น Monte Carlo จำลองเงินเข้า–ออกหลายพันสถานการณ์ใน {demoFinance.daysIncludingToday} วัน เพื่อหายอดใช้ได้ที่โอกาสเงินพอถึงเกณฑ์ที่กำหนด ทั้งสองส่วนยังต้องทดสอบกับข้อมูลจริง</p>
               </div>
 
               <div className="bg-kt-paper border border-kt-line rounded-2xl p-5 shadow-sm">
@@ -384,7 +384,7 @@ export default function FeatureDeepDive() {
                   ออมได้ โดยยังมีเงินพร้อมใช้
                 </h4>
                 <p className="text-xs text-kt-muted leading-relaxed">
-                  เสนอออมจากส่วนที่ใช้ไม่ถึงงบ หลังกันบิล เงินสำรอง และงบระหว่างรอรับเงิน ชวนเก็บ {demoFinance.sweepMinRate * 100}–{demoFinance.sweepMaxRate * 100}% ของยอดใช้ได้วันนี้ ไม่เกิน ฿{formatDemoAmount(demoFinance.sweepCap)} ต่อครั้ง และเหลือเงินสำรองอย่างน้อย ฿{formatDemoAmount(demoFinance.hardFloor)} ตามค่าทดลองของทีม เลือก Pocket และยืนยันก่อนย้ายทุกครั้ง
+                  เสนอออมจากส่วนที่ใช้ไม่ถึงงบ หลังกันบิล เงินสำรอง และงบระหว่างรอรับเงิน ชวนเก็บ {demoFinance.sweepMinRate * 100}–{demoFinance.sweepMaxRate * 100}% ของยอดใช้ได้วันนี้ และเหลือเงินสำรองอย่างน้อย ฿{formatDemoAmount(demoFinance.hardFloor)} ตามค่าทดลองของทีม เลือก Pocket และยืนยันก่อนย้ายทุกครั้ง
                 </p>
               </div>
 
