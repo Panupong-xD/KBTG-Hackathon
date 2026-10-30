@@ -76,6 +76,7 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
   const [showInfo, setShowInfo] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [homeScrolled, setHomeScrolled] = useState(false);
+  const [showPocketOverview, setShowPocketOverview] = useState(false);
   const [savingState, dispatchSaving] = useReducer(pocketSavingReducer, initialSavingState);
   const showPockets = savingState.status === 'choosing';
   const saved = savingState.status === 'saved';
@@ -85,6 +86,7 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
   const saveTrigger = useRef<HTMLButtonElement>(null);
   const financeTrigger = useRef<HTMLButtonElement>(null);
   const stickyFinanceTrigger = useRef<HTMLButtonElement>(null);
+  const transactionTrigger = useRef<HTMLButtonElement>(null);
   const lastHomeStep = useRef(0);
   const reducedMotion = useReducedMotion();
   const carouselRef = useRef<HTMLDivElement>(null);
@@ -120,6 +122,7 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
     if (!isFinanceView) return;
     setShowInfo(false);
     setShowSuccess(false);
+    setShowPocketOverview(false);
     // Leaving an unfinished selection never transfers money.
     dispatchSaving({ type: 'cancel' });
   }, [isFinanceView]);
@@ -140,7 +143,12 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
   const withinBudget = budgetDifference >= 0;
   const showIllustrativeProbability = withinBudget && !saved;
   const destinationPocket = pockets.find(pocket => pocket.id === savingState.pocketId);
-  const hasOverlay = showInfo || showSuccess || showPockets;
+  const hasOverlay = showInfo || showSuccess || showPockets || showPocketOverview;
+
+  const closePocketOverview = () => {
+    setShowPocketOverview(false);
+    requestAnimationFrame(() => transactionTrigger.current?.focus({ preventScroll: true }));
+  };
 
   const openFinance = () => onSelectStep?.(SCROLLY_STEPS.length);
   const closeFinance = () => {
@@ -178,7 +186,7 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
       <div className={styles.volumeOne} /><div className={styles.volumeTwo} /><div className={styles.powerButton} />
       <div className={`${styles.screen} ${isFinanceView ? styles.financeTheme : ''}`}>
         <div className={styles.island} />
-            <div className={`${styles.statusBar} ${showPockets || homeScrolled || isFinanceView ? styles.pocketStatus : ''}`}>
+            <div className={`${styles.statusBar} ${showPockets || showPocketOverview || homeScrolled || isFinanceView ? styles.pocketStatus : ''}`}>
               <span className={styles.clock}>20:30 <Navigation fill="currentColor" /></span>
               <div className={styles.statusIcons}>
                 <span className={styles.signal}><i/><i/><i/><i/></span>
@@ -371,13 +379,14 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
 
         {isFinanceView && <MyFinance accountBalance={accountBalance} pocketSnapshots={pockets.map(pocket => ({ id: pocket.id, name: pocket.name, balance: pocketBalance(pocket.id, savingState, spentToday) }))} onClose={closeFinance} />}
         <nav className={styles.dock} hidden={isFinanceView} inert={hasOverlay} aria-label="เมนูหลักในหน้าจอจำลอง">
-          <button type="button" className={activeStep === 0 ? styles.activeNav : ''} onClick={() => onSelectStep?.(0)}><Home fill="currentColor"/><span>หน้าแรก</span></button>
+          <button type="button" className={styles.activeNav} onClick={() => onSelectStep?.(0)}><Home fill="currentColor"/><span>หน้าแรก</span></button>
           <div className={styles.navItem}><ShoppingBasket/><span>market</span></div>
-          <button type="button" className={`${styles.transactionNav} ${activeStep === 1 ? styles.activeNav : ''}`} onClick={() => onSelectStep?.(1)}><span className={styles.transactionIcon}>฿</span><span>ธุรกรรม</span></button>
+          <button ref={transactionTrigger} type="button" className={styles.transactionNav} onClick={() => setShowPocketOverview(true)} aria-haspopup="dialog"><span className={styles.transactionIcon}>฿</span><span>ธุรกรรม</span></button>
           <div className={styles.navItem}><ScanLine/><span>สแกน/สร้างQR</span></div>
           <div className={`${styles.navItem} ${styles.profileNav}`}><span className={styles.profileIcon}><User fill="white"/></span><span>โปรไฟล์</span></div>
         </nav>
         {showPockets && <PocketSelector amount={savingState.amount} spentToday={spentToday} onCancel={cancelPocketSelection} onConfirm={confirmSaving} />}
+        {showPocketOverview && <PocketSelector mode="browse" spentToday={spentToday} balanceFor={id => pocketBalance(id, savingState, spentToday)} onCancel={closePocketOverview} />}
         {(showInfo || showSuccess) && <div className={styles.modalBackdrop} onClick={closeDialog}>
           <div
             role="dialog"

@@ -5,16 +5,21 @@ import PocketIllustration from './PocketIllustration';
 import phoneStyles from './BankPhoneMockup.module.css';
 import styles from './PocketSelector.module.css';
 
-interface PocketSelectorProps {
-  amount: number;
+type PocketSelectorProps = {
   spentToday: number;
+  balanceFor?: (id: PocketId) => number;
   onCancel: () => void;
+} & ({ mode: 'browse' } | {
+  mode?: 'select';
+  amount: number;
   onConfirm: (pocket: SavingPocketId) => void;
-}
+});
 
-export default function PocketSelector({ amount, spentToday, onCancel, onConfirm }: PocketSelectorProps) {
+export default function PocketSelector(props: PocketSelectorProps) {
+  const { spentToday, onCancel } = props;
+  const browsing = props.mode === 'browse';
   const [selected, setSelected] = useState<SavingPocketId | null>(null);
-  const balanceFor = (id: PocketId) => pocketBalance(id, initialSavingState, spentToday);
+  const balanceFor = props.balanceFor ?? ((id: PocketId) => pocketBalance(id, initialSavingState, spentToday));
   const totalBalance = pockets.reduce((sum, pocket) => sum + balanceFor(pocket.id), 0);
   const destination = pockets.find(pocket => pocket.id === selected);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -23,9 +28,10 @@ export default function PocketSelector({ amount, spentToday, onCancel, onConfirm
   const confirmationRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
+    if (browsing) return;
     // Open at the pocket list, like the scrolled reference. The account remains above it.
     if (contentRef.current && accountRef.current) contentRef.current.scrollTop = accountRef.current.offsetHeight - 24;
-  }, []);
+  }, [browsing]);
 
   useLayoutEffect(() => {
     if (!selected || !selectedRef.current || !contentRef.current || !confirmationRef.current) return;
@@ -72,7 +78,7 @@ export default function PocketSelector({ amount, spentToday, onCancel, onConfirm
     >
       <header className={styles.header}>
         <div className={styles.headerLeft}>
-          <button type="button" autoFocus onClick={onCancel} aria-label="กลับไปหน้าออมเงิน" className={styles.backButton}><ArrowLeft /></button>
+          <button type="button" autoFocus onClick={onCancel} aria-label={browsing ? 'กลับหน้าแรก' : 'กลับไปหน้าออมเงิน'} className={styles.backButton}><ArrowLeft /></button>
           <span className={phoneStyles.financePill}><span className={phoneStyles.financeGrid}><i /><i /><i /><i /></span>การเงินของฉัน</span>
         </div>
         <div className={styles.headerIcons} aria-hidden="true"><Bell /><Power /></div>
@@ -90,13 +96,18 @@ export default function PocketSelector({ amount, spentToday, onCancel, onConfirm
         </div>
         <div className={styles.updated}><span><RefreshCw />ข้อมูล ณ เวลา 20:30 น.</span><span className={styles.accountDots}><i /><i /><i /><i /></span></div>
         <div className={styles.pocketTabs}><span>กระเป๋าของฉัน</span><span>ธุรกรรม</span></div>
-        <div className={styles.selectionHeading}><h3 id="pocket-title">เลือกกระเป๋าปลายทาง</h3><span id="pocket-description">เลือก Pocket แล้วตรวจยอดก่อนยืนยัน</span></div>
+        <div className={styles.selectionHeading}><h3 id="pocket-title">{browsing ? 'กระเป๋าของฉัน' : 'เลือกกระเป๋าปลายทาง'}</h3><span id="pocket-description">{browsing ? 'ยอดเงินในแต่ละ Pocket' : 'เลือก Pocket แล้วตรวจยอดก่อนยืนยัน'}</span></div>
 
         {(['spending', 'saving'] as const).map(kind => (
           <section className={styles.group} key={kind} aria-label={kind === 'spending' ? 'กระเป๋าใช้จ่าย' : 'กระเป๋าออม'}>
             <div className={styles.groupHeading}><h4>{kind === 'spending' ? 'กระเป๋าใช้จ่าย (3)' : 'กระเป๋าออม (2)'}</h4><span>{formatPocketBalance(pockets.filter(pocket => pocket.kind === kind).reduce((sum, pocket) => sum + balanceFor(pocket.id), 0))}</span></div>
             <div className={styles.grid}>
-              {pockets.filter(pocket => pocket.kind === kind).map(({ id, name, tone }) => (
+              {pockets.filter(pocket => pocket.kind === kind).map(({ id, name, tone }) => browsing ? (
+                <article key={id} className={styles.pocket} aria-label={`${name} ยอด ${formatPocketBalance(balanceFor(id))} บาท`}>
+                  <span className={`${styles.art} ${styles[tone]}`}><PocketIllustration pocket={id} /></span>
+                  <span className={styles.pocketDetails}><span className={styles.pocketName}>{name}{id === 'savings' && <><br />(กระเป๋าออม)</>}</span><strong>{formatPocketBalance(balanceFor(id))}</strong></span>
+                </article>
+              ) : (
                 <button
                   key={id}
                   ref={selected === id ? selectedRef : undefined}
@@ -118,9 +129,9 @@ export default function PocketSelector({ amount, spentToday, onCancel, onConfirm
         ))}
       </div>
 
-      {destination && <div ref={confirmationRef} className={styles.confirmation}>
+      {props.mode !== 'browse' && destination && <div ref={confirmationRef} className={styles.confirmation}>
         <div aria-live="polite"><span>ย้ายเข้า</span><strong>{destination.name}</strong></div>
-        <button type="button" onClick={() => { if (selected) onConfirm(selected); }}>ยืนยัน ฿{amount} <ChevronRight aria-hidden="true" /></button>
+        <button type="button" onClick={() => { if (selected) props.onConfirm(selected); }}>ยืนยัน ฿{props.amount} <ChevronRight aria-hidden="true" /></button>
       </div>}
 
       <nav className={phoneStyles.dock} aria-label="เมนูหลักในหน้า Pocket">
