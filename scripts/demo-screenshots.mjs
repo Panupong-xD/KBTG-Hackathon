@@ -24,6 +24,10 @@ const scenes = [
     { selector: '[role="dialog"] button[aria-pressed]:not([disabled])' }, { text: 'ยืนยัน' },
   ] },
   { name: '06-my-finance', steps: [{ text: 'การเงินของฉัน' }] },
+  { name: '07-account-summary', steps: [{ text: 'การเงินของฉัน' }, { text: 'ดูที่มาของยอด' }] },
+  { name: '08-account-timeline', steps: [{ text: 'การเงินของฉัน' }, { text: 'ดูที่มาของยอด' }, { scroll: '[role="dialog"] ol' }] },
+  { name: '09-customize-income', steps: [{ text: 'การเงินของฉัน' }, { text: 'อัปเดตวันเงินเข้า' }] },
+  { name: '10-customize-preview', steps: [{ text: 'การเงินของฉัน' }, { text: 'แก้เอง' }, { text: 'ยืนยัน' }, { text: 'กลาง' }, { scroll: '[role="dialog"] footer' }] },
 ];
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -62,11 +66,18 @@ function connect(wsUrl) {
   });
 }
 
-// Runs in the page: find the target inside the phone (or an open dialog) and click it.
+// Runs in the page: find the target inside the phone (or an open dialog) and click it,
+// or scroll it into view inside its scrolling page.
 function clickScript(step) {
   return `(() => {
     const step = ${JSON.stringify(step)};
     const visible = el => el && el.getClientRects().length > 0 && !el.closest('[inert],[hidden]');
+    if (step.scroll) {
+      const element = [...document.querySelectorAll(step.scroll)].find(visible);
+      element?.scrollIntoView({ block: 'end' });
+      document.querySelector('[data-phone-mockup]')?.scrollIntoView({ block: 'center' });
+      return Boolean(element);
+    }
     const target = step.selector
       ? [...document.querySelectorAll(step.selector)].find(visible)
       : [...document.querySelectorAll('[data-phone-mockup] button, [role="dialog"] button')]
@@ -85,7 +96,7 @@ async function capture(client, scene) {
   await sleep(1500);
   for (const step of scene.steps) {
     const { result } = await client.send('Runtime.evaluate', { expression: clickScript(step) });
-    if (!result.value) throw new Error(`${scene.name}: could not find ${step.selector ?? `button "${step.text}"`}`);
+    if (!result.value) throw new Error(`${scene.name}: could not find ${step.selector ?? step.scroll ?? `button "${step.text}"`}`);
     await sleep(900);
   }
   const { result } = await client.send('Runtime.evaluate', {

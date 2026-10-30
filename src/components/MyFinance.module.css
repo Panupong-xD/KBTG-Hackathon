@@ -99,20 +99,4 @@
 .pocketDetails strong { font-weight: 500; white-space: nowrap; }
 .pocketDetails svg { width: 17px; height: 17px; color: #45c2b2; }
 .cardNote { margin: 12px 0 0; color: #9eacb2; font-size: 10px; line-height: 1.7; }
-.summary { border-top: 1px solid #45c2b2; padding: 3cqw; }
-.summaryHeading { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.summary h4 { margin: 0; color: #f4f6f7; font-size: 4.1cqw; font-weight: 600; line-height: 1.5; }
-.period { margin: 1px 0 0; color: #9da8af; font-size: 2.7cqw; line-height: 1.5; }
-.summaryMetric { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-top: 2cqw; }
-.summaryMetric strong { color: #45c2b2; font-size: 5cqw; font-weight: 600; line-height: 1.3; white-space: nowrap; }
-.summaryMetric small { color: #b3c4cb; font-size: 3cqw; font-weight: 400; }
-.summaryMetric > span { color: #d4dfe3; font-size: 3cqw; }
-.progress { height: 3px; margin-top: 5px; border-radius: 99px; overflow: hidden; background: #36525d; }
-.progress span { display: block; height: 100%; border-radius: inherit; background: #45c2b2; }
-.summaryFooter { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-top: 2cqw; font-size: 2.8cqw; }
-.summaryFooter > span { display: flex; align-items: center; gap: 4px; color: #a5b4ba; }
-.summaryFooter svg { width: 11px; height: 11px; color: #45c2b2; }
-.summaryFooter strong { color: #e7eef1; font-size: 3.5cqw; font-weight: 500; }
-.page .summaryButton { display: flex; align-items: center; gap: 2px; min-height: 32px; padding: 0; border: 0; background: transparent; color: #45c2b2; font-size: 3cqw; white-space: nowrap; }
-.summaryButton svg { width: 14px; height: 14px; }
 @media (prefers-reduced-motion: reduce) { .profile { transition: none; } }

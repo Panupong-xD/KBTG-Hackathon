@@ -1,0 +1,167 @@
+/* My Finance: today's budget, the round summary card, and the Customize and Account Summary pages. */
+.todayCard { position: relative; margin-top: 3.7cqw; padding: 3.4cqw 3.2cqw 3cqw; border: 1px solid #45c2b266; border-radius: 2cqw; background: linear-gradient(160deg, #0d4652 0%, var(--phone-surface) 70%); }
+.cardHeading { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.cardHeading h4 { margin: 0; color: #f4f6f7; font-size: 3.6cqw; font-weight: 600; line-height: 1.5; }
+.cardHeading p { margin: 0; color: #9da8af; font-size: 2.7cqw; line-height: 1.5; }
+.sourceChip { flex-shrink: 0; padding: 1px 7px; border-radius: 99px; background: #45c2b226; color: #7fe0d2; font-size: 9px; line-height: 1.6; }
+.sourceChip.edited { background: #f3c45a26; color: #f3c45a; }
+.todayAmount { display: flex; align-items: baseline; gap: 5px; margin: 1.5cqw 0 0; color: #ffffff; font-size: 8.4cqw; font-weight: 600; line-height: 1.2; }
+.todayAmount small { color: #b3c4cb; font-size: 3.2cqw; font-weight: 400; }
+.todayMeta { margin: 1cqw 0 0; color: #b3c4cb; font-size: 2.8cqw; line-height: 1.6; }
+.probability { margin-top: 2.6cqw; }
+.probabilityHeading { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: #d4dfe3; font-size: 2.9cqw; }
+.probabilityHeading strong { color: #45c2b2; font-size: 3.4cqw; font-weight: 600; }
+.probabilityHeading em { color: #f3c45a; font-size: 2.9cqw; font-style: normal; }
+.meter { height: 4px; margin-top: 4px; border-radius: 99px; overflow: hidden; background: #36525d; }
+.meter span { display: block; height: 100%; border-radius: inherit; background: #45c2b2; }
+.cardActions { display: flex; gap: 6px; margin-top: 3cqw; }
+.cardActions button { display: flex; align-items: center; justify-content: center; gap: 2px; flex: 1; min-height: 30px; padding: 3px 8px; border: 1px solid #45c2b2; border-radius: 99px; background: transparent; color: #45c2b2; font-size: 10.5px; line-height: 1.3; white-space: nowrap; }
+.cardActions button:first-child { background: #45c2b2; color: #062a34; font-weight: 600; }
+.cardActions svg { width: 13px; height: 13px; flex-shrink: 0; }
+
+.roundCard { margin-top: 3.7cqw; padding: 3.2cqw; border-radius: 2cqw; background: var(--phone-surface); }
+.roundCard .cardHeading button { display: flex; align-items: center; gap: 2px; min-height: 30px; padding: 0; border: 0; background: transparent; color: #45c2b2; font-size: 3cqw; white-space: nowrap; }
+.roundCard .cardHeading button svg { width: 14px; height: 14px; }
+.roundStats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin: 2.4cqw 0 0; }
+.roundStats > div { display: flex; flex-direction: column; gap: 2px; min-width: 0; padding: 7px 6px; border-radius: 6px; background: #ffffff0d; }
+.roundStats dt { order: 2; color: #a5b4ba; font-size: 9px; line-height: 1.35; }
+.roundStats dd { margin: 0; color: #e7eef1; font-size: 3.8cqw; font-weight: 600; line-height: 1.25; white-space: nowrap; }
+.roundStats dd small { color: #a5b4ba; font-size: 2.6cqw; font-weight: 400; }
+.roundStats .late dd { color: #f3c45a; }
+.roundStats .good dd { color: #45c2b2; }
+.roundNudge { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 2.4cqw; padding-top: 2.2cqw; border-top: 1px solid #b0ccd21f; color: #b3c4cb; font-size: 10px; line-height: 1.5; }
+.roundNudge > span { display: flex; align-items: center; gap: 4px; }
+.roundNudge > span svg { color: #f3c45a; flex-shrink: 0; }
+.roundNudge button { display: flex; align-items: center; gap: 2px; flex-shrink: 0; min-height: 28px; padding: 2px 10px; border: 1px solid #f3c45a; border-radius: 99px; background: transparent; color: #f3c45a; font-size: 10px; white-space: nowrap; }
+.roundNudge button svg { width: 12px; height: 12px; }
+
+.destinationTag { align-self: flex-start; margin-top: 3px; padding: 0 5px; border-radius: 99px; background: #fff1c7; color: #8a6400; font-size: 8.5px; line-height: 1.6; white-space: nowrap; }
+.transactionsLink { display: flex; align-items: center; justify-content: center; gap: 3px; width: 100%; min-height: 30px; margin-top: 12px; border: 1px solid #45c2b2; border-radius: 99px; background: transparent; color: #45c2b2; font-size: 11px; }
+.transactionsLink svg { width: 13px; height: 13px; }
+
+/* Pages pushed over My Finance */
+/* Same layer as My Finance and later in the DOM, so it covers the page but not the status bar. */
+.planPage { position: absolute; z-index: 5; inset: 0; display: flex; flex-direction: column; padding-top: 13cqw; background: var(--phone-content); color: #f4f6f7; animation: push .22s ease-out; }
+@keyframes push { from { transform: translateX(14%); opacity: .4; } }
+.planHeader { display: flex; align-items: center; gap: 4px; padding: 1cqw 3cqw 2.4cqw 1cqw; }
+.planHeader > button { display: grid; place-items: center; flex-shrink: 0; width: 40px; height: 40px; border: 0; background: transparent; color: #f3f7f8; }
+.planHeader > button svg { width: 21px; height: 21px; }
+.planHeader h4 { margin: 0; font-size: 4.3cqw; font-weight: 600; line-height: 1.4; }
+.planHeader p { margin: 0; color: #a9bcc4; font-size: 2.7cqw; line-height: 1.5; }
+.planBody { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 3.2cqw 5cqw; scrollbar-width: none; }
+.planBody::-webkit-scrollbar { display: none; }
+.planFooter { flex-shrink: 0; padding: 2.6cqw 3.2cqw 4cqw; border-top: 1px solid #45c2b240; background: #072f3c; }
+
+.group + .group { margin-top: 3.4cqw; }
+.group h5 { display: flex; align-items: center; gap: 6px; margin: 0 0 1.6cqw; color: #e7eef1; font-size: 3.4cqw; font-weight: 600; }
+.newTag { padding: 0 6px; border-radius: 5px; background: #f3c45a; color: #4a3500; font-size: 9px; font-weight: 600; line-height: 1.7; }
+.guessTag { margin-left: 5px; padding: 0 5px; border-radius: 5px; background: #f3c45a; color: #4a3500; font-size: 8.5px; font-weight: 600; line-height: 1.7; vertical-align: 1px; }
+.row { padding: 2.6cqw 3cqw; border-radius: 2cqw; background: var(--phone-surface); }
+.row + .row { margin-top: 1.6cqw; }
+.highlight { box-shadow: inset 0 0 0 1.5px #f3c45a; }
+.rowMain { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.rowMain > div:first-child { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.rowMain strong { font-size: 3.2cqw; font-weight: 600; line-height: 1.45; }
+.rowMain > div:first-child > span { color: #a5b4ba; font-size: 2.75cqw; line-height: 1.5; }
+.editButton { flex-shrink: 0; min-width: 44px; min-height: 28px; padding: 2px 10px; border: 1px solid #c9d8dd; border-radius: 99px; background: transparent; color: #e7eef1; font-size: 10.5px; }
+.editButton[aria-expanded='true'] { border-color: #45c2b2; color: #45c2b2; }
+.guessActions { display: flex; flex-direction: column; align-items: center; gap: 1px; flex-shrink: 0; }
+.textButton { min-height: 24px; padding: 0 6px; border: 0; background: transparent; color: #a5b4ba; font-size: 10px; text-decoration: underline; }
+.choice { display: flex; gap: 5px; margin-top: 2cqw; }
+.choice button { min-width: 15cqw; min-height: 28px; padding: 2px 12px; border: 1px solid #c9d8dd99; border-radius: 99px; background: transparent; color: #dbe5e9; font-size: 10.5px; }
+.choice button[aria-pressed='true'] { border-color: #7fe0d2; background: #7fe0d2; color: #062a34; font-weight: 600; }
+.rowNote { margin: 2cqw 0 0; color: #b3c4cb; font-size: 2.75cqw; line-height: 1.6; }
+.editor { display: flex; flex-direction: column; gap: 6px; margin-top: 2.4cqw; padding-top: 2.4cqw; border-top: 1px dashed #b0ccd233; }
+.editor > p { margin: 0; color: #a5b4ba; font-size: 2.7cqw; line-height: 1.5; }
+.editor .choice { margin-top: 0; }
+.stepper { display: grid; grid-template-columns: 1fr 28px 25cqw 28px; align-items: center; gap: 6px; }
+.stepper > span { color: #c4d1d6; font-size: 2.9cqw; }
+.stepper button { display: grid; place-items: center; width: 28px; height: 28px; border: 1px solid #45c2b2; border-radius: 50%; background: transparent; color: #45c2b2; }
+.stepper button:disabled { opacity: .35; }
+.stepper button svg { width: 14px; height: 14px; }
+.stepper strong { text-align: center; font-size: 3.2cqw; font-weight: 600; }
+.pocketToggles { padding-block: 1cqw; }
+.pocketToggles button { display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: 36px; padding: 6px 0; border: 0; border-bottom: 1px solid #b0ccd226; background: transparent; color: #d4e1e6; font-size: 11px; text-align: left; }
+.pocketToggles button:last-child { border-bottom: 0; }
+.pocketToggles svg { width: 16px; height: 16px; color: #45c2b2; }
+.resetButton { display: flex; align-items: center; justify-content: center; gap: 5px; width: 100%; min-height: 32px; margin-top: 4cqw; border: 0; background: transparent; color: #7fe0d2; font-size: 11px; }
+.resetButton:disabled { color: #6f858c; }
+.resetButton svg { width: 13px; height: 13px; }
+.footnote { margin: 1cqw 0 0; color: #8fa2aa; font-size: 9.5px; line-height: 1.6; text-align: center; }
+
+.preview { padding: 2.2cqw 3cqw; border: 1.5px dashed #f3c45a; border-radius: 2cqw; background: #f3c45a14; }
+.preview > span { color: #f3c45a; font-size: 9.5px; font-weight: 600; }
+.preview p { margin: 2px 0 0; color: #d4dfe3; font-size: 2.85cqw; line-height: 1.55; }
+.preview p strong { color: #ffffff; font-size: 3.4cqw; }
+.preview em { color: #f3c45a; font-style: normal; }
+.up { color: #7fe0d2; }
+.down { color: #f59f8b; }
+.primaryButton { width: 100%; min-height: 38px; margin-top: 2.4cqw; border: 0; border-radius: 99px; background: #45c2b2; color: #062a34; font-size: 12.5px; font-weight: 600; }
+.primaryButton:disabled { background: #2b4c55; color: #8fa2aa; }
+
+/* Account Summary */
+.todayStrip { display: grid; grid-template-columns: repeat(3, 1fr); padding: 2.6cqw 1cqw; border-radius: 2cqw; background: var(--phone-surface); }
+.todayStrip > div { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.todayStrip > div + div { border-left: 1px solid #697f825c; }
+.todayStrip span { color: #a5b4ba; font-size: 9.5px; }
+.todayStrip strong { color: #e7eef1; font-size: 3.6cqw; font-weight: 600; }
+.todayStrip > div:nth-child(2) strong { color: #f59f8b; }
+.todayStrip > div:nth-child(3) strong { color: #7fe0d2; }
+.sourceCard, .timelineCard { margin-top: 3cqw; padding: 3.2cqw; border-radius: 2cqw; background: var(--phone-surface); }
+.sourceCard { border: 1.5px dashed #f3c45a99; }
+.sourceCard h5, .timelineCard h5 { margin: 0; font-size: 3.6cqw; font-weight: 600; }
+.sourceLead { margin: 2px 0 0; color: #a5b4ba; font-size: 2.75cqw; line-height: 1.55; }
+.stack { display: flex; gap: 2px; height: 12px; margin-top: 2.6cqw; border-radius: 4px; overflow: hidden; background: #ffffff10; }
+.stack > span { display: block; height: 100%; }
+.stackFloor { background: #7d8f96; }
+.stackBills { background: #f59f8b; }
+.stackPlan { background: #45c2b2; }
+.stackLeft { background: #c6efe8; }
+.stackLegend { display: flex; flex-wrap: wrap; gap: 3px 9px; margin-top: 5px; color: #a5b4ba; font-size: 9px; }
+.stackLegend span { display: flex; align-items: center; gap: 4px; }
+.stackLegend i { width: 7px; height: 7px; border-radius: 2px; }
+.sourceRows { margin: 2.4cqw 0 0; }
+.sourceRows > div { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; padding: 1.5cqw 0; border-bottom: 1px solid #b0ccd21a; font-size: 3cqw; }
+.sourceRows dt { display: flex; flex-direction: column; color: #d4dfe3; }
+.sourceRows dt small { color: #8fa2aa; font-size: 2.5cqw; line-height: 1.5; }
+.sourceRows dd { margin: 0; color: #e7eef1; font-weight: 500; white-space: nowrap; }
+.sourceSubtotal dt, .sourceSubtotal dd { color: #ffffff !important; font-weight: 600; }
+.sourceTotal { border-bottom: 0 !important; }
+.sourceTotal dt { color: #7fe0d2 !important; font-weight: 600; }
+.sourceTotal dd { color: #7fe0d2 !important; font-size: 4.2cqw; font-weight: 700 !important; }
+.sourceNote { margin: 1cqw 0 0; color: #8fa2aa; font-size: 9.5px; line-height: 1.6; }
+.outlineButton { display: flex; align-items: center; justify-content: center; gap: 3px; width: 100%; min-height: 32px; margin-top: 2.6cqw; border: 1px solid #45c2b2; border-radius: 99px; background: transparent; color: #45c2b2; font-size: 10.5px; }
+.outlineButton svg { width: 13px; height: 13px; }
+
+.dayStrip { display: grid; grid-template-columns: repeat(30, 1fr); gap: 1.5px; margin-top: 3cqw; }
+.dayStrip > span { position: relative; height: 16px; border-radius: 2px; }
+.dayStrip > span > i { position: absolute; top: -6px; left: 50%; width: 7px; height: 7px; border: 1.5px solid #082b36; border-radius: 50%; transform: translateX(-50%); }
+.planned { background: #45c2b2; }
+.buffered { background: repeating-linear-gradient(135deg, #f3c45a 0 3px, #f3c45a55 3px 6px); }
+.later { background: #36525d; }
+.dayStrip i.today { background: #ffffff; }
+.dayStrip i.in { background: #7fe0d2; }
+.dayStrip i.out { background: #f59f8b; }
+.dayStrip i.muted { background: #8fa2aa; }
+.dayStrip i.buffer { background: #f3c45a; }
+.dayAxis { display: flex; justify-content: space-between; margin-top: 4px; color: #8fa2aa; font-size: 9px; }
+.dayAxis span:nth-child(2) { color: #7fe0d2; }
+.stripLegend { display: flex; flex-wrap: wrap; gap: 3px 9px; margin-top: 6px; color: #a5b4ba; font-size: 9px; }
+.stripLegend span { display: flex; align-items: center; gap: 4px; }
+.stripLegend i { width: 9px; height: 7px; border-radius: 2px; }
+.events { margin: 2.6cqw 0 0; padding: 0; list-style: none; }
+.events li { position: relative; display: grid; grid-template-columns: 11cqw 1fr auto; align-items: start; gap: 8px; padding: 1.8cqw 0 1.8cqw 9px; border-left: 2px solid #36525d; }
+.events li::before { content: ''; position: absolute; top: calc(1.8cqw + 4px); left: -5px; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.events li.today { color: #ffffff; }
+.events li.in { color: #7fe0d2; }
+.events li.out { color: #f59f8b; }
+.events li.muted { color: #8fa2aa; }
+.events li.buffer { color: #f3c45a; }
+.eventDay { color: #c4d1d6; font-size: 2.7cqw; line-height: 1.6; }
+.events li > div { display: flex; flex-direction: column; min-width: 0; }
+.events li strong { color: #e7eef1; font-size: 3cqw; font-weight: 600; line-height: 1.45; }
+.events li > div > span { color: #8fa2aa; font-size: 2.6cqw; line-height: 1.5; }
+.events li em { color: inherit; font-size: 3cqw; font-style: normal; font-weight: 600; white-space: nowrap; }
+.events li.muted em { text-decoration: line-through dotted; }
+
+@media (prefers-reduced-motion: reduce) { .planPage { animation: none; } }

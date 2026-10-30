@@ -1,4 +1,4 @@
-import { dailyBudget, demoFinance, demoSavingExample, formatDemoAmount } from '../lib/pocket-saving';
+import { dailyBudget, demoFinance, demoSavingExample, formatDemoAmount, savingGoals } from '../lib/pocket-saving';
 import { previousRoundDemo } from './previousRound';
 
 export interface ScrollyStep {
@@ -59,8 +59,8 @@ export const SCROLLY_STEPS: ScrollyStep[] = [
 
 export const SUMMARY_VIEW: ScrollyStep = {
   id: 3, stepNumber: 'Summary', kind: 'summary', category: 'สรุปรอบเดือน',
-  title: 'ทบทวนรอบเดือน ในการเงินของฉัน',
-  description: 'เปิดการเงินของฉัน เพื่อดูภาพรวมบัญชีและสรุปรอบเดือนที่ผ่านมา เทียบแผนกับสิ่งที่เกิดขึ้นจริงในที่เดียว',
+  title: 'ระบบพยากรณ์ คุณตัดสินใจ ในการเงินของฉัน',
+  description: 'เปิดการเงินของฉัน เห็นยอดใช้ได้วันนี้ ที่มาของยอด และสรุปรอบที่ผ่านมา ถ้ายอดไม่ตรงชีวิตจริง แก้วันเงินเข้า บิล และเป้าเก็บเงินได้เองตลอด',
   detailGroups: [
     { title: 'เห็นทั้งแผนและจังหวะที่เปลี่ยนไป', details: [
       `ตัวอย่างเดือน${previousRoundDemo.month} ใช้ไม่เกินยอดที่วางแผนไว้ ${previousRoundDemo.daysWithinPlan} จาก ${previousRoundDemo.days} วัน โดยเทียบกับยอดใช้ได้ที่ปรับในแต่ละวัน`,
@@ -69,6 +69,10 @@ export const SUMMARY_VIEW: ScrollyStep = {
     { title: 'เงินสะสมเชื่อมต่อกับรอบปัจจุบัน', details: [
       `เงินสะสม ฿${previousRoundDemo.carriedAmount} ที่ยกมารวมอยู่ในเงินสะสมเดิมของรอบนี้แล้ว ไม่เพิ่มยอดบัญชีหรือชวนย้ายเงินซ้ำ`,
       'เปิดดูสรุปได้จากหน้าการเงินของฉัน โดยไม่ต้องผ่านขั้นตอนออมเงินก่อน',
+    ] },
+    { title: 'แก้ข้อมูลเองได้ เห็นผลก่อนบันทึก', details: [
+      `ยืนยันบิลที่ระบบเดา บอกว่าเงินเพิ่มแน่นอนหรืออาจจะ และเลือกเป้าเก็บเงิน ${savingGoals.map(goal => `${goal.label} ${goal.rate * 100}%`).join(' / ')}`,
+      'ก่อนบันทึกจะเห็นว่ายอดใช้ได้วันนี้เปลี่ยนเป็นเท่าไหร่ หลังบันทึกโอกาสเงินพอต้องประเมินใหม่ ไม่ใช้เปอร์เซ็นต์เดิม',
     ] },
   ],
   metrics: [

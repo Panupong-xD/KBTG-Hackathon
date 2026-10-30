@@ -9,7 +9,7 @@ import PocketSelector from './PocketSelector';
 import MyFinance from './MyFinance';
 import Mascot, { type MascotPose } from './Mascot';
 import { SCROLLY_STEPS } from '../data/scrollySteps';
-import { pockets, demoFinance, dailyBudget, dailySummary, formatDemoAmount, formatPocketBalance, initialSavingState, pocketSavingReducer, pocketBalance, savedAmount, savingOffer, type SavingPocketId } from '@/lib/pocket-saving';
+import { pockets, demoFinance, dailySummary, defaultPlan, forecastPlan, formatDemoAmount, formatPocketBalance, initialSavingState, planSavingOffer, pocketSavingReducer, pocketBalance, samePlan, savedAmount, type SavingPocketId } from '@/lib/pocket-saving';
 
 interface BankPhoneMockupProps {
   activeStep: number;
@@ -78,6 +78,12 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
   const [homeScrolled, setHomeScrolled] = useState(false);
   const [showPocketOverview, setShowPocketOverview] = useState(false);
   const [savingState, dispatchSaving] = useReducer(pocketSavingReducer, initialSavingState);
+  // The plan the user can correct in My Finance. Today's budget and the saving offer follow it.
+  const [plan, setPlan] = useState(defaultPlan);
+  const forecast = forecastPlan(plan);
+  const dailyBudget = forecast.budget;
+  const savingOffer = planSavingOffer(plan, forecast);
+  const planEdited = !samePlan(plan, defaultPlan);
   const showPockets = savingState.status === 'choosing';
   const saved = savingState.status === 'saved';
   const skipped = savingState.status === 'skipped';
@@ -137,11 +143,12 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
   }, [carouselStep, cardWidth, reducedMotion, slideAnimation]);
 
   const allocated = savedAmount(savingState);
-  const summary = dailySummary(spentToday, allocated);
+  const summary = dailySummary(spentToday, allocated, dailyBudget);
   const budgetDifference = summary.difference;
   const accountBalance = pockets.reduce((total, pocket) => total + pocketBalance(pocket.id, savingState, spentToday), 0);
   const withinBudget = budgetDifference >= 0;
-  const showIllustrativeProbability = withinBudget && !saved;
+  // 86% belongs to the example plan only. Any change to the plan or the day needs a new estimate.
+  const showIllustrativeProbability = withinBudget && !saved && !planEdited;
   const destinationPocket = pockets.find(pocket => pocket.id === savingState.pocketId);
   const hasOverlay = showInfo || showSuccess || showPockets || showPocketOverview;
 
@@ -166,7 +173,7 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
 
   const openPockets = () => {
     if (saved || savingOffer <= 0) return;
-    dispatchSaving({ type: 'open' });
+    dispatchSaving({ type: 'open', amount: savingOffer });
   };
 
   const cancelPocketSelection = () => {
@@ -296,7 +303,7 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
                     </div>
                     <div className={styles.budgetGrid}>
                       <div><span>ยอดใช้ได้วันนี้</span><strong>฿{summary.budget} <small>/ วัน</small></strong></div>
-                      <div><span>คาดว่าเงินเข้าใน</span><strong>{demoFinance.daysUntilIncome} <small>วัน</small></strong></div>
+                      <div><span>คาดว่าเงินเข้าใน</span><strong>{forecast.daysUntilIncome} <small>วัน</small></strong></div>
                     </div>
                     <div className={styles.runway}>
                       <div className={styles.runwayHeading}><strong>โอกาสเงินพอใน {demoFinance.daysIncludingToday} วัน</strong><span><i />{showIllustrativeProbability ? `${demoFinance.illustrativeProbability}%*` : 'รอประเมินใหม่*'}</span></div>
@@ -310,8 +317,8 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
                     </div>
                     <dl className={styles.savingsBreakdown}>
                       <div><dt>ยอดใช้ได้วันนี้</dt><dd>฿{formatPocketBalance(dailyBudget)}</dd></div>
-                      <div><dt>{saved ? `ออมเข้า ${destinationPocket?.name} แล้ว` : 'ออมตอนนี้'}</dt><dd className={skipped ? undefined : styles.plusAmount}>฿{formatPocketBalance(skipped ? 0 : savingOffer)}</dd></div>
-                      <div className={styles.breakdownTotal}><dt>{saved ? 'ใช้ได้วันนี้หลังออม' : skipped ? 'ใช้ได้วันนี้' : 'ถ้าออม ใช้ได้วันนี้'}</dt><dd>฿{formatPocketBalance(skipped ? dailyBudget : dailyBudget - savingOffer)}</dd></div>
+                      <div><dt>{saved ? `ออมเข้า ${destinationPocket?.name} แล้ว` : 'ออมตอนนี้'}</dt><dd className={skipped ? undefined : styles.plusAmount}>฿{formatPocketBalance(skipped ? 0 : saved ? allocated : savingOffer)}</dd></div>
+                      <div className={styles.breakdownTotal}><dt>{saved ? 'ใช้ได้วันนี้หลังออม' : skipped ? 'ใช้ได้วันนี้' : 'ถ้าออม ใช้ได้วันนี้'}</dt><dd>฿{formatPocketBalance(skipped ? dailyBudget : dailyBudget - (saved ? allocated : savingOffer))}</dd></div>
                     </dl>
                     {saved || savingOffer <= 0 ? <button ref={saveTrigger} type="button" className={styles.saveButton} disabled aria-disabled>
                       {saved ? <><CheckCircle2 /> ออมแล้ว ฿{allocated}</> : <>พักออมวันนี้</>}
@@ -377,7 +384,8 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
           </main>
         </div>
 
-        {isFinanceView && <MyFinance accountBalance={accountBalance} pocketSnapshots={pockets.map(pocket => ({ id: pocket.id, name: pocket.name, balance: pocketBalance(pocket.id, savingState, spentToday) }))} onClose={closeFinance} />}
+        {isFinanceView && <MyFinance accountBalance={accountBalance} pocketSnapshots={pockets.map(pocket => ({ id: pocket.id, name: pocket.name, balance: pocketBalance(pocket.id, savingState, spentToday) }))}
+          plan={plan} planEdited={planEdited} savedToday={allocated} spentToday={spentToday} showProbability={showIllustrativeProbability} onSavePlan={setPlan} onClose={closeFinance} />}
         <nav className={styles.dock} hidden={isFinanceView} inert={hasOverlay} aria-label="เมนูหลักในหน้าจอจำลอง">
           <button type="button" className={styles.activeNav} onClick={() => onSelectStep?.(0)}><Home fill="currentColor"/><span>หน้าแรก</span></button>
           <div className={styles.navItem}><ShoppingBasket/><span>market</span></div>
@@ -415,7 +423,7 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
                 <div><dt>ค่าห้องที่กันไว้</dt><dd>฿{formatDemoAmount(demoFinance.fixedBills)}</dd></div>
                 <div><dt>เงินสำรองขั้นต่ำ*</dt><dd>฿{formatDemoAmount(demoFinance.hardFloor)}</dd></div>
                 <div><dt>ค่าจ้างที่รอเข้า*</dt><dd>฿{formatDemoAmount(demoFinance.pendingIncome)}</dd></div>
-                <div><dt>วันรับเงินที่คาด*</dt><dd>อีก {demoFinance.daysUntilIncome} วัน</dd></div>
+                <div><dt>วันรับเงินที่คาด*</dt><dd>อีก {forecast.daysUntilIncome} วัน</dd></div>
                 <div><dt>ยอดใช้ได้วันนี้</dt><dd>฿{summary.budget}</dd></div>
                 {saved && <div><dt>ออมก่อนใช้วันนี้</dt><dd>฿{allocated}</dd></div>}
                 <div><dt>ใช้ไปแล้ววันนี้</dt><dd>฿{spentToday}</dd></div>

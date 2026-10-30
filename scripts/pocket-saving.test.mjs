@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import {initialSavingState, pocketSavingReducer, pocketBalance, pockets, dailySummary, savedAmount, savingOffer, suggestSaving} from '../src/lib/pocket-saving.ts';
+import {initialSavingState, pocketSavingReducer, pocketBalance, pockets, dailySummary, savedAmount, savingOffer, suggestSaving, dailyBudget, defaultPlan, forecastPlan, planSavingOffer} from '../src/lib/pocket-saving.ts';
 const total = state => pockets.reduce((sum,pocket)=>sum+pocketBalance(pocket.id,state),0);
 const open = (state=initialSavingState) => pocketSavingReducer(state,{type:'open'});
 
@@ -67,4 +67,34 @@ test('invalid confirmations and inputs do not initiate saving',()=>{
   for(const pocketId of ['main',null,'unknown']) assert.equal(pocketSavingReducer(choosing,{type:'confirm',pocketId}),choosing);
   for(const budget of [-1,0,NaN,Infinity]) assert.equal(suggestSaving(budget),0);
   assert.equal(pocketSavingReducer(choosing,{type:'skip'}),choosing);
+});
+test('the example plan gives the shared ฿280 budget: ฿4,500 over 12 days plus a 4-day delay buffer',()=>{
+  const forecast=forecastPlan(defaultPlan);
+  assert.equal(dailyBudget,280);
+  assert.equal(forecast.budget,280);
+  assert.equal(forecast.daysUntilIncome,12);
+  assert.equal(forecast.days,16);
+  assert.equal(forecast.available,4500);
+  assert.equal(forecast.unreservedBills,0); // rent is already in the bills Pocket, the guessed bill is not confirmed
+  assert.equal(planSavingOffer(defaultPlan),savingOffer);
+});
+test('user corrections change the budget, and uncertain or unconfirmed money does not count',()=>{
+  const withBills=change=>({...defaultPlan,bills:defaultPlan.bills.map(bill=>({...bill,...change(bill)}))});
+  assert.equal(forecastPlan(withBills(bill=>bill.id==='phone'?{guessed:false}:{})).budget,250);
+  assert.equal(forecastPlan(withBills(bill=>bill.id==='rent'?{amount:3800}:{})).budget,260); // only the ฿300 above the reserve
+  assert.equal(forecastPlan(withBills(bill=>bill.id==='phone'?{guessed:false,repeat:'yearly',dueMonth:3}:{})).budget,280); // not due in this window
+  assert.equal(forecastPlan({...defaultPlan,incomeDay:15}).budget,250);
+  assert.equal(forecastPlan({...defaultPlan,extraIncome:{...defaultPlan.extraIncome,certain:true}}).budget,370);
+  // A large certain payment cannot be spent before it arrives.
+  const early=forecastPlan({...defaultPlan,extraIncome:{...defaultPlan.extraIncome,certain:true,amount:20000}});
+  assert.equal(early.bindingDay,7);
+  assert.equal(early.budget,640);
+});
+test('the saving goal sets the offer at about 10, 15 or 20% of the budget',()=>{
+  assert.deepEqual(['low','medium','high'].map(goal=>planSavingOffer({...defaultPlan,goal})),[30,40,50]);
+  // Certain extra income raises the budget and also the cash the offer is checked against.
+  assert.equal(planSavingOffer({...defaultPlan,goal:'high',extraIncome:{...defaultPlan.extraIncome,certain:true}}),70);
+  const choosing=pocketSavingReducer(initialSavingState,{type:'open',amount:40});
+  assert.equal(choosing.amount,40);
+  assert.equal(pocketSavingReducer(initialSavingState,{type:'open',amount:0}),initialSavingState);
 });
