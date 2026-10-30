@@ -52,3 +52,9 @@ __pycache__/
 pitch
 # ML outputs (regenerate with: cd ml && .venv/bin/python run.py)
 ml/output/
+
+# Personal Claude Code settings
+.claude/settings.local.json
+
+# Demo screenshots (regenerate with: npm run screenshots)
+screenshots/

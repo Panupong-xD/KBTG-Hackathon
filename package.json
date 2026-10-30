@@ -11,7 +11,10 @@
     "build": "next build",
     "start": "next start",
     "test": "node --test scripts/*.test.mjs",
-    "typecheck": "tsc --noEmit --incremental false"
+    "typecheck": "tsc --noEmit --incremental false",
+    "check": "npm run typecheck && npm test",
+    "check:ml": "cd ml && .venv/bin/python -m unittest discover -s tests",
+    "screenshots": "node scripts/demo-screenshots.mjs"
   },
   "keywords": [],
   "author": "",
