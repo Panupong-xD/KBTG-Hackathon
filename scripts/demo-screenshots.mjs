@@ -26,8 +26,8 @@ const scenes = [
   { name: '06-my-finance', steps: [{ text: 'การเงินของฉัน' }] },
   { name: '07-account-summary', steps: [{ text: 'การเงินของฉัน' }, { text: 'ดูที่มาของยอด' }] },
   { name: '08-account-timeline', steps: [{ text: 'การเงินของฉัน' }, { text: 'ดูที่มาของยอด' }, { scroll: '[role="dialog"] ol' }] },
-  { name: '09-customize-income', steps: [{ text: 'การเงินของฉัน' }, { text: 'อัปเดตวันเงินเข้า' }] },
-  { name: '10-customize-preview', steps: [{ text: 'การเงินของฉัน' }, { text: 'แก้เอง' }, { text: 'ยืนยัน' }, { text: 'กลาง' }, { scroll: '[role="dialog"] footer' }] },
+  { name: '09-customize-income', steps: [{ text: 'การเงินของฉัน' }, { text: 'ปรับวันเงินเข้า' }] },
+  { name: '10-customize-preview', steps: [{ text: 'การเงินของฉัน' }, { text: 'แก้ข้อมูล' }, { text: 'ใช่ ยืนยัน' }, { text: 'กลาง' }, { scroll: '[role="dialog"] footer' }] },
 ];
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));

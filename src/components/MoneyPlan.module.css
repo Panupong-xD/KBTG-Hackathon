@@ -18,6 +18,7 @@
 .cardActions button { display: flex; align-items: center; justify-content: center; gap: 2px; flex: 1; min-height: 30px; padding: 3px 8px; border: 1px solid #45c2b2; border-radius: 99px; background: transparent; color: #45c2b2; font-size: 10.5px; line-height: 1.3; white-space: nowrap; }
 .cardActions button:first-child { background: #45c2b2; color: #062a34; font-weight: 600; }
 .cardActions svg { width: 13px; height: 13px; flex-shrink: 0; }
+.cardActions button:last-child { gap: 4px; }
 
 .roundCard { margin-top: 3.7cqw; padding: 3.2cqw; border-radius: 2cqw; background: var(--phone-surface); }
 .roundCard .cardHeading button { display: flex; align-items: center; gap: 2px; min-height: 30px; padding: 0; border: 0; background: transparent; color: #45c2b2; font-size: 3cqw; white-space: nowrap; }
@@ -30,7 +31,8 @@
 .roundStats .late dd { color: #f3c45a; }
 .roundStats .good dd { color: #45c2b2; }
 .roundNudge { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 2.4cqw; padding-top: 2.2cqw; border-top: 1px solid #b0ccd21f; color: #b3c4cb; font-size: 10px; line-height: 1.5; }
-.roundNudge > span { display: flex; align-items: center; gap: 4px; }
+.roundNudge > span { display: flex; align-items: center; gap: 6px; }
+.roundNudge > span > span { line-height: 1.45; }
 .roundNudge > span svg { color: #f3c45a; flex-shrink: 0; }
 .roundNudge button { display: flex; align-items: center; gap: 2px; flex-shrink: 0; min-height: 28px; padding: 2px 10px; border: 1px solid #f3c45a; border-radius: 99px; background: transparent; color: #f3c45a; font-size: 10px; white-space: nowrap; }
 .roundNudge button svg { width: 12px; height: 12px; }
@@ -65,8 +67,11 @@
 .rowMain > div:first-child > span { color: #a5b4ba; font-size: 2.75cqw; line-height: 1.5; }
 .editButton { flex-shrink: 0; min-width: 44px; min-height: 28px; padding: 2px 10px; border: 1px solid #c9d8dd; border-radius: 99px; background: transparent; color: #e7eef1; font-size: 10.5px; }
 .editButton[aria-expanded='true'] { border-color: #45c2b2; color: #45c2b2; }
-.guessActions { display: flex; flex-direction: column; align-items: center; gap: 1px; flex-shrink: 0; }
-.textButton { min-height: 24px; padding: 0 6px; border: 0; background: transparent; color: #a5b4ba; font-size: 10px; text-decoration: underline; }
+.groupHint { margin: -0.6cqw 0 1.6cqw; color: #9fb0b7; font-size: 2.65cqw; line-height: 1.5; }
+.guessPrompt { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 2.2cqw; padding: 2cqw 2.4cqw; border-radius: 1.6cqw; background: #f3c45a14; }
+.guessPrompt p { margin: 0; color: #f6dc9c; font-size: 2.75cqw; line-height: 1.45; }
+.guessPrompt > div { display: flex; gap: 5px; flex-shrink: 0; }
+.confirmButton { min-height: 28px; padding: 2px 11px; border: 0; border-radius: 99px; background: #f3c45a; color: #3d2c00; font-size: 10.5px; font-weight: 600; white-space: nowrap; }
 .choice { display: flex; gap: 5px; margin-top: 2cqw; }
 .choice button { min-width: 15cqw; min-height: 28px; padding: 2px 12px; border: 1px solid #c9d8dd99; border-radius: 99px; background: transparent; color: #dbe5e9; font-size: 10.5px; }
 .choice button[aria-pressed='true'] { border-color: #7fe0d2; background: #7fe0d2; color: #062a34; font-weight: 600; }
@@ -89,11 +94,17 @@
 .resetButton svg { width: 13px; height: 13px; }
 .footnote { margin: 1cqw 0 0; color: #8fa2aa; font-size: 9.5px; line-height: 1.6; text-align: center; }
 
-.preview { padding: 2.2cqw 3cqw; border: 1.5px dashed #f3c45a; border-radius: 2cqw; background: #f3c45a14; }
-.preview > span { color: #f3c45a; font-size: 9.5px; font-weight: 600; }
-.preview p { margin: 2px 0 0; color: #d4dfe3; font-size: 2.85cqw; line-height: 1.55; }
-.preview p strong { color: #ffffff; font-size: 3.4cqw; }
-.preview em { color: #f3c45a; font-style: normal; }
+.preview { padding: 2.2cqw 3cqw; border: 1px solid #45c2b233; border-radius: 2cqw; background: #ffffff0a; }
+.previewChanged { border-color: #f3c45a80; background: #f3c45a12; }
+.previewMain { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.previewMain > span { color: #c4d1d6; font-size: 2.9cqw; }
+.previewMain p { display: flex; align-items: baseline; gap: 6px; margin: 0; }
+.previewMain s { color: #8fa2aa; font-size: 3cqw; }
+.previewMain strong { color: #ffffff; font-size: 5cqw; font-weight: 700; line-height: 1.2; }
+.previewMain b { padding: 0 6px; border-radius: 99px; font-size: 2.6cqw; font-weight: 600; line-height: 1.6; }
+.previewMain b.up { background: #7fe0d226; color: #7fe0d2; }
+.previewMain b.down { background: #f59f8b26; color: #f59f8b; }
+.previewNote { margin: 1cqw 0 0; color: #a9bcc4; font-size: 2.65cqw; line-height: 1.5; }
 .up { color: #7fe0d2; }
 .down { color: #f59f8b; }
 .primaryButton { width: 100%; min-height: 38px; margin-top: 2.4cqw; border: 0; border-radius: 99px; background: #45c2b2; color: #062a34; font-size: 12.5px; font-weight: 600; }
@@ -108,7 +119,7 @@
 .todayStrip > div:nth-child(2) strong { color: #f59f8b; }
 .todayStrip > div:nth-child(3) strong { color: #7fe0d2; }
 .sourceCard, .timelineCard { margin-top: 3cqw; padding: 3.2cqw; border-radius: 2cqw; background: var(--phone-surface); }
-.sourceCard { border: 1.5px dashed #f3c45a99; }
+.sourceCard { border: 1px solid #45c2b240; }
 .sourceCard h5, .timelineCard h5 { margin: 0; font-size: 3.6cqw; font-weight: 600; }
 .sourceLead { margin: 2px 0 0; color: #a5b4ba; font-size: 2.75cqw; line-height: 1.55; }
 .stack { display: flex; gap: 2px; height: 12px; margin-top: 2.6cqw; border-radius: 4px; overflow: hidden; background: #ffffff10; }
@@ -121,6 +132,15 @@
 .stackLegend span { display: flex; align-items: center; gap: 4px; }
 .stackLegend i { width: 7px; height: 7px; border-radius: 2px; }
 .sourceRows { margin: 2.4cqw 0 0; }
+.equation { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; align-items: stretch; gap: 4px; margin-top: 2.6cqw; }
+.equation > div { display: flex; flex-direction: column; justify-content: center; gap: 2px; min-width: 0; padding: 2cqw 1.4cqw; border-radius: 1.6cqw; background: #ffffff0d; text-align: center; }
+.equation strong { color: #ffffff; font-size: 3.8cqw; font-weight: 600; line-height: 1.25; white-space: nowrap; }
+.equation span { color: #9fb0b7; font-size: 2.3cqw; line-height: 1.35; }
+.equation > b { align-self: center; color: #7fe0d2; font-size: 4cqw; font-weight: 400; }
+.equation .equationResult { background: #45c2b2; }
+.equation .equationResult strong { color: #062a34; font-size: 4.4cqw; font-weight: 700; }
+.equation .equationResult span { color: #0b4450; }
+.zeroRow dd { color: #6f858c !important; }
 .sourceRows > div { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; padding: 1.5cqw 0; border-bottom: 1px solid #b0ccd21a; font-size: 3cqw; }
 .sourceRows dt { display: flex; flex-direction: column; color: #d4dfe3; }
 .sourceRows dt small { color: #8fa2aa; font-size: 2.5cqw; line-height: 1.5; }
@@ -131,6 +151,7 @@
 .sourceTotal dd { color: #7fe0d2 !important; font-size: 4.2cqw; font-weight: 700 !important; }
 .sourceNote { margin: 1cqw 0 0; color: #8fa2aa; font-size: 9.5px; line-height: 1.6; }
 .outlineButton { display: flex; align-items: center; justify-content: center; gap: 3px; width: 100%; min-height: 32px; margin-top: 2.6cqw; border: 1px solid #45c2b2; border-radius: 99px; background: transparent; color: #45c2b2; font-size: 10.5px; }
+.outlineButton { gap: 5px; }
 .outlineButton svg { width: 13px; height: 13px; }
 
 .dayStrip { display: grid; grid-template-columns: repeat(30, 1fr); gap: 1.5px; margin-top: 3cqw; }
@@ -162,6 +183,7 @@
 .events li strong { color: #e7eef1; font-size: 3cqw; font-weight: 600; line-height: 1.45; }
 .events li > div > span { color: #8fa2aa; font-size: 2.6cqw; line-height: 1.5; }
 .events li em { color: inherit; font-size: 3cqw; font-style: normal; font-weight: 600; white-space: nowrap; }
-.events li.muted em { text-decoration: line-through dotted; }
+.events li.notCounted strong, .events li.notCounted em { opacity: .55; }
+.events li.notCounted em::after { content: ' ไม่นับ'; font-size: 2.3cqw; font-weight: 400; }
 
 @media (prefers-reduced-motion: reduce) { .planPage { animation: none; } }

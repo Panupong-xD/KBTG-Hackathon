@@ -110,26 +110,26 @@ export default function MyFinance({ accountBalance, pocketSnapshots, plan, planE
 
         <div className={styles.cards}>
         <section className={planStyles.todayCard} aria-labelledby={`${id}-today-title`}>
-          <div className={planStyles.cardHeading}><h4 id={`${id}-today-title`}>ยอดใช้ได้วันนี้</h4><span className={`${planStyles.sourceChip} ${planEdited ? planStyles.edited : ''}`}>{planEdited ? 'ปรับตามข้อมูลที่คุณแก้' : 'ระบบพยากรณ์ให้'}</span></div>
+          <div className={planStyles.cardHeading}><h4 id={`${id}-today-title`}>ยอดใช้ได้วันนี้</h4><span className={`${planStyles.sourceChip} ${planEdited ? planStyles.edited : ''}`}>{planEdited ? 'ปรับตามที่คุณแก้' : 'ระบบประเมินให้'}</span></div>
           <p className={planStyles.todayAmount}>฿{formatDemoAmount(budgetToday)}<small>/ วัน · โดยประมาณ</small></p>
-          <p className={planStyles.todayMeta}>{savedToday > 0 ? `ออมก่อนใช้แล้ว ฿${savedToday} จาก ฿${formatDemoAmount(forecast.budget)} · ` : ''}ค่าจ้างคาดเข้า {formatDemoDay(plan.incomeDay)} (อีก {forecast.daysUntilIncome} วัน)</p>
+          <p className={planStyles.todayMeta}>{savedToday > 0 ? `ออมแล้ว ฿${savedToday} จาก ฿${formatDemoAmount(forecast.budget)} · ` : ''}เผื่อค่าจ้างเข้าช้าแล้ว · คาดเข้า {formatDemoDay(plan.incomeDay)} (อีก {forecast.daysUntilIncome} วัน)</p>
           <div className={planStyles.probability}>
             <div className={planStyles.probabilityHeading}><span>โอกาสเงินพอ {demoFinance.daysIncludingToday} วัน</span>{showProbability ? <strong>{demoFinance.illustrativeProbability}%*</strong> : <em>รอประเมินใหม่*</em>}</div>
             <div className={planStyles.meter} role={showProbability ? 'meter' : 'img'} aria-label={showProbability ? `โอกาสเงินพอใน ${demoFinance.daysIncludingToday} วัน ค่าตัวอย่าง` : 'โอกาสเงินพอ ต้องประเมินใหม่หลังแผนเปลี่ยน'} aria-valuemin={showProbability ? 0 : undefined} aria-valuemax={showProbability ? 100 : undefined} aria-valuenow={showProbability ? demoFinance.illustrativeProbability : undefined}><span style={{ width: showProbability ? `${demoFinance.illustrativeProbability}%` : '0%' }} /></div>
           </div>
           <div className={planStyles.cardActions}>
             <button type="button" onClick={event => openPage({ kind: 'account' }, event.currentTarget)} aria-haspopup="dialog">ดูที่มาของยอด <ChevronRight /></button>
-            <button type="button" onClick={event => openPage({ kind: 'customize' }, event.currentTarget)} aria-haspopup="dialog">ไม่ตรงชีวิตจริง? แก้เอง</button>
+            <button type="button" onClick={event => openPage({ kind: 'customize' }, event.currentTarget)} aria-haspopup="dialog"><SquarePen /> แก้ข้อมูล</button>
           </div>
         </section>
         <section className={planStyles.roundCard} aria-labelledby={`${id}-round-title`}>
-          <div className={planStyles.cardHeading}><div><h4 id={`${id}-round-title`}>สรุปรอบ{round.month}</h4><p>ข้อมูลจำลอง</p></div><button ref={summaryTrigger} type="button" onClick={() => setShowSummary(true)} aria-label="ดูสรุปรอบเดือน" aria-haspopup="dialog">ดูสรุป <ChevronRight /></button></div>
+          <div className={planStyles.cardHeading}><div><h4 id={`${id}-round-title`}>สรุปรอบที่แล้ว</h4><p>{round.period} · ข้อมูลจำลอง</p></div><button ref={summaryTrigger} type="button" onClick={() => setShowSummary(true)} aria-label="ดูสรุปรอบที่แล้วฉบับเต็ม" aria-haspopup="dialog">ดูทั้งหมด <ChevronRight /></button></div>
           <dl className={planStyles.roundStats}>
-            <div className={planStyles.good}><dt>ใช้ไม่เกินยอด</dt><dd>{round.daysWithinPlan}<small>/{round.days} วัน</small></dd></div>
+            <div className={planStyles.good}><dt>ใช้ตามแผน</dt><dd>{round.daysWithinPlan}<small>/{round.days} วัน</small></dd></div>
             <div className={planStyles.late}><dt>ค่าจ้างเข้าช้า</dt><dd>{round.incomeDelayDays}<small> วัน</small></dd></div>
-            <div><dt>เงินสะสมยกมา</dt><dd>฿{formatDemoAmount(round.carriedAmount)}</dd></div>
+            <div><dt>ยกมารอบนี้</dt><dd>฿{formatDemoAmount(round.carriedAmount)}</dd></div>
           </dl>
-          <div className={planStyles.roundNudge}><span><Clock3 size={11} aria-hidden="true" /> เงินเข้าไม่ตรงวันเดิม?</span><button type="button" onClick={event => openPage({ kind: 'customize', focus: 'income' }, event.currentTarget)} aria-haspopup="dialog">อัปเดตวันเงินเข้า <ChevronRight /></button></div>
+          <div className={planStyles.roundNudge}><span><Clock3 size={13} aria-hidden="true" /><span>รอบก่อนค่าจ้างช้า {round.incomeDelayDays} วัน<br />ยังเข้าวันที่ {plan.incomeDay} อยู่ไหม?</span></span><button type="button" onClick={event => openPage({ kind: 'customize', focus: 'income' }, event.currentTarget)} aria-haspopup="dialog">ปรับวันเงินเข้า <ChevronRight /></button></div>
         </section>
         <section id={`${id}-assets`} ref={element => { sectionRefs.current.assets = element; }} className={`${styles.card} ${styles.assetsCard}`} aria-labelledby={`${id}-assets-title`}>
           <div className={styles.sectionHeading}><h4 id={`${id}-assets-title`}>สินทรัพย์ของฉัน</h4></div>
