@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createTeamSession, DEMO_REOPEN_TIMESTAMP, isDemoPaused, passwordMatches, readTeamPassword, sameOriginPost, TEAM_COOKIE, TEAM_SESSION_SECONDS, teamPassword, validTeamSession } from '@/lib/demo-access';
+import { createTeamSession, isDemoPaused, passwordMatches, readTeamPassword, sameOriginPost, TEAM_COOKIE, teamPassword, teamSessionExpiry, validTeamSession } from '@/lib/demo-access';
 import { PRIVATE_HEADERS, teamGateResponse } from '@/lib/demo-gate';
 import { loginClientKey, loginLimiter } from '@/lib/login-limiter';
 
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
     secure: true,
     sameSite: 'strict',
     path: '/',
-    maxAge: Math.min(TEAM_SESSION_SECONDS, Math.floor((DEMO_REOPEN_TIMESTAMP - now) / 1000)),
+    maxAge: teamSessionExpiry(now) - Math.floor(now / 1000),
   });
   return response;
 }

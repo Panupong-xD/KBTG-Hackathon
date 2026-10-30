@@ -1,13 +1,19 @@
-import { DEMO_REOPEN_TIMESTAMP } from './demo-schedule.mjs';
+import { DEMO_CLOSE_TIMESTAMP, DEMO_REOPEN_TIMESTAMP } from './demo-schedule.mjs';
 import { createHash, createHmac, timingSafeEqual } from 'node:crypto';
 
 // Server-only access gate. Never import this module into a client component.
-export { DEMO_REOPEN_AT, DEMO_REOPEN_TIMESTAMP, DEMO_REOPEN_LABEL } from './demo-schedule.mjs';
+export { DEMO_CLOSE_AT, DEMO_CLOSE_TIMESTAMP, DEMO_LAST_DAY_LABEL, DEMO_REOPEN_AT, DEMO_REOPEN_TIMESTAMP, DEMO_REOPEN_LABEL, isDemoEnded } from './demo-schedule.mjs';
 export const TEAM_COOKIE = '__Host-runway_team';
 export const TEAM_SESSION_SECONDS = 8 * 60 * 60;
 
 export function isDemoPaused(now = Date.now()) {
-  return !Number.isFinite(now) || now < DEMO_REOPEN_TIMESTAMP;
+  return !Number.isFinite(now) || now < DEMO_REOPEN_TIMESTAMP || now >= DEMO_CLOSE_TIMESTAMP;
+}
+
+// Unix seconds when a session issued at `now` ends: eight hours, cut short at reopening.
+export function teamSessionExpiry(now: number) {
+  const expires = Math.floor(now / 1000) + TEAM_SESSION_SECONDS;
+  return now < DEMO_REOPEN_TIMESTAMP ? Math.min(expires, DEMO_REOPEN_TIMESTAMP / 1000) : expires;
 }
 
 // The team chose an easy-to-remember password for this temporary preview; no fallback.
@@ -28,8 +34,7 @@ function signature(payload: string, password: string) {
 
 export function createTeamSession(password: string, now = Date.now()) {
   if (!teamPassword(password) || !Number.isFinite(now) || !isDemoPaused(now)) return undefined;
-  const expires = Math.min(Math.floor(now / 1000) + TEAM_SESSION_SECONDS, DEMO_REOPEN_TIMESTAMP / 1000);
-  const payload = `v1.${expires}`;
+  const payload = `v1.${teamSessionExpiry(now)}`;
   return `${payload}.${signature(payload, password)}`;
 }
 
@@ -39,7 +44,9 @@ export function validTeamSession(token: string | undefined, password: string | u
   if (!match) return false;
   const expires = Number(match[1]);
   const seconds = Math.floor(now / 1000);
-  if (expires <= seconds || expires > seconds + TEAM_SESSION_SECONDS || expires > DEMO_REOPEN_TIMESTAMP / 1000) return false;
+  if (expires <= seconds || expires > seconds + TEAM_SESSION_SECONDS) return false;
+  // No session is ever issued during the public window, so none can end inside it.
+  if (expires > DEMO_REOPEN_TIMESTAMP / 1000 && expires <= DEMO_CLOSE_TIMESTAMP / 1000) return false;
   const expected = signature(`v1.${expires}`, password);
   return timingSafeEqual(Buffer.from(match[2]), Buffer.from(expected));
 }

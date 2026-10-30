@@ -18,9 +18,9 @@ The updated lockfile pins the framework to **16.4.3** and the image-processing p
 
 ## Access restriction and public content
 
-Unauthenticated production requests are blocked server-side until **7 November 2026 at 00:00 Asia/Bangkok**. The restriction covers pages, RSC/data requests, bundles, images and direct public-file paths. The self-contained pause page uses HTTP 503 and includes a team login form only when the server password is configured. Missing/invalid configuration fails closed. Development mode remains usable locally.
+Unauthenticated production requests are blocked server-side until **7 November 2026 at 00:00 Asia/Bangkok** and again from **8 November 2026 at 00:00 Asia/Bangkok** (added 30 October), so the site is public on pitch day only. After closing, the pause page says the demo has ended and team login remains available. The restriction covers pages, RSC/data requests, bundles, images and direct public-file paths. The self-contained pause page uses HTTP 503 and includes a team login form only when the server password is configured. Missing/invalid configuration fails closed. Development mode remains usable locally.
 
-The password is checked on the server with a constant-time digest comparison. Login accepts only same-origin, bounded URL-encoded POST bodies; credentials are never reflected in HTML or application logs. Sessions are HMAC-signed with domain separation, expire after eight hours or at reopening, and use `HttpOnly`, `Secure`, `SameSite=Strict`, `Path=/` and the `__Host-` cookie prefix. Password rotation invalidates sessions after redeployment. Logout is a same-origin POST that clears the cookie; it does not revoke copies of an already issued cookie before expiry. Authenticated and unauthenticated restricted responses disable browser/CDN caching. The form's CSP restricts submission to the same origin.
+The password is checked on the server with a constant-time digest comparison. Login accepts only same-origin, bounded URL-encoded POST bodies; credentials are never reflected in HTML or application logs. Sessions are HMAC-signed with domain separation, expire after eight hours or at reopening (whichever comes first), and use `HttpOnly`, `Secure`, `SameSite=Strict`, `Path=/` and the `__Host-` cookie prefix. Password rotation invalidates sessions after redeployment. Logout is a same-origin POST that clears the cookie; it does not revoke copies of an already issued cookie before expiry. Authenticated and unauthenticated restricted responses disable browser/CDN caching. The form's CSP restricts submission to the same origin.
 
 This is a temporary shared-password preview gate, with no database or distributed brute-force limiter. The project owner chose a memorable password with an eight-character minimum (accepted length 8–128; ordinary symbols are supported, with no control characters or surrounding whitespace). It is also the session-signing secret. A short predictable password can be guessed; signed cookies do not prevent that. Do not reuse a personal password. This gate is not a customer identity system. The production domain is now `k-runway.vercel.app`.
 
@@ -32,7 +32,7 @@ The Git repository is public. Restricting the website does not restrict the repo
 
 - TypeScript validation and the production build.
 - Existing saving tests: cancellation, confirmation, duplicate confirmation, balance conservation, accumulation and liquidity limits.
-- Reopening boundary tests immediately before, exactly at, and after midnight in Bangkok; invalid-clock values fail closed.
+- Reopening and closing boundary tests immediately before, exactly at, and after midnight in Bangkok; invalid-clock values fail closed.
 - Team-access tests for missing/invalid configuration, incorrect passwords, forged/expired sessions, password rotation, cross-origin requests and malformed/oversized bodies.
 - HTTP checks for the page, assets, RSC requests and arbitrary file paths during the production pause, plus generic metadata and interactive saving in local development.
 - A second scan of the rebuilt browser assets and a follow-up npm audit.

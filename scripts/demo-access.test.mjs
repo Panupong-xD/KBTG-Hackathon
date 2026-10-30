@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { randomBytes } from 'node:crypto';
-import { createTeamSession, DEMO_REOPEN_LABEL, DEMO_REOPEN_TIMESTAMP, isDemoPaused, passwordMatches, readTeamPassword, sameOriginPost, TEAM_SESSION_SECONDS, teamPassword, validTeamSession } from '../src/lib/demo-access.ts';
+import { createTeamSession, DEMO_CLOSE_TIMESTAMP, DEMO_LAST_DAY_LABEL, DEMO_REOPEN_LABEL, DEMO_REOPEN_TIMESTAMP, isDemoEnded, isDemoPaused, passwordMatches, readTeamPassword, sameOriginPost, TEAM_SESSION_SECONDS, teamPassword, validTeamSession } from '../src/lib/demo-access.ts';
 import { teamGateResponse } from '../src/lib/demo-gate.ts';
 
 const password = randomBytes(6).toString('base64url');
@@ -15,15 +15,45 @@ test('the production pause ends at midnight on 7 November in Bangkok', () => {
   assert.equal(isDemoPaused(DEMO_REOPEN_TIMESTAMP + 1), false);
 });
 
+test('the demo closes again at midnight on 8 November in Bangkok', () => {
+  assert.equal(new Date(DEMO_CLOSE_TIMESTAMP).toISOString(), '2026-11-07T17:00:00.000Z');
+  assert.equal(isDemoPaused(DEMO_CLOSE_TIMESTAMP - 1), false);
+  assert.equal(isDemoPaused(DEMO_CLOSE_TIMESTAMP), true);
+  assert.equal(isDemoPaused(Date.parse('2026-12-01T12:00:00+07:00')), true);
+  assert.equal(isDemoEnded(DEMO_CLOSE_TIMESTAMP - 1), false);
+  assert.equal(isDemoEnded(DEMO_CLOSE_TIMESTAMP), true);
+});
+
 test('an invalid clock cannot open the demo', () => {
   assert.equal(isDemoPaused(NaN), true);
   assert.equal(isDemoPaused(Infinity), true);
+  assert.equal(isDemoPaused(-Infinity), true);
 });
 
 test('the gate date text follows the same reopening timestamp in Bangkok time', async () => {
   assert.equal(DEMO_REOPEN_LABEL, '7 พฤศจิกายน 2569');
-  const html = await teamGateResponse({ ready: true }).text();
+  const html = await teamGateResponse({ ready: true, ended: false }).text();
   assert.equal(html.split(DEMO_REOPEN_LABEL).length - 1, 3);
+  assert.match(html, /ปิดการเข้าชมชั่วคราว/);
+});
+
+test('after closing, the gate says the demo has ended and keeps the team login', async () => {
+  assert.equal(DEMO_LAST_DAY_LABEL, '7 พฤศจิกายน 2569');
+  const html = await teamGateResponse({ ready: true, ended: true }).text();
+  assert.match(html, /<h1>ปิดการเข้าชมแล้ว<\/h1>/);
+  assert.doesNotMatch(html, /เปิดให้เข้าชมอีกครั้ง/);
+  assert.match(html, /action="\/team-access"/);
+});
+
+test('team sessions work again after closing, for eight hours, and never end inside the public window', () => {
+  const after = DEMO_CLOSE_TIMESTAMP + 60_000;
+  const token = createTeamSession(password, after);
+  assert.equal(validTeamSession(token, password, after), true);
+  assert.equal(validTeamSession(token, password, after + TEAM_SESSION_SECONDS * 1000 - 1), true);
+  assert.equal(validTeamSession(token, password, after + TEAM_SESSION_SECONDS * 1000), false);
+  assert.equal(createTeamSession(password, DEMO_CLOSE_TIMESTAMP - 1), undefined);
+  const beforeReopen = createTeamSession(password, DEMO_REOPEN_TIMESTAMP - 1000);
+  assert.equal(beforeReopen.split('.')[1], String(DEMO_REOPEN_TIMESTAMP / 1000));
 });
 
 test('missing, malformed and short environment passwords fail closed', () => {
