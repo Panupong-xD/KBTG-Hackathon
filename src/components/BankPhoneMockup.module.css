@@ -234,3 +234,31 @@
 @media (prefers-reduced-motion: reduce) { .screen *, .screen *::before, .screen *::after { transition:none !important; } }
 
 .modal .saveButton { margin-top: 12px; }
+
+.infoModal { text-align: left; padding: 5cqw 4cqw 4cqw; background: #f6f8f7; }
+.infoHeader { display: flex; align-items: center; gap: 2.6cqw; }
+.infoHeader h4 { margin: 0; font-size: 4.2cqw; line-height: 1.35; }
+.infoModal .infoHeader p { font-size: clamp(11px, 3.1cqw, 13px); line-height: 1.4; }
+.infoBadge { flex: none; display: grid; place-items: center; width: 9cqw; height: 9cqw; border-radius: 50%; background: #e2f4ef; color: #0b7f6f; }
+.infoBadge svg { width: 5cqw; height: 5cqw; }
+.infoHero { margin: 3.5cqw 0 3cqw; padding: 3.6cqw 4cqw; border-radius: 3.4cqw; color: #fff; background: linear-gradient(135deg, #1d6467, #0a4652); box-shadow: 0 6px 16px #0a465233; }
+.infoHero > span { font-size: clamp(11px, 3.1cqw, 13px); color: #cfe7e4; }
+.infoHero strong { display: block; margin-top: .5cqw; font-size: 7.4cqw; font-weight: 600; line-height: 1.15; letter-spacing: -.01em; }
+.infoHero small { font-size: 3.4cqw; font-weight: 400; color: #cfe7e4; }
+.infoHeroStats { display: flex; flex-wrap: wrap; gap: 1.6cqw; margin-top: 2.4cqw; }
+.infoHeroStats span { padding: .9cqw 2.4cqw; border-radius: 99px; background: #ffffff1f; font-size: clamp(11px, 3.2cqw, 13px); color: #e4f3f1; }
+.infoHeroStats b { font-weight: 600; color: #fff; }
+.infoGroup { margin-top: 2.2cqw; padding: 1.8cqw 3.4cqw; border-radius: 3cqw; background: #fff; border: 1px solid #e6ece9; }
+.infoGroup h5 { display: flex; align-items: center; justify-content: space-between; gap: 2cqw; margin: .6cqw 0 0; font-size: clamp(11px, 3.2cqw, 13px); font-weight: 600; color: #0b7f6f; }
+.infoGroup h5 em { font-style: normal; font-weight: 400; font-size: clamp(10px, 2.9cqw, 12px); color: #8a6d1d; padding: .4cqw 1.8cqw; border-radius: 99px; background: #fbf3dc; }
+.infoPending { border-style: dashed; border-color: #e3d4a6; background: #fffdf6; }
+.infoModal .costDetails { margin: 0; font-size: clamp(11px, 3.4cqw, 13px); }
+.infoModal .costDetails > div { padding: 1.5cqw 0; }
+.infoModal .costDetails > div + div { border-top: 1px solid #f0f3f1; }
+.infoModal .costDetails dt { color: #5d6b72; }
+.costDetails .infoStrong { color: #008744; font-weight: 600; }
+.infoNotes { margin-top: 3cqw; padding: 2.4cqw 3cqw; border-radius: 2.6cqw; background: #eef2f1; }
+.infoNotes .comparisonNote { font-size: 11px; line-height: 1.55; }
+.infoNotes .comparisonNote + .comparisonNote { margin-top: 1.4cqw; }
+/* Keep the close button reachable while the long details scroll. */
+.infoModal .closeDialog { position: sticky; z-index: 2; top: 0; float: right; margin: -3cqw -2cqw 0 0; box-shadow: 0 1px 4px #0f172a1f; }

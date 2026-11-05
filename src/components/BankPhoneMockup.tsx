@@ -401,7 +401,7 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
             aria-modal="true"
             aria-labelledby="phone-dialog-title"
             aria-describedby="phone-dialog-description"
-            className={styles.modal}
+            className={`${styles.modal} ${showInfo ? styles.infoModal : ''}`}
             onClick={event => event.stopPropagation()}
             onKeyDown={event => {
               if (event.key === 'Escape') closeDialog();
@@ -416,22 +416,47 @@ export default function BankPhoneMockup({ activeStep, onSelectStep }: BankPhoneM
           >
             <button type="button" autoFocus className={styles.closeDialog} aria-label="ปิดหน้าต่าง" onClick={closeDialog}><X /></button>
             {showInfo ? <>
-              <h4 id="phone-dialog-title">ค่าใช้จ่ายและยอดใช้ได้วันนี้</h4>
-              <p id="phone-dialog-description">รายได้ไม่แน่นอน · ตัวอย่างช่วง {demoFinance.daysIncludingToday} วัน</p>
-              <dl className={styles.costDetails}>
-                <div><dt>ยอดเงินต้นวัน</dt><dd>฿{formatDemoAmount(demoFinance.openingBalance)}</dd></div>
-                <div><dt>ค่าห้องที่กันไว้</dt><dd>฿{formatDemoAmount(demoFinance.fixedBills)}</dd></div>
-                <div><dt>เงินสำรองขั้นต่ำ*</dt><dd>฿{formatDemoAmount(demoFinance.hardFloor)}</dd></div>
-                <div><dt>ค่าจ้างที่รอเข้า*</dt><dd>฿{formatDemoAmount(demoFinance.pendingIncome)}</dd></div>
-                <div><dt>วันรับเงินที่คาด*</dt><dd>อีก {forecast.daysUntilIncome} วัน</dd></div>
-                <div><dt>ยอดใช้ได้วันนี้</dt><dd>฿{summary.budget}</dd></div>
-                {saved && <div><dt>ออมก่อนใช้วันนี้</dt><dd>฿{allocated}</dd></div>}
-                <div><dt>ใช้ไปแล้ววันนี้</dt><dd>฿{spentToday}</dd></div>
-                <div><dt>เงินสะสมเดิม</dt><dd>฿{formatDemoAmount(demoFinance.openingAccumulated)}</dd></div>
-                <div><dt>เงินสะสมคงเหลือ</dt><dd>฿{formatPocketBalance(summary.accumulated)}</dd></div>
-              </dl>
-              <p className={styles.comparisonNote}>*เงินรอรับยังไม่รวมในยอดบัญชี · {demoFinance.illustrativeProbability}% เป็นค่าตัวอย่างตลอด {demoFinance.daysIncludingToday} วัน เพื่อเผื่อเงินเข้าช้ากว่าวันที่คาด ไม่ใช่ผลโมเดลจริง · เงินสำรอง ฿{formatDemoAmount(demoFinance.hardFloor)} เป็นค่าทดลอง</p>
-              <p className={styles.comparisonNote}>ออมก่อนใช้จะย้ายเงินเข้า Pocket และลดยอดใช้ได้วันนี้ตามยอดที่ออม หลังออม ระบบจริงต้องประเมินงบและโอกาสเงินพอใหม่ เดโมจะแสดง “รอประเมินใหม่”</p>
+              <header className={styles.infoHeader}>
+                <span className={styles.infoBadge} aria-hidden="true"><Info /></span>
+                <div>
+                  <h4 id="phone-dialog-title">ค่าใช้จ่ายและยอดใช้ได้วันนี้</h4>
+                  <p id="phone-dialog-description">รายได้ไม่แน่นอน · ตัวอย่างช่วง {demoFinance.daysIncludingToday} วัน</p>
+                </div>
+              </header>
+              <div className={styles.infoHero}>
+                <span>ยอดใช้ได้วันนี้</span>
+                <strong>฿{summary.budget}<small> / วัน</small></strong>
+                <div className={styles.infoHeroStats}>
+                  <span>ใช้ไปแล้ว <b>฿{spentToday}</b></span>
+                  {saved && <span>ออมก่อนใช้ <b>฿{allocated}</b></span>}
+                </div>
+              </div>
+              <section className={styles.infoGroup}>
+                <h5>เงินในบัญชี</h5>
+                <dl className={styles.costDetails}>
+                  <div><dt>ยอดเงินต้นวัน</dt><dd>฿{formatDemoAmount(demoFinance.openingBalance)}</dd></div>
+                  <div><dt>ค่าห้องที่กันไว้</dt><dd>฿{formatDemoAmount(demoFinance.fixedBills)}</dd></div>
+                  <div><dt>เงินสำรองขั้นต่ำ*</dt><dd>฿{formatDemoAmount(demoFinance.hardFloor)}</dd></div>
+                </dl>
+              </section>
+              <section className={`${styles.infoGroup} ${styles.infoPending}`}>
+                <h5>เงินที่รอเข้า <em>ยังไม่นับเป็นเงินสด</em></h5>
+                <dl className={styles.costDetails}>
+                  <div><dt>ค่าจ้างที่รอเข้า*</dt><dd>฿{formatDemoAmount(demoFinance.pendingIncome)}</dd></div>
+                  <div><dt>วันรับเงินที่คาด*</dt><dd>อีก {forecast.daysUntilIncome} วัน</dd></div>
+                </dl>
+              </section>
+              <section className={styles.infoGroup}>
+                <h5>เงินสะสม</h5>
+                <dl className={styles.costDetails}>
+                  <div><dt>เงินสะสมเดิม</dt><dd>฿{formatDemoAmount(demoFinance.openingAccumulated)}</dd></div>
+                  <div><dt>เงินสะสมคงเหลือ</dt><dd className={styles.infoStrong}>฿{formatPocketBalance(summary.accumulated)}</dd></div>
+                </dl>
+              </section>
+              <div className={styles.infoNotes}>
+                <p className={styles.comparisonNote}>*เงินรอรับยังไม่รวมในยอดบัญชี · {demoFinance.illustrativeProbability}% เป็นค่าตัวอย่างตลอด {demoFinance.daysIncludingToday} วัน เพื่อเผื่อเงินเข้าช้ากว่าวันที่คาด ไม่ใช่ผลโมเดลจริง · เงินสำรอง ฿{formatDemoAmount(demoFinance.hardFloor)} เป็นค่าทดลอง</p>
+                <p className={styles.comparisonNote}>ออมก่อนใช้จะย้ายเงินเข้า Pocket และลดยอดใช้ได้วันนี้ตามยอดที่ออม หลังออม ระบบจริงต้องประเมินงบและโอกาสเงินพอใหม่ เดโมจะแสดง “รอประเมินใหม่”</p>
+              </div>
             </> : <>
               <span className={styles.successIcon}><CheckCircle2 /></span>
               <h4 id="phone-dialog-title">ออมสำเร็จในเดโม</h4>
