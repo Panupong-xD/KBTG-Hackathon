@@ -2,7 +2,7 @@ import { DEMO_CLOSE_TIMESTAMP, DEMO_REOPEN_TIMESTAMP } from './demo-schedule.mjs
 import { createHash, createHmac, timingSafeEqual } from 'node:crypto';
 
 // Server-only access gate. Never import this module into a client component.
-export { DEMO_CLOSE_AT, DEMO_CLOSE_TIMESTAMP, DEMO_LAST_DAY_LABEL, DEMO_REOPEN_AT, DEMO_REOPEN_TIMESTAMP, DEMO_REOPEN_LABEL, isDemoEnded } from './demo-schedule.mjs';
+export { DEMO_CLOSE_TIMESTAMP, DEMO_LAST_DAY_LABEL, DEMO_REOPEN_TIMESTAMP, DEMO_REOPEN_LABEL, isDemoEnded } from './demo-schedule.mjs';
 export const TEAM_COOKIE = '__Host-runway_team';
 export const TEAM_SESSION_SECONDS = 8 * 60 * 60;
 

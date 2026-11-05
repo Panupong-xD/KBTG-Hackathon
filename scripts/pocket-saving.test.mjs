@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import {initialSavingState, pocketSavingReducer, pocketBalance, pockets, dailySummary, savedAmount, savingOffer, suggestSaving, dailyBudget, defaultPlan, forecastPlan, planSavingOffer} from '../src/lib/pocket-saving.ts';
+import {initialSavingState, pocketSavingReducer, pocketBalance, pockets, dailySummary, savedAmount, savingOffer, suggestSaving, dailyBudget, defaultPlan, forecastPlan, planSavingOffer, formatDemoDay} from '../src/lib/pocket-saving.ts';
 const total = state => pockets.reduce((sum,pocket)=>sum+pocketBalance(pocket.id,state),0);
 const open = (state=initialSavingState) => pocketSavingReducer(state,{type:'open'});
 
@@ -52,14 +52,11 @@ test('the 10–20% rule and liquidity buffer limit the offer, with no fixed cap'
   assert.ok(pocketBalance('main',saved,0)>=1000+12*250);
   assert.equal(pocketBalance('bills',saved),3500);
 });
-test('overspending uses accumulation first, then spreads only the uncovered amount',()=>{
+test('overspending uses accumulation first and never takes it below zero',()=>{
   const covered=dailySummary(340);
   assert.equal(covered.accumulated,40);
-  assert.equal(covered.overspendCovered,60);
-  assert.equal(covered.futureBudget,280);
   const short=dailySummary(500);
   assert.equal(short.accumulated,0);
-  assert.ok(Math.abs(short.futureBudget-(280-120/29))<0.00001);
 });
 test('invalid confirmations and inputs do not initiate saving',()=>{
   assert.equal(pocketSavingReducer(initialSavingState,{type:'confirm',pocketId:'emergency'}),initialSavingState);
@@ -97,4 +94,10 @@ test('the saving goal sets the offer at about 10, 15 or 20% of the budget',()=>{
   const choosing=pocketSavingReducer(initialSavingState,{type:'open',amount:40});
   assert.equal(choosing.amount,40);
   assert.equal(pocketSavingReducer(initialSavingState,{type:'open',amount:0}),initialSavingState);
+});
+
+test('demo dates past the end of October roll over into November',()=>{
+  assert.equal(formatDemoDay(13),'13 ต.ค.');
+  assert.equal(formatDemoDay(31),'31 ต.ค.');
+  assert.equal(formatDemoDay(32),'1 พ.ย.');
 });

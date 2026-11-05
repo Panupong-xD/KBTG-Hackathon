@@ -37,7 +37,6 @@
 .roundNudge button { display: flex; align-items: center; gap: 2px; flex-shrink: 0; min-height: 28px; padding: 2px 10px; border: 1px solid #f3c45a; border-radius: 99px; background: transparent; color: #f3c45a; font-size: 10px; white-space: nowrap; }
 .roundNudge button svg { width: 12px; height: 12px; }
 
-.destinationTag { align-self: flex-start; margin-top: 3px; padding: 0 5px; border-radius: 99px; background: #fff1c7; color: #8a6400; font-size: 8.5px; line-height: 1.6; white-space: nowrap; }
 .transactionsLink { display: flex; align-items: center; justify-content: center; gap: 3px; width: 100%; min-height: 30px; margin-top: 12px; border: 1px solid #45c2b2; border-radius: 99px; background: transparent; color: #45c2b2; font-size: 11px; }
 .transactionsLink svg { width: 13px; height: 13px; }
 
@@ -122,15 +121,6 @@
 .sourceCard { border: 1px solid #45c2b240; }
 .sourceCard h5, .timelineCard h5 { margin: 0; font-size: 3.6cqw; font-weight: 600; }
 .sourceLead { margin: 2px 0 0; color: #a5b4ba; font-size: 2.75cqw; line-height: 1.55; }
-.stack { display: flex; gap: 2px; height: 12px; margin-top: 2.6cqw; border-radius: 4px; overflow: hidden; background: #ffffff10; }
-.stack > span { display: block; height: 100%; }
-.stackFloor { background: #7d8f96; }
-.stackBills { background: #f59f8b; }
-.stackPlan { background: #45c2b2; }
-.stackLeft { background: #c6efe8; }
-.stackLegend { display: flex; flex-wrap: wrap; gap: 3px 9px; margin-top: 5px; color: #a5b4ba; font-size: 9px; }
-.stackLegend span { display: flex; align-items: center; gap: 4px; }
-.stackLegend i { width: 7px; height: 7px; border-radius: 2px; }
 .sourceRows { margin: 2.4cqw 0 0; }
 .equation { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; align-items: stretch; gap: 4px; margin-top: 2.6cqw; }
 .equation > div { display: flex; flex-direction: column; justify-content: center; gap: 2px; min-width: 0; padding: 2cqw 1.4cqw; border-radius: 1.6cqw; background: #ffffff0d; text-align: center; }
@@ -146,9 +136,6 @@
 .sourceRows dt small { color: #8fa2aa; font-size: 2.5cqw; line-height: 1.5; }
 .sourceRows dd { margin: 0; color: #e7eef1; font-weight: 500; white-space: nowrap; }
 .sourceSubtotal dt, .sourceSubtotal dd { color: #ffffff !important; font-weight: 600; }
-.sourceTotal { border-bottom: 0 !important; }
-.sourceTotal dt { color: #7fe0d2 !important; font-weight: 600; }
-.sourceTotal dd { color: #7fe0d2 !important; font-size: 4.2cqw; font-weight: 700 !important; }
 .sourceNote { margin: 1cqw 0 0; color: #8fa2aa; font-size: 9.5px; line-height: 1.6; }
 .outlineButton { display: flex; align-items: center; justify-content: center; gap: 3px; width: 100%; min-height: 32px; margin-top: 2.6cqw; border: 1px solid #45c2b2; border-radius: 99px; background: transparent; color: #45c2b2; font-size: 10.5px; }
 .outlineButton { gap: 5px; }

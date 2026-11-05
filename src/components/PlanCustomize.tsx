@@ -6,8 +6,6 @@ import { defaultPlan, demoFinance, forecastPlan, formatDemoAmount, formatDemoDay
 import PlanPage from './PlanPage';
 import styles from './MoneyPlan.module.css';
 
-const emergencyPocket = pockets.find(pocket => pocket.id === 'emergency')!;
-
 function Stepper({ label, value, display, min, max, step, onChange }: { label: string; value: number; display: string; min: number; max: number; step: number; onChange: (value: number) => void }) {
   return <div className={styles.stepper} role="group" aria-label={label}>
     <span>{label}</span>
@@ -117,7 +115,7 @@ export default function PlanCustomize({ plan, featuredPockets, focus, onCancel, 
       <p className={styles.groupHint}>ชวนเก็บทุกเช้าก่อนเริ่มใช้ คุณกดยืนยันเองทุกครั้ง</p>
       <div className={styles.row}>
         <Choice label="เป้าเก็บเงิน" options={goalOptions} value={draft.goal} onChange={goal => setDraft(previous => ({ ...previous, goal }))} />
-        <p className={styles.rowNote}>เก็บราว {goal.rate * 100}% ของยอดใช้ได้ เข้า Pocket “{emergencyPocket.name}”</p>
+        <p className={styles.rowNote}>เก็บราว {goal.rate * 100}% ของยอดใช้ได้ เข้า Pocket ที่คุณเลือกตอนกดออม</p>
       </div>
     </section>
 

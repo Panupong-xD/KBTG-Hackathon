@@ -26,7 +26,11 @@ export const formatPocketBalance = (amount: number) => amount.toLocaleString('en
 export const demoToday = 1;
 export const demoMonth = 10;
 export const monthNames = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'] as const;
-export const formatDemoDay = (day: number) => `${day} ${monthNames[demoMonth - 1]}`;
+// Days past the end of the month roll over (Oct 2569 = 2026 CE has 31 days, so day 32 is 1 Nov).
+export const formatDemoDay = (day: number) => {
+  const date = new Date(2026, demoMonth - 1, day);
+  return `${date.getDate()} ${monthNames[date.getMonth()]}`;
+};
 export const savingGoals = [
   { id: 'low', label: 'น้อย', rate: demoFinance.sweepMinRate },
   { id: 'medium', label: 'กลาง', rate: 0.15 },
@@ -105,14 +109,10 @@ export function planSavingOffer(plan: MoneyPlan, forecast: PlanForecast = foreca
 }
 
 export function dailySummary(spentToday: number, saved = 0, plannedBudget: number = dailyBudget) {
-  const futureDays = demoFinance.daysIncludingToday - 1;
   const budget = plannedBudget - saved;
   const difference = budget - spentToday;
   const accumulated = Math.max(0, demoFinance.openingAccumulated + difference);
-  const overspendCovered = Math.min(demoFinance.openingAccumulated, Math.max(0, -difference));
-  const shortfall = Math.max(0, -difference - demoFinance.openingAccumulated);
-  const futureBudget = Math.max(0, plannedBudget - shortfall / futureDays);
-  return {budget, difference, accumulated, overspendCovered, futureDays, futureBudget};
+  return {budget, difference, accumulated};
 }
 
 type SavingState = {status:'idle'; pocketId:null} | {status:'skipped'; pocketId:null} | {status:'choosing'; pocketId:null; amount:number} | {status:'saved'; pocketId:SavingPocketId; amount:number};

@@ -159,7 +159,7 @@ export default function MyFinance({ accountBalance, pocketSnapshots, plan, planE
           <div className={styles.pocketCarousel} tabIndex={0} role="region" aria-label="กระเป๋าที่เลือกแสดง เลื่อนซ้ายขวาเพื่อดูทั้งหมด">
             {featuredPockets.map(pocketId => {
               const pocket = pocketSnapshots.find(item => item.id === pocketId)!;
-              return <article key={pocket.id} className={styles.pocketTile}><span className={`${styles.pocketArt} ${styles[pocket.id]}`}><PocketIllustration pocket={pocket.id} /></span><span title={pocket.name}>{pocket.name}</span><strong>{formatPocketBalance(pocket.balance)}</strong>{pocket.id === 'emergency' && <span className={planStyles.destinationTag}>ปลายทางชวนเก็บ</span>}</article>;
+              return <article key={pocket.id} className={styles.pocketTile}><span className={`${styles.pocketArt} ${styles[pocket.id]}`}><PocketIllustration pocket={pocket.id} /></span><span title={pocket.name}>{pocket.name}</span><strong>{formatPocketBalance(pocket.balance)}</strong></article>;
             })}
             {featuredPockets.length === 0 && <button type="button" className={styles.emptyPockets} onClick={event => openPage({ kind: 'customize' }, event.currentTarget)}>เลือกกระเป๋าของคุณมาแสดงที่นี่</button>}
           </div>

@@ -98,5 +98,4 @@
 .pocketDetails > div, .pocketDetails > button { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; min-height: 43px; padding: 10px 0; border: 0; border-bottom: 1px solid #b0ccd226; background: transparent; color: #d4e1e6; font-size: 12px; text-align: left; }
 .pocketDetails strong { font-weight: 500; white-space: nowrap; }
 .pocketDetails svg { width: 17px; height: 17px; color: #45c2b2; }
-.cardNote { margin: 12px 0 0; color: #9eacb2; font-size: 10px; line-height: 1.7; }
 @media (prefers-reduced-motion: reduce) { .profile { transition: none; } }
