@@ -1,10 +1,10 @@
-# Demo security review - 27 October 2026
+# Demo security review - 27 October 2026 (updated 9 November 2026)
 
 ## Application keys and actual data
 
-No application API keys, access tokens or private keys were found in the project, the reachable local Git history, or the browser-facing files checked before adding team access. No environment/private-key files are tracked. Team access now requires one new server-side environment secret, `DEMO_TEAM_PASSWORD`; its value must stay out of source and browser assets. It is unrelated to AI or banking APIs.
+No application API keys, access tokens or private keys were found in the project, the reachable local Git history, or the browser-facing files. No environment/private-key files are tracked. Since the access gate was removed on 9 November 2026, the app needs no environment secret at all; `DEMO_TEAM_PASSWORD` is unused and can be deleted from the hosting environment.
 
-Source inspection found no model/API invocation, database connection, external transaction request or analytics transmission. Financial interactions run against local fixtures through React state and a reducer. No bank account is opened and no money is transferred. Team access adds a signed session cookie only; it stores no financial data or password. The account label explicitly identifies an example account.
+Source inspection found no model/API invocation, database connection, external transaction request or analytics transmission. Financial interactions run against local fixtures through React state and a reducer. No bank account is opened and no money is transferred. The account label explicitly identifies an example account.
 
 The app loads font styles from a public font service and links to a public research paper. These are external resources, not authenticated app integrations. The photograph and custom SVG mark were visually inspected for bank/product logos.
 
@@ -16,25 +16,19 @@ The initial `npm audit --omit=dev` reported three affected packages: the framewo
 
 The updated lockfile pins the framework to **16.4.3** and the image-processing package to **0.35.5**. The follow-up npm audit reported **0 known vulnerabilities**. This result is specific to the advisory database and lockfile checked on this date.
 
-## Access restriction and public content
+## Public access and content
 
-**Update 9 November 2026:** the time-window gate and team password were removed; the site is now always public. The text below describes the removed gate. `DEMO_TEAM_PASSWORD` is no longer used and can be deleted from the hosting environment.
+**Current state (9 November 2026):** the production site is public at all times. There is no Proxy, login page, session cookie or shared password. Page metadata still sets `robots: noindex, nofollow`, which asks search engines not to list the site but does not restrict access.
 
-Unauthenticated production requests are blocked server-side until **7 November 2026 at 00:00 Asia/Bangkok** and again from **8 November 2026 at 00:00 Asia/Bangkok** (added 30 October), so the site is public on pitch day only. After closing, the pause page says the demo has ended and team login remains available. The restriction covers pages, RSC/data requests, bundles, images and direct public-file paths. The self-contained pause page uses HTTP 503 and includes a team login form only when the server password is configured. Missing/invalid configuration fails closed. Development mode remains usable locally.
-
-The password is checked on the server with a constant-time digest comparison. Login accepts only same-origin, bounded URL-encoded POST bodies; credentials are never reflected in HTML or application logs. Sessions are HMAC-signed with domain separation, expire after eight hours or at reopening (whichever comes first), and use `HttpOnly`, `Secure`, `SameSite=Strict`, `Path=/` and the `__Host-` cookie prefix. Password rotation invalidates sessions after redeployment. Logout is a same-origin POST that clears the cookie; it does not revoke copies of an already issued cookie before expiry. Authenticated and unauthenticated restricted responses disable browser/CDN caching. The form's CSP restricts submission to the same origin.
-
-This is a temporary shared-password preview gate, with no database or distributed brute-force limiter. The project owner chose a memorable password with an eight-character minimum (accepted length 8–128; ordinary symbols are supported, with no control characters or surrounding whitespace). It is also the session-signing secret. A short predictable password can be guessed; signed cookies do not prevent that. Do not reuse a personal password. This gate is not a customer identity system. The production domain is now `k-runway.vercel.app`.
+**History:** from 27 October a server-side Proxy blocked unauthenticated production requests (pages, RSC/data, bundles, images and public files) with an HTTP 503 page, except on pitch day (7 November 2026, Asia/Bangkok). Team members could sign in with a shared password checked in constant time, which issued an eight-hour HMAC-signed `__Host-` cookie. The team removed this gate, its tests and the `DEMO_TEAM_PASSWORD` dependency after the pitch so the demo stays open. The code remains in Git history (removed in commit `e168162`).
 
 Bank/organizer/product names were removed from rendered text, metadata used for link previews, generated browser code and component/CSS identifiers. Open Graph and Twitter descriptions use the same generic wording as the ordinary description. An example label replaces the masked account number.
 
-The Git repository is public. Restricting the website does not restrict the repository or revoke access to previous deployments and cached/downloaded copies. Repository visibility and hosting-account settings are separate from the application gate.
+The Git repository is public, and anything committed (including history) should be treated as published. Repository visibility and hosting-account settings are separate from the website.
 
 ## Validation
 
 - TypeScript validation and the production build.
-- Existing saving tests: cancellation, confirmation, duplicate confirmation, balance conservation, accumulation and liquidity limits.
-- Reopening and closing boundary tests immediately before, exactly at, and after midnight in Bangkok; invalid-clock values fail closed.
-- Team-access tests for missing/invalid configuration, incorrect passwords, forged/expired sessions, password rotation, cross-origin requests and malformed/oversized bodies.
-- HTTP checks for the page, assets, RSC requests and arbitrary file paths during the production pause, plus generic metadata and interactive saving in local development.
-- A second scan of the rebuilt browser assets and a follow-up npm audit.
+- Saving tests: the ฿280 budget formula and user corrections, save-first offer and goal rates, the 10–20% rule and liquidity buffer, saving/not saving/cancelling, balance conservation, overspending and invalid inputs.
+- A scan of source and rebuilt browser assets for bank/organizer/product names and credential formats, and a follow-up npm audit.
+- The gate's boundary and team-access tests were deleted with the gate on 9 November 2026.

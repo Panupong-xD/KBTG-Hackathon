@@ -18,7 +18,7 @@ export default function InnovationConcept() {
                 ให้เงินเหลือไปถึงเป้าหมาย
               </h2>
               <p className="mt-4 text-kt-tint text-sm sm:text-base max-w-xl mx-auto lg:mx-0 leading-relaxed">
-                เพิ่มมุมมอง “วันนี้ใช้ได้เท่าไหร่” ให้การจัดการเงินในแอปธนาคาร คิดเผื่อวันที่เงินเข้าช้า ช่วยวางแผนก่อนต้องดึงเงินเก็บมาใช้ และเติมเงินออมจากส่วนที่ใช้ไม่ถึงงบ
+                เพิ่มมุมมอง “วันนี้ใช้ได้เท่าไหร่” ให้การจัดการเงินในแอปธนาคาร คิดเผื่อวันที่เงินเข้าช้า ช่วยวางแผนก่อนต้องดึงเงินเก็บมาใช้ และชวนออมก่อนใช้ตั้งแต่ต้นวัน
               </p>
 
               <div className="mt-8 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3">

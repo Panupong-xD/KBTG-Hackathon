@@ -1,49 +1,70 @@
-# K-Runway — Cash-flow & Pocket Co-pilot
+# กะตังค์ (KaTang) — Cash-flow & Pocket Co-pilot
 
-A bank-app feature concept for First Jobbers with variable income such as freelance work or side gigs. The segment remains provisional pending survey and interviews. Salaried users are a simpler case of the same engine.
+A bank-app feature concept for First Jobbers with variable income such as freelance work or side gigs. It suggests how much is safe to spend today, shows an illustrative chance that money lasts, and invites the user to save into a Pocket they choose. Salaried users are a simpler case of the same engine. The segment remains provisional pending further survey and interviews.
 
-## Public demo access and naming
+The website is branded **กะตังค์ (KaTang)**. README, `docs/` and the `ml/krunway` package still use the earlier name **K-Runway**; they are the same project.
 
-The demo is public at **https://k-runway.vercel.app/** with no time window or team password (the access gate was removed on 9 November 2026).
+## Public demo
 
-The public interface, share metadata, mockups and browser assets use generic terms such as **banking app**, **category budgeting** and **Pocket**. Do not add official bank, organizer or banking-product names or logos. The custom project name and mark identify a concept prototype only. Historical architecture documents are background notes, not public website content.
+The demo is public at **https://k-runway.vercel.app/**. The time-window gate and team password were removed on 9 November 2026, so there is no Proxy, login page or `DEMO_TEAM_PASSWORD`. Page metadata still asks search engines not to index the site (`robots: noindex, nofollow`).
 
-## Security and data
+The demo is browser-only: no AI API, banking API or database. Every number is a fixture in `src/lib/pocket-saving.ts` and resets on reload. No money moves and no account is opened.
 
-The demo does not invoke an AI API, banking API or database. AI/ML descriptions explain the proposed product; they are not live integrations. No application API key is required. Balances and Pocket entries are local fixtures, reset on reload, and the account label explicitly says it is an example. Do not add real customer data, credentials or secrets to source files, `public/`, share metadata or browser environment variables.
+## Naming and data rules
 
-Environment files and private-key formats are ignored by Git. Production browser source maps are disabled, and production builds must pass TypeScript validation. Before publishing changes, run the checks below and `npm audit --omit=dev`. See [security review](docs/04_SECURITY_REVIEW.md) for the latest scope and findings.
+The public interface, share metadata, mockups and browser assets use generic terms such as **banking app**, **category budgeting** and **Pocket**. Do not add official bank, organizer or banking-product names or logos. The KaTang name and mascot identify a concept prototype only. Names in `docs/` are historical notes, not website content.
 
-## Simple two-step interface
+Do not add real customer data, individual survey answers, credentials or secrets to source files, `public/`, share metadata or `NEXT_PUBLIC_` variables. The repository is public. Environment files and private-key formats are ignored by Git, and production browser source maps are disabled. See the [security review](docs/04_SECURITY_REVIEW.md).
 
-1. Financial overview: balance, today’s spending limit, budget difference, estimated time to the next income, and illustrative 30-day probability. Pending income and bills are disclosed through the existing information button.
-2. Saving: a goal card, a quiet accumulated-balance row, and the original choose-Pocket → confirm → success flow.
+## What the demo shows
 
-The two cards retain the original equal sizing, swipe, pagination, keyboard controls, phone frame and colors. There is no third card, scenario toolbar or round-settings screen. The saving card offers a choice: save today's surplus into a chosen Pocket, or skip saving and carry it forward as spendable money in the main Pocket (no money moves, and the choice can be changed). End-of-round handling and risk alerts remain conceptual explanations, rather than additional demo interactions.
+**Phone home: two swipe cards only** (no third card or scenario toolbar):
+
+1. **Financial overview:** balance, today's spending limit, budget difference, days until expected income and the illustrative 30-day probability. The information button explains pending income, reserved bills, the safety buffer and accumulated funds.
+2. **Save first:** at the start of the day the card offers to save part of today's limit. The user either saves now (choose Pocket → confirm → success, and today's limit drops by the amount saved) or chooses not to save (no money moves, the full limit stays spendable, and the choice can be changed the same day).
+
+**My Finance** (opened from the phone and from the Summary step of the walkthrough):
+
+- **Home:** today's limit with the 86%* chance, a short last-round summary card and a prompt to check the income day. The full round summary opens from the card.
+- **Account Summary:** where today's limit comes from and a 30-day timeline (spend per plan, buffer for late wages, after income arrives).
+- **Customize:** correct the income day, mark extra income as certain or maybe, confirm or reject a bill the system guessed, edit bill amounts and due dates, and pick a saving goal (low/medium/high = 10/15/20%). A preview shows the new limit before saving. After saving, the chance shows that it needs reassessment.
+
+Alerts, end-of-round handling and 24-hour reversal remain concepts, not demo interactions.
 
 ## Shared example
 
-Opening total ฿9,000 consists of main Pocket ฿5,500 and reserved bills ฿3,500. Pending income ฿8,000 expected in 12 days is not counted as cash. The illustrative budget is ฿280/day and the probability is 86% over 30 days, not a trained model prediction.
+The single example used across the site, README and `docs/03`:
 
-Spending ฿250 leaves an account total of ฿8,750 and daily surplus ฿30. Previous accumulated funds ฿100 plus today’s ฿30 creates a virtual ฿130 inside the main Pocket. Saving ฿30 decreases the main Pocket, increases the chosen destination and reduces accumulation to ฿100 without changing the total.
+- Opening total ฿9,000 = main Pocket ฿5,500 + reserved bills (rent) ฿3,500.
+- Pending wage ฿8,000 expected in 12 days (day 13 of the demo month). Pending income is never counted as cash.
+- Today's limit ฿280/day = (main Pocket ฿5,500 − safety buffer ฿1,000) ÷ 16 days (12 days until the wage + 4 days late buffer) ≈ ฿281, rounded down to ฿10.
+- Illustrative chance that money lasts: **86% over 30 days**. It is a demo value, not a trained-model prediction. The 30-day horizon is separate from the 12 days until income.
+- Save-first offer: 10% of today's limit, rounded to ฿10 = ฿30. The goal range is 10–20% with no per-transfer cap, and only if bills, the buffer and spending until income stay covered.
+- Spent today ฿250. Previous accumulated funds ฿100.
+  - **Saved ฿30:** today's limit becomes ฿250, so the difference is ฿0 and accumulated funds stay ฿100. The main Pocket goes to ฿5,220 and the chosen Pocket gains ฿30. The account total stays ฿8,750.
+  - **Not saved:** today's limit stays ฿280, ฿30 is left over, and accumulated funds become a virtual ฿130 inside the main Pocket. Account total ฿8,750.
+- Last round (September, illustrative): within plan 22/30 days, wage 6 days late, plan lowered for 5 days, ฿100 carried into this round.
+- Customize example: extra income ฿1,500 around the 8th (marked "maybe", so not counted), phone bill ฿499 on the 10th that the system guessed (counts only after the user confirms).
 
-The website uses only this ฿250 spending example, with no alternative-scenario controls. The underlying accumulation helper still covers overspending in its unit tests. A confirmed allocation cannot be repeated, and cancelling selection does not move money.
+The 10–20% range and ฿1,000 buffer are team choices, not bank rules. After a save or a plan edit, the phone shows that the risk needs reassessment instead of the old percentage. A production system needs real recalculation, liquidity checks and atomic ledger updates. If any number changes, update the fixture, this section and `docs/03` together.
 
-The provisional 10–20% saving range of today’s available amount (no per-transfer cap) and ฿1,000 buffer are team choices, not bank rules. Current cash must cover the buffer and spending before expected income; reserved bills remain separate. A production system needs recalculation of risk and atomic ledger checks. Reloading resets this browser-only prototype.
+## Documents
 
-Pain points, walkthrough, and architecture use this same fixture: opening ฿9,000, bills ฿3,500, pending ฿8,000 expected in 12 days, budget ฿280/day, and illustrative 86% over 30 days. Pending income is never counted as current cash. The probability is a prototype input, not proof of model quality. The 30-day horizon is distinct from the next expected income in 12 days. After saving, the phone shows that risk needs reassessment instead of retaining the illustrative percentage.
+- [Current product direction and demo scope](docs/03_CURRENT_PRODUCT_DIRECTION.md) — newest; wins over 01/02 when they differ
+- [Security review](docs/04_SECURITY_REVIEW.md)
+- [ML + Monte Carlo prototype on simulated data](ml/README.md)
+- [Earlier architecture proposal](docs/01_TECHNICAL_AND_DATA_ARCHITECTURE.md) and [earlier workflow proposal](docs/02_DATA_SCIENCE_AND_SYSTEM_WORKFLOW.md) — historical
 
-## Mentor alignment (23 October 2026)
+The initial eight-person survey stays in internal notes only; the sample is too small to present as evidence. FCA's 2018 findings on overdraft alerts support the idea of timely notifications; they are not a claim that KaTang reduces Thai debt. Results in `ml/` come from simulated data and are not accuracy claims about real users.
 
-The existing layout and two-step demo are preserved. Pain-point cards pair the problem K-Runway aims to address with its proposed solution. The initial eight-person survey is retained in internal notes only; its sample is too small to present as supporting evidence on the website. The site presents K-Runway as an extension of category budgeting and clarifies the proposed data and ML/Monte Carlo pipeline. The validation-plan block has been removed from the website; model backtesting, calibration and UI A/B testing remain internal plans. Alerts and 24-hour reversal remain outside this browser prototype.
+## Project structure
 
-## Documents and evidence
-
-- [Current concept and two-step scope](docs/03_CURRENT_PRODUCT_DIRECTION.md)
-- [Earlier architecture proposal](docs/01_TECHNICAL_AND_DATA_ARCHITECTURE.md)
-- [Earlier workflow proposal](docs/02_DATA_SCIENCE_AND_SYSTEM_WORKFLOW.md)
-
-FCA’s 2018 findings on overdraft alerts are included as supporting evidence for timely notifications, not a claim that K-Runway reduces Thai debt by 25%. User consent and data-access requirements are proposed safeguards, not certifications.
+- `src/app/` — the single landing page (Next.js App Router) and metadata
+- `src/components/` — landing sections, the phone mockup (`BankPhoneMockup`), My Finance, Account Summary, Customize and Round Summary (CSS Modules + Tailwind v4)
+- `src/lib/pocket-saving.ts` — the shared fixture, budget formula, saving offer and saving reducer
+- `src/data/` — walkthrough steps and the illustrative last round
+- `scripts/` — tests (`*.test.mjs`), CSS build, brand icon generator and the screenshot script
+- `ml/` — Python ML + Monte Carlo prototype (own rules in `ml/AGENTS.md`)
 
 ## Development and checks
 
@@ -51,13 +72,14 @@ Requires Node.js 20.9 or later.
 
 ```bash
 npm install
-npm run dev
-npx tsc --noEmit --noUnusedLocals --noUnusedParameters --incremental false
-node --test scripts/pocket-saving.test.mjs
-npm audit --omit=dev
+npm run dev          # builds CSS, then serves http://localhost:3000
+npm run check        # typecheck + all JS tests
+npm run check:ml     # ML tests (create ml/.venv first, see ml/README.md)
+npm run screenshots  # phone mockup in every demo state → screenshots/ (dev server must be running)
 npm run build
+npm audit --omit=dev
 ```
 
-CSS is generated before development and builds. No lint script is configured. Tests cover accumulation, cancellation, conservation, duplicate confirmation, overspending, liquidity limits and invalid inputs.
+No lint script is configured. JS tests cover the ฿280 budget formula and user corrections, the save-first offer and goal rates, the 10–20% rule and liquidity limit, saving/not saving/cancelling, balance conservation, overspending, invalid inputs, demo dates rolling into November, and the CSS build.
 
 This is a non-official innovation prototype, not a bank website or financial service.
