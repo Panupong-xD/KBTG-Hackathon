@@ -19,14 +19,14 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - ชื่อบนเว็บตอนนี้คือ **กะตังค์ (KaTang)** ส่วน README, `docs/` และแพ็กเกจ `ml/krunway` ยังใช้ชื่อเดิม **K-Runway** (เป็นสิ่งเดียวกัน)
 - เดโมเป็น browser-only: ไม่มี AI API, banking API หรือฐานข้อมูล ตัวเลขทั้งหมดเป็น fixture ใน `src/lib/pocket-saving.ts` และรีเซ็ตเมื่อรีโหลด
 - ขอบเขตปัจจุบันและเหตุผลหลังคุย mentor: `docs/03_CURRENT_PRODUCT_DIRECTION.md` (ใหม่กว่า `docs/01`, `docs/02` เมื่อขัดกัน)
-- ความปลอดภัยและ access gate: `docs/04_SECURITY_REVIEW.md`
+- ความปลอดภัย (access gate เดิมถูกถอดแล้ว): `docs/04_SECURITY_REVIEW.md`
 - ฝั่ง ML/Monte Carlo (Python, ข้อมูลจำลอง): `ml/` มีกฎเพิ่มใน `ml/AGENTS.md`
 
 ## โครงสร้าง
 
-- `src/app/` หน้าเว็บ (App Router), `src/app/team-access/` login/logout ของทีม, `src/proxy.ts` ปิดเว็บ production จนถึงเวลาเปิด
+- `src/app/` หน้าเว็บ (App Router) เว็บเปิดสาธารณะตลอด ไม่มี access gate แล้ว
 - `src/components/` คอมโพเนนต์ (CSS Modules + Tailwind v4), `src/data/` เนื้อหา scrollytelling/สรุปรอบ
-- `src/lib/pocket-saving.ts` fixture และ reducer การออม, `src/lib/demo-*.ts|mjs` access gate และเวลาเปิดเว็บ
+- `src/lib/pocket-saving.ts` fixture และ reducer การออม
 - `scripts/*.test.mjs` เทสต์ (`node --test`), `scripts/build-css.mjs` สร้าง CSS ก่อน dev/build
 - `pitch/` และ `ml/output/` ไม่อยู่ใน git
 
@@ -46,7 +46,7 @@ npm audit --omit=dev
 ## กฎที่ห้ามพลาด
 
 1. **ห้ามใส่ชื่อหรือโลโก้ของธนาคาร ผู้จัดงาน หรือผลิตภัณฑ์ธนาคารจริง** ในหน้าเว็บ metadata ข้อความแชร์ลิงก์ asset ใน `public/` หรือชื่อคอมโพเนนต์/CSS ให้ใช้คำกลาง เช่น "แอปธนาคาร" "การตั้งงบรายหมวด" "Pocket" (ชื่อเฉพาะใน `docs/` เป็นบันทึกประวัติ ไม่ใช่เนื้อหาบนเว็บ)
-2. **ห้ามใส่ข้อมูลลูกค้าจริง คำตอบแบบสำรวจรายคน credential หรือ secret** ลงในซอร์ส `public/` หรือตัวแปร `NEXT_PUBLIC_` repo นี้เป็น public ค่า `DEMO_TEAM_PASSWORD` อยู่ใน environment ของ hosting เท่านั้น ห้ามอ่านหรือพิมพ์ไฟล์ `.env*`
+2. **ห้ามใส่ข้อมูลลูกค้าจริง คำตอบแบบสำรวจรายคน credential หรือ secret** ลงในซอร์ส `public/` หรือตัวแปร `NEXT_PUBLIC_` repo นี้เป็น public ห้ามอ่านหรือพิมพ์ไฟล์ `.env*`
 3. **ใช้ตัวอย่างชุดเดียวทั้งเว็บ** และดึงจาก fixture ใน `src/lib/pocket-saving.ts` ไม่ hard-code ซ้ำ: ยอดเปิด ฿9,000 = Pocket หลัก ฿5,500 + บิลที่กันไว้ ฿3,500, เงินรอรับ ฿8,000 ใน 12 วัน (ไม่นับเป็นเงินสด), งบ ฿280/วัน, ใช้จริง ฿250, เหลือ ฿30, สะสมเดิม ฿100, โอกาสเงินพอ 86% ตลอด 30 วัน, ชวนออม 10–20% ของยอดใช้ได้ (ไม่มีเพดานต่อครั้ง), เงินสำรอง ฿1,000 ถ้าเปลี่ยนตัวเลขต้องแก้ README และ `docs/03` ให้ตรงกันด้วย
 4. **86% เป็นค่าตัวอย่าง ไม่ใช่ผลทำนายของโมเดล** หลังออมหรือใช้เกินงบ ต้องแสดงว่ารอประเมินใหม่ ไม่ใช้เปอร์เซ็นต์เดิม
 5. **ผลจาก `ml/` มาจากข้อมูลจำลอง** ห้ามอ้างเป็นความแม่นยำกับผู้ใช้จริง ตัวเลขที่จะใช้ในสไลด์หรือเว็บต้องรันซ้ำได้จากโค้ดใน `ml/`

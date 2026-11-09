@@ -18,6 +18,8 @@ The updated lockfile pins the framework to **16.4.3** and the image-processing p
 
 ## Access restriction and public content
 
+**Update 9 November 2026:** the time-window gate and team password were removed; the site is now always public. The text below describes the removed gate. `DEMO_TEAM_PASSWORD` is no longer used and can be deleted from the hosting environment.
+
 Unauthenticated production requests are blocked server-side until **7 November 2026 at 00:00 Asia/Bangkok** and again from **8 November 2026 at 00:00 Asia/Bangkok** (added 30 October), so the site is public on pitch day only. After closing, the pause page says the demo has ended and team login remains available. The restriction covers pages, RSC/data requests, bundles, images and direct public-file paths. The self-contained pause page uses HTTP 503 and includes a team login form only when the server password is configured. Missing/invalid configuration fails closed. Development mode remains usable locally.
 
 The password is checked on the server with a constant-time digest comparison. Login accepts only same-origin, bounded URL-encoded POST bodies; credentials are never reflected in HTML or application logs. Sessions are HMAC-signed with domain separation, expire after eight hours or at reopening (whichever comes first), and use `HttpOnly`, `Secure`, `SameSite=Strict`, `Path=/` and the `__Host-` cookie prefix. Password rotation invalidates sessions after redeployment. Logout is a same-origin POST that clears the cookie; it does not revoke copies of an already issued cookie before expiry. Authenticated and unauthenticated restricted responses disable browser/CDN caching. The form's CSP restricts submission to the same origin.
